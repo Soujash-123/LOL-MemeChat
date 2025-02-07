@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MACRO - User Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .music-player-controls button:hover {
+            transform: scale(1.1);
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 to-black min-h-screen text-white">
+    <!-- Navigation Sidebar -->
+    <nav class="fixed left-0 top-0 h-full w-64 bg-purple-900 bg-opacity-50 backdrop-blur-md p-4">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold mb-2">MACRO</h1>
+            <div id="user-profile-mini" class="text-sm text-purple-200">
+                <p class="font-bold">{{ user.username }}</p>
+                <p>{{ user.role }}</p>
+                {% if user.instrument %}
+                <p>Instrument: {{ user.instrument }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <ul class="space-y-4">
+            <li>
+                <a href="/dashboard" class="flex items-center text-lg hover:text-purple-300 transition-colors">
+                    <i class="fas fa-home mr-3"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard#profile" class="flex items-center text-lg hover:text-purple-300 transition-colors">
+                    <i class="fas fa-user mr-3"></i> Profile
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard#members" class="flex items-center text-lg hover:text-purple-300 transition-colors">
+                    <i class="fas fa-users mr-3"></i> Members
+                </a>
+            </li>
+            <li>
+                <button onclick="window.location.href='/dashboard'" class="flex items-center text-lg hover:text-purple-300 transition-colors">
+                    <i class="fas fa-plus-circle mr-3"></i> Create Post
+                </button>
+            </li>
+            <li>
+                <a href="#" class="flex items-center text-lg hover:text-purple-300 transition-colors">
+                    <i class="fas fa-music mr-3"></i> Studio
+                </a>
+            </li>
+            <li>
+                <button onclick="logout()" class="flex items-center text-lg hover:text-red-300 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-3"></i> Logout
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="ml-64 flex">
+        <!-- Center Content -->
+        <div class="flex-1 p-8 overflow-y-auto scrollbar-hide max-w-3xl">
+            <!-- User Profile Header -->
+            <div class="bg-purple-900 bg-opacity-30 backdrop-blur-md rounded-lg p-6 mb-8">
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                        <div class="w-24 h-24 bg-purple-700 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-4xl"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <h2 id="viewed-username" class="text-2xl font-bold mb-2">{{ user.username }}</h2>
+                            <button 
+                                id="follow-button" 
+                                onclick="window.location.href='/dashboard'"
+                                class="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors">
+                                <i class="fas fa-user-plus mr-2"></i><span>Follow</span>
+                            </button>
+                        </div>
+                        <div id="viewed-profile-details" class="space-y-2 text-purple-200">
+                            <p><i class="fas fa-user-tag mr-2"></i>{{ user.role }}</p>
+                            {% if user.instrument %}
+                            <p><i class="fas fa-music mr-2"></i>{{ user.instrument }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="mt-4 grid grid-cols-3 gap-4">
+                            <div class="text-center">
+                                <div class="text-xl font-bold">{{ stats.total_posts }}</div>
+                                <div class="text-sm text-purple-300">Posts</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold">{{ stats.total_likes }}</div>
+                                <div class="text-sm text-purple-300">Likes</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold">{{ stats.total_comments }}</div>
+                                <div class="text-sm text-purple-300">Comments</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Posts -->
+            <div class="space-y-6">
+                {% for post in posts %}
+                <div class="bg-purple-900 bg-opacity-30 backdrop-blur-md rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-purple-700 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">{{ post.username }}</p>
+                                <p class="text-sm text-purple-300">{{ post['created_at']|datetime }}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button class="text-purple-300 hover:text-purple-100">
+                                <i class="fas fa-heart"></i> {{ post.likes }}
+                            </button>
+                            <button class="text-purple-300 hover:text-purple-100">
+                                <i class="fas fa-comment"></i> {{ post.comments }}
+                            </button>
+                        </div>
+                    </div>
+                    {% if post.content %}
+                    <p class="mb-4">{{ post.content }}</p>
+                    {% endif %}
+                    {% if post.type == 'image' %}
+                    <img src="{{ post.file_url }}" alt="Post image" class="rounded-lg max-h-96 w-full object-cover mb-4">
+                    {% elif post.type == 'audio' %}
+                    <audio src="{{ post.file_url }}" controls class="w-full mb-4"></audio>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="w-96 p-8 bg-purple-900 bg-opacity-30 backdrop-blur-md min-h-screen">
+            <h2 class="text-2xl font-bold mb-6">Recent Activity</h2>
+            <div id="user-activity" class="space-y-4">
+                {% for activity in recent_activities %}
+                <div class="bg-purple-800 bg-opacity-40 backdrop-blur-md rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas {{ activity.icon }} text-purple-300"></i>
+                        <div class="flex-grow">
+                            <p class="text-sm">{{ activity.description }}</p>
+                            <p class="text-xs text-purple-300">{{ activity.time|datetime }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Logout handler
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (!response.ok) throw new Error('Logout failed');
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Error during logout. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

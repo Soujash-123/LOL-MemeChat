@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOL Logo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fef3c7;
+        }
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 80px;
+            font-weight: bold;
+            color: #ff4081;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .emoji {
+            font-size: 70px;
+            margin: 0 10px;
+        }
+        .logo:hover {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        L <span class="emoji">😂</span> L
+    </div>
+</body>
+</html>

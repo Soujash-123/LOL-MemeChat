@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L❤L - Find Your Meme Match</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .heart-logo {
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+            color: #FF1493;
+        }
+
+        .card {
+            position: relative;
+            transition: transform 0.3s, opacity 0.3s;
+            touch-action: pan-y pinch-zoom;
+        }
+        
+        .card.swiped-left {
+            transform: translateX(-150%) rotate(-30deg);
+            opacity: 0;
+        }
+        
+        .card.swiped-right {
+            transform: translateX(150%) rotate(30deg);
+            opacity: 0;
+        }
+
+        .action-button {
+            transition: all 0.2s;
+        }
+
+        .action-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+        }
+
+        .floating-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+        }
+
+        .upload-overlay {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-3xl font-bold">
+                        L<span class="heart-logo">❤</span>L
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="#feed" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-home mr-2"></i>Feed
+                    </a>
+                    <a href="#matches" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-heart mr-2"></i>Matches
+                    </a>
+                    <a href="#profile" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-user mr-2"></i>Profile
+                    </a>
+                    <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-lg mx-auto p-4 pt-20">
+        <!-- Meme Card Stack -->
+        <div id="card-stack" class="relative h-[600px] mt-8">
+            <!-- Cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-center space-x-8 mt-6">
+            <button onclick="swipeLeft()" class="action-button w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-2xl shadow-lg">
+                <i class="fas fa-times"></i>
+            </button>
+            <button onclick="swipeRight()" class="action-button w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-2xl shadow-lg">
+                <i class="fas fa-heart"></i>
+            </button>
+        </div>
+
+        <!-- Floating Post Meme Button -->
+        <button onclick="showUploadModal()" class="floating-button action-button w-14 h-14 gradient-bg rounded-full flex items-center justify-center text-xl shadow-lg">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Upload Meme Modal -->
+    <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-4">Post Your Best Meme</h2>
+            <form id="upload-form" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <div class="border-2 border-dashed border-pink-500 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-700 transition-colors" onclick="document.getElementById('meme-file').click()">
+                        <i class="fas fa-upload text-4xl text-pink-500 mb-4"></i>
+                        <p>Drop your meme here or click to upload</p>
+                        <input type="file" id="meme-file" name="post-file" class="hidden" accept="image/*">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <input type="text" name="content" placeholder="Add a caption (optional)" class="w-full bg-gray-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 gradient-bg rounded-lg">Post Meme</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentCardIndex = 0;
+        let posts = [];
+        let lastUpdate = null;
+
+        // Fetch posts from the backend
+        async function fetchPosts() {
+            try {
+                const url = lastUpdate ? `/posts?last_update=${lastUpdate}` : '/posts';
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.posts) {
+                    posts = [...posts, ...data.posts];
+                    lastUpdate = data.last_update;
+                    if (posts.length > 0 && !document.querySelector('.card')) {
+                        loadNextCard();
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
+        }
+
+        // Create a card element for a post
+        function createCard(post) {
+            const card = document.createElement('div');
+            card.className = 'card absolute inset-0 bg-gray-800 rounded-2xl shadow-xl overflow-hidden';
+            card.innerHTML = `
+                <img src="${post.file_url}" alt="Meme" class="w-full h-[400px] object-cover">
+                <div class="absolute top-4 right-4 bg-pink-500 rounded-full px-3 py-1 text-sm">
+                    <i class="fas fa-fire mr-1"></i>Trending
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 class="text-xl font-bold">${post.username}</h3>
+                            <p class="text-sm text-gray-400">${post.content || 'Meme Lord Supreme'}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-400">
+                                <i class="fas fa-heart mr-1"></i>${post.likes} Likes
+                            </div>
+                            <div class="text-sm text-gray-400">
+                                <i class="fas fa-comment mr-1"></i>${post.comments} Comments
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // Load the next card
+        function loadNextCard() {
+            const cardStack = document.getElementById('card-stack');
+            if (currentCardIndex >= posts.length) {
+                fetchPosts();
+                return;
+            }
+
+            const post = posts[currentCardIndex];
+            const newCard = createCard(post);
+            cardStack.innerHTML = '';
+            cardStack.appendChild(newCard);
+        }
+
+        // Swipe actions
+        function swipeLeft() {
+            const card = document.querySelector('.card');
+            card.classList.add('swiped-left');
+            setTimeout(() => {
+                currentCardIndex++;
+                loadNextCard();
+            }, 300);
+        }
+
+        function swipeRight() {
+            const card = document.querySelector('.card');
+            card.classList.add('swiped-right');
+            setTimeout(() => {
+                currentCardIndex++;
+                loadNextCard();
+            }, 300);
+        }
+
+        // Modal functions
+        function showUploadModal() {
+            document.getElementById('upload-modal').classList.remove('hidden');
+        }
+
+        function hideUploadModal() {
+            document.getElementById('upload-modal').classList.add('hidden');
+            document.getElementById('upload-form').reset();
+        }
+
+        // Handle file upload
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            formData.append('type', 'image');
+
+            try {
+                const response = await fetch('/posts', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const newPost = await response.json();
+                    posts.unshift(newPost);
+                    currentCardIndex = 0;
+                    loadNextCard();
+                    hideUploadModal();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to upload meme');
+                }
+            } catch (error) {
+                console.error('Error uploading meme:', error);
+                alert('Failed to upload meme');
+            }
+        });
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to logout');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                alert('Failed to logout');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPosts();
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') swipeLeft();
+            if (e.key === 'ArrowRight') swipeRight();
+        });
+
+        // Touch controls
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            const card = document.querySelector('.card');
+            if (!card) return;
+            
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            const card = document.querySelector('.card');
+            if (!card || !touchStartX || !touchStartY) return;
+
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const rotation = deltaX * 0.1;
+
+            card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const card = document.querySelector('.card');
+            if (!card) return;
+
+            const touchEndX = e.changedTouches[0].clientX;
+            const deltaX = touchEndX - touchStartX;
+
+            if (Math.abs(deltaX) > 100) {
+                if (deltaX > 0) swipeRight();
+                else swipeLeft();
+            } else {
+                card.style.transform = '';
+            }
+
+            touchStartX = null;
+            touchStartY = null;
+        });
+    </script>
+</body>
+</html>

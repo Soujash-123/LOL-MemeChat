@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOL - Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF0000, #FF69B4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease 5s forwards;
+        }
+        
+        .logo {
+            font-size: 5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+        
+        input {
+            color: #FF0000 !important;
+        }
+        
+        input::placeholder {
+            color: #FF69B4 !important;
+            opacity: 0.7;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF0000, #FF69B4);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-500 to-pink-400 min-h-screen text-white">
+    <div class="preloader">
+        <div class="text-center">
+            <div class="logo">♥</div>
+            <p class="text-2xl mt-4 font-bold">Welcome to LOL</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold mb-4 flex items-center justify-center">
+                    L<span class="mx-2">♥</span>L
+                </h1>
+                <p class="text-xl text-white">Love Over Laughs</p>
+            </div>
+
+            <div class="bg-white/20 backdrop-blur-md rounded-lg p-8 shadow-xl">
+                <h2 class="text-3xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-heart mr-3"></i>
+                    Login
+                </h2>
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="login-username" class="block text-sm font-medium mb-1">Username</label>
+                        <input 
+                            type="text" 
+                            id="login-username" 
+                            placeholder="Enter your username"
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none"
+                            required
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="login-password" class="block text-sm font-medium mb-1">Password</label>
+                        <input 
+                            type="password" 
+                            id="login-password" 
+                            placeholder="Enter your password"
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none"
+                            required
+                        >
+                    </div>
+                    
+                    <button type="submit" class="w-full gradient-bg hover:opacity-90 text-white font-bold py-2 px-4 rounded transition duration-300 mt-6">
+                        Login with Love
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p>Don't have an account? 
+                        <a href="/signup" class="text-red-200 hover:text-red-100 font-medium">Sign up here</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12 text-white">
+                <p>Where love and laughter unite</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(data.message);
+                    window.location.href = '/dashboard';
+                }
+            })
+            .catch(error => {
+                alert('An error occurred during login. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>

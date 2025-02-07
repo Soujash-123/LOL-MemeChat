@@ -1,0 +1,6 @@
+flask
+pymongo
+cryptography
+werkzeug
+appwrite
+gunicorn

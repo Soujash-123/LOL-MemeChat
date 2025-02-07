@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOL - Sign Up</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF0000, #FF69B4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease 5s forwards;
+        }
+        
+        .logo {
+            font-size: 5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+        
+        input, select {
+            color: #FF0000 !important;
+        }
+        
+        input::placeholder, select {
+            color: #FF69B4 !important;
+            opacity: 0.7;
+        }
+        
+        select option {
+            background-color: #1a1a1a;
+            color: #FF0000;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF0000, #FF69B4);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-500 to-pink-400 min-h-screen text-white">
+    <div class="preloader">
+        <div class="text-center">
+            <div class="logo">♥</div>
+            <p class="text-2xl mt-4 font-bold">Welcome to LOL</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-lg mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold mb-4 flex items-center justify-center">
+                    L<span class="mx-2">♥</span>L
+                </h1>
+                <p class="text-xl text-white">Love Over Laughs</p>
+            </div>
+
+            <div class="bg-white/20 backdrop-blur-md rounded-lg p-8 shadow-xl">
+                <h2 class="text-3xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-heart mr-3"></i>
+                    Create Your Profile
+                </h2>
+                <form id="signup-form" class="space-y-4" enctype="multipart/form-data">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="username" class="block text-sm font-medium mb-1">Username</label>
+                            <input type="text" id="username" name="username" placeholder="Choose a unique username" 
+                                class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" 
+                                class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium mb-1">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a secure password" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="dob" class="block text-sm font-medium mb-1">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" 
+                                class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                        </div>
+                        <div>
+                            <label for="gender" class="block text-sm font-medium mb-1">Gender</label>
+                            <select id="gender" name="gender" 
+                                class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="NonBinary">Non-Binary</option>
+                                <option value="PreferNotToSay">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="interested-in" class="block text-sm font-medium mb-1">Interested In</label>
+                        <select id="interested-in" name="interested-in" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                            <option value="">Select Preference</option>
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                            <option value="Everyone">Everyone</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="location" class="block text-sm font-medium mb-1">Location</label>
+                        <input type="text" id="location" name="location" placeholder="City, Country" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="profile-picture" class="block text-sm font-medium mb-1">Profile Picture</label>
+                        <input type="file" id="profile-picture" name="profile-picture" accept="image/*" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="meme-genre" class="block text-sm font-medium mb-1">Favorite Meme Genre</label>
+                        <select id="meme-genre" name="meme-genre" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                            <option value="">Select Meme Genre</option>
+                            <option value="DarkHumor">Dark Humor</option>
+                            <option value="Wholesome">Wholesome</option>
+                            <option value="Sarcasm">Sarcasm</option>
+                            <option value="Dank">Dank</option>
+                            <option value="Surreal">Surreal</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="meme-upload" class="block text-sm font-medium mb-1">Upload Favorite Meme</label>
+                        <input type="file" id="meme-upload" name="meme-upload" accept="image/*" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="meme-style" class="block text-sm font-medium mb-1">Preferred Meme Style</label>
+                        <select id="meme-style" name="meme-style" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                            <option value="">Select Meme Style</option>
+                            <option value="ClassicTemplates">Classic Templates</option>
+                            <option value="ModernMemes">Modern Memes</option>
+                            <option value="AnimatedMemes">Animated Memes</option>
+                            <option value="TextOnly">Text-Based Memes</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="meme-template" class="block text-sm font-medium mb-1">Favorite Meme Template</label>
+                        <select id="meme-template" name="meme-template" 
+                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                            <option value="">Select Meme Template</option>
+                            <option value="DistractedBoyfriend">Distracted Boyfriend</option>
+                            <option value="Wojak">Wojak</option>
+                            <option value="DrakeFormat">Drake Format</option>
+                            <option value="ExtendedHand">Extended Hand</option>
+                            <option value="SurprisedPikachu">Surprised Pikachu</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full gradient-bg hover:opacity-90 text-white font-bold py-2 px-4 rounded transition duration-300 mt-6">
+                        Create Account with Love
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p>Already have an account? 
+                        <a href="/" class="text-red-200 hover:text-red-100 font-medium">Login here</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12 text-white">
+                <p>Where love and laughter unite</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+
+            const dob = new Date(document.getElementById('dob').value);
+            const age = calculateAge(dob);
+            if (age < 18) {
+                alert('You must be at least 18 years old to create an account.');
+                return;
+            }
+
+            fetch('/signup', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(data.message);
+                    window.location.href = '/dashboard';
+                }
+            })
+            .catch(error => {
+                alert('An error occurred during signup. Please try again.');
+            });
+        });
+
+        function calculateAge(dob) {
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+    </script>
+</body>
+</html>
