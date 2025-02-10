@@ -284,14 +284,22 @@ def signup():
         users_collection.insert_one(user)
         keys_collection.insert_one(key_doc)
 
+        # Set up session for the new user
+        session.permanent = True
+        session['user_id'] = user_id
+        session['username'] = username
+        session['role'] = "User"  # Default role for new users
+
         logger.info(f"New user registered: {username}")
-        return jsonify({"message": "Signup successful", "redirect": url_for("dashboard")}), 201
+        return jsonify({"message": "Signup successful", "redirect": url_for('dashboard')}), 201
 
     except DuplicateKeyError:
         return jsonify({"error": "Username or email already exists"}), 400
     except Exception as e:
         logger.error(f"Signup error: {str(e)}")
         return jsonify({"error": "An error occurred during signup"}), 500
+
+
 @app.route('/logout')
 def logout():
     username = session.get('username')
