@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L❤L - Connection Requests</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .heart-logo {
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+            color: #FF1493;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+        }
+
+        .card {
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 20, 147, 0.2);
+        }
+
+        .action-button {
+            transition: all 0.2s;
+        }
+
+        .action-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+        }
+
+        .response-toast {
+            animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.5s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-3xl font-bold">
+                        L<span class="heart-logo">❤</span>L
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/dashboard" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-home mr-2"></i>Feed
+                    </a>
+                    <a href="#" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-heart mr-2"></i>Matches
+                    </a>
+                    <a href="#" onclick="navigateToProfile(event)" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-user mr-2"></i>Profile
+                    </a>
+                    <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto p-4 pt-24">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2">Connection Requests</h2>
+            <p class="text-gray-400">People who want to connect with you based on your meme taste</p>
+        </div>
+
+        <!-- Connection Requests Container -->
+        <div id="requests-container" class="space-y-4">
+            {% if connections %}
+                {% for connection in connections %}
+                <div class="card bg-gray-800 rounded-xl p-6 flex items-center justify-between" data-connection-id="{{ connection._id }}">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold">{{ connection.user_name }}</h3>
+                            <p class="text-gray-400">Wants to connect with you!</p>
+                            <p class="text-sm text-gray-500">Just now</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="handleRequest('{{ connection._id }}', 'reject')" 
+                                class="action-button px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">
+                            <i class="fas fa-times mr-2"></i>Decline
+                        </button>
+                        <button onclick="handleRequest('{{ connection._id }}', 'accept')" 
+                                class="action-button px-4 py-2 gradient-bg rounded-lg">
+                            <i class="fas fa-check mr-2"></i>Accept
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-gray-400 py-8">No pending connection requests</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Response Toast -->
+    <div id="response-toast" class="response-toast fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white hidden"></div>
+
+    <script>
+        async function navigateToProfile(event) {
+        event.preventDefault();
+        try {
+            const response = await fetch('/user/profile');
+            if (!response.ok) throw new Error('Failed to fetch profile');
+            const data = await response.json();
+            window.location.href = `/${data.username}`;
+        } catch (error) {
+            console.error('Error navigating to profile:', error);
+        }
+    }
+
+    // Modify the profile fetching function
+    async function fetchProfile() {
+        try {
+            const response = await fetch('/user/profile');
+            if (!response.ok) throw new Error('Failed to fetch profile');
+            const data = await response.json();
+            
+            document.getElementById('user-profile-mini').innerHTML = `
+                <p class="font-bold">${data.username}</p>
+                <p>${data.role}</p>
+                ${data.instrument ? `<p>Instrument: ${data.instrument}</p>` : ''}
+            `;
+
+            // Add click handler to username in mini profile
+            document.querySelector('#user-profile-mini .font-bold').onclick = function() {
+                window.location.href = `/${data.username}`;
+            };
+            document.querySelector('#user-profile-mini .font-bold').style.cursor = 'pointer';
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+            document.getElementById('user-profile-mini').innerHTML = `
+                <p class="text-red-300">Error loading profile</p>
+            `;
+        }
+    }
+
+    // Add profile loading by username
+    async function loadProfileByUsername(username) {
+        try {
+            const response = await fetch(`/api/users/${username}`);
+            if (!response.ok) throw new Error('Failed to fetch user profile');
+            const data = await response.json();
+            
+            // Hide feed section and show user profile section
+            document.getElementById('feed-section').classList.add('hidden');
+            document.getElementById('user-profile-section').classList.remove('hidden');
+            
+            // Update profile content
+            document.getElementById('viewed-username').textContent = data.username;
+            document.getElementById('viewed-profile-details').innerHTML = `
+                <p><i class="fas fa-user-tag mr-2"></i>${data.role}</p>
+                ${data.instrument ? `<p><i class="fas fa-music mr-2"></i>${data.instrument}</p>` : ''}
+            `;
+            
+            // Update stats
+            document.getElementById('total-posts').textContent = data.stats?.posts || 0;
+            document.getElementById('total-likes').textContent = data.stats?.likes || 0;
+            document.getElementById('total-comments').textContent = data.stats?.comments || 0;
+            
+            
+            // Load user's posts
+            await loadUserPosts(username);
+        } catch (error) {
+            console.error('Error loading profile:', error);
+        }
+    }
+
+    // Add function to load user posts
+    async function loadUserPosts(username) {
+        try {
+            const response = await fetch(`/api/users/${username}/posts`);
+            if (!response.ok) throw new Error('Failed to fetch user posts');
+            const posts = await response.json();
+            
+            document.getElementById('user-posts-container').innerHTML = posts.map(post => `
+                <div class="bg-purple-900 bg-opacity-30 backdrop-blur-md rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-purple-700 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">${post.username}</p>
+                                <p class="text-sm text-purple-300">${new Date(post.time).toLocaleString()}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button onclick="handleLike('${post.post_id}')" class="text-purple-300 hover:text-purple-100">
+                                <i class="fas fa-heart"></i> ${post.likes}
+                            </button>
+                            <button onclick="showComments('${post.post_id}')" class="text-purple-300 hover:text-purple-100">
+                                <i class="fas fa-comment"></i> ${post.comments}
+                            </button>
+                        </div>
+                    </div>
+                    ${post.content ? `<p class="mb-4">${post.content}</p>` : ''}
+                    ${post.type === 'image' ? `
+                        <img src="${post.file_url}" alt="Post image" class="rounded-lg max-h-96 w-full object-cover mb-4">
+                    ` : post.type === 'audio' ? `
+                        <audio src="${post.file_url}" controls class="w-full mb-4"></audio>
+                    ` : ''}
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading user posts:', error);
+        }
+    }
+
+    // Update the initialization to handle URL-based profile loading
+    document.addEventListener('DOMContentLoaded', () => {
+            const preloader = document.querySelector('.preloader');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 3500);
+
+        fetchProfile();
+        
+        // Check if URL is a profile URL
+        const pathParts = window.location.pathname.split('/');
+        if (pathParts.length === 2 && pathParts[1]) {
+            loadProfileByUsername(pathParts[1]);
+        } else {
+            // Load feed as normal
+            fetchPosts();
+            fetchAudioPosts();
+        }
+    });
+    
+        let currentCardIndex = 0;
+        let posts = [];
+        let lastUpdate = null;
+
+        // Fetch posts from the backend
+        async function fetchPosts() {
+            try {
+                const url = lastUpdate ? `/posts?last_update=${lastUpdate}` : '/posts';
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.posts) {
+                    posts = [...posts, ...data.posts];
+                    lastUpdate = data.last_update;
+                    if (posts.length > 0 && !document.querySelector('.card')) {
+                        loadNextCard();
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
+        }
+
+        // Create a card element for a post
+        function createCard(post) {
+            const card = document.createElement('div');
+            card.className = 'card absolute inset-0 bg-gray-800 rounded-2xl shadow-xl overflow-hidden';
+            card.innerHTML = `
+                <img src="${post.file_url}" alt="Meme" class="w-full h-[400px] object-cover">
+                <div class="absolute top-4 right-4 bg-pink-500 rounded-full px-3 py-1 text-sm">
+                    <i class="fas fa-fire mr-1"></i>Trending
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 class="text-xl font-bold">${post.username}</h3>
+                            <p class="text-sm text-gray-400">${post.content || 'Meme Lord Supreme'}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-400">
+                                <i class="fas fa-heart mr-1"></i>${post.likes} Likes
+                            </div>
+                            <div class="text-sm text-gray-400">
+                                <i class="fas fa-comment mr-1"></i>${post.comments} Comments
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        async function handleRequest(connectionId, action) {
+            try {
+                const response = await fetch(`/connections/${connectionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action })
+                });
+
+                if (response.ok) {
+                    // Remove the card from the UI
+                    const card = document.querySelector(`[data-connection-id="${connectionId}"]`);
+                    if (card) {
+                        card.remove();
+                    }
+                    
+                    showToast(
+                        action === 'accept' 
+                            ? 'Connection request accepted!' 
+                            : 'Connection request declined',
+                        action === 'accept' ? 'success' : 'info'
+                    );
+                    
+                    // Refresh the page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error('Failed to process request');
+                }
+            } catch (error) {
+                console.error('Error handling request:', error);
+                showToast('Failed to process request', 'error');
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('response-toast');
+            toast.textContent = message;
+            toast.className = `response-toast fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white ${
+                type === 'success' ? 'bg-green-500' :
+                type === 'error' ? 'bg-red-500' :
+                'bg-gray-500'
+            }`;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    showToast('Failed to logout', 'error');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                showToast('Failed to logout', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

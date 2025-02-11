@@ -33,6 +33,7 @@ try:
     keys_collection = db['encryption_keys']
     posts_collection = db['posts']
     comments_collection = db['comments']
+    connections_collection = db['connections']
     fs = GridFS(db)
 
     # Create indexes
@@ -298,8 +299,7 @@ def signup():
     except Exception as e:
         logger.error(f"Signup error: {str(e)}")
         return jsonify({"error": "An error occurred during signup"}), 500
-
-
+    
 @app.route('/logout')
 def logout():
     username = session.get('username')
@@ -469,6 +469,45 @@ def upload_file(file_path, session, post_type, content=None):
     except Exception as e:
         logger.error(f"Failed to upload file and create post: {str(e)}")
         raise
+@app.route('/connect', methods=['POST'])
+@login_required
+def connect():
+    try:
+        user_id = session.get('user_id')
+        data = request.get_json()
+        dest_user_id = data.get("dest_user_id")
+        
+        if not dest_user_id:
+            return jsonify({"error": "Destination user ID is required"}), 400
+        
+        # Check if a connection already exists
+        existing_connection = connections_collection.find_one({
+            "$or": [
+                {"user_id": user_id, "dest_user_id": dest_user_id},
+                {"user_id": dest_user_id, "dest_user_id": user_id}
+            ]
+        })
+        
+        if existing_connection:
+            return jsonify({"error": "Connection request already exists"}), 400
+        
+        # Generate a unique chat ID (UUID)
+        chat_id = str(uuid.uuid4())
+        
+        # Insert new connection request
+        connections_collection.insert_one({
+            "user_id": user_id,
+            "dest_user_id": dest_user_id,
+            "status": "SentWaiting",
+            "chat_id": chat_id
+        })
+        
+        return jsonify({"message": "Connection request sent successfully"}), 200
+    
+    except Exception as e:
+        logger.error(f"Error sending connection request: {str(e)}")
+        return jsonify({"error": "An error occurred while sending the connection request"}), 500
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
@@ -481,48 +520,72 @@ def handle_posts():
         try:
             # Get the last update timestamp if provided
             last_update = request.args.get('last_update', None)
-            query = {}
+            user_id = session.get('user_id')  # Get the logged-in user ID
+            user_data = users_collection.find_one({"user_id": user_id})
+            
+            if not user_data:
+                return jsonify({"error": "User not found"}), 404
+            
+            # Retrieve user's encryption key
+            key_doc = keys_collection.find_one({"user_id": user_id})
+            if not key_doc:
+                return jsonify({"error": "Encryption key not found"}), 401
+            
+            fernet = get_fernet(key_doc['key'])
+            
+            # Decrypt user's genre preference
+            encrypted_genre = user_data.get("meme_preferences", {}).get("genre", None)
+            user_genre_preference = decrypt_data(encrypted_genre, fernet) if encrypted_genre else None
+            
+            query = {}  # Fetch all posts without filtering by user_id
             
             if last_update:
                 query['created_at'] = {'$gt': datetime.fromisoformat(last_update)}
             
-            # Query posts collection with specific field projection
-            posts = list(posts_collection.find(
-                query,
-                {
-                    '_id': 0,
-                    'username': 1,
-                    'created_at': 1,
-                    'file_url': 1,  # URL of the file from Appwrite
-                    'likes': 1,
-                    'comment_count': 1,
-                    'content': 1,  # Including content in case it's needed
-                    'type': 1      # Including type to differentiate between image/audio
-                }
-            ).sort('created_at', -1).limit(50))
-
-            # Format the timestamp for each post
-            formatted_posts = []
-            for post in posts:
-                formatted_post = {
-                    'username': post['username'],
-                    'time': post['created_at'].isoformat(),
-                    'file_url': post.get('file_url', ''),
-                    'likes': post.get('likes', 0),
-                    'comments': post.get('comment_count', 0),
-                    'content': post.get('content', ''),
-                    'type': post.get('type', '')
-                }
-                formatted_posts.append(formatted_post)
-
+            # Retrieve all posts
+            all_posts = list(posts_collection.find(query, {
+                '_id': 0,
+                'username': 1,
+                'created_at': 1,
+                'file_url': 1,
+                'likes': 1,
+                'comment_count': 1,
+                'content': 1,
+                'type': 1,
+                'user_id': 1
+            }))
+            
+            # Remove posts belonging to the logged-in user
+            filtered_posts = [post for post in all_posts if post['user_id'] != user_id]
+            
+            def preference_match(post):
+                post_user = users_collection.find_one({"user_id": post["user_id"]})
+                if not post_user:
+                    return 0
+                
+                # Retrieve and decrypt post creator's genre preference
+                key_doc = keys_collection.find_one({"user_id": post["user_id"]})
+                if not key_doc:
+                    return 0
+                
+                fernet = get_fernet(key_doc['key'])
+                encrypted_post_genre = post_user.get("meme_preferences", {}).get("genre", None)
+                post_genre_preference = decrypt_data(encrypted_post_genre, fernet) if encrypted_post_genre else None
+                
+                # Return 1 if genres match, else 0
+                return 1 if user_genre_preference and user_genre_preference == post_genre_preference else 0
+            
+            sorted_posts = sorted(filtered_posts, key=lambda post: preference_match(post), reverse=True)
+            
+            #print(sorted_posts)
+            # Send posts to the frontend
             return jsonify({
-                'posts': formatted_posts,
+                'posts': sorted_posts,
                 'last_update': datetime.now().isoformat()
             }), 200
-
         except Exception as e:
             logger.error(f"Error fetching posts: {str(e)}")
-            return jsonify({"error": "An error occurred fetching posts"}), 500
+            return jsonify({"error": "An error occurred while fetching posts"}), 500
 
     elif request.method == 'POST':
         try:
@@ -597,6 +660,59 @@ def serve_file(file_id):
     except Exception as e:
         logger.error(f"Error serving file: {str(e)}")
         return jsonify({"error": "File not found"}), 404
+
+@app.route('/list_connect')
+@login_required
+def list_connect():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    dest_user_id = session['user_id']
+    
+    # Fetch connections where the current user is the destination
+    connections = list(db.connections.find({'dest_user_id': dest_user_id,'status': 'SentWaiting'}))
+    
+    # Convert ObjectId to string for JSON serialization and fetch user_name
+    for conn in connections:
+        # Fetch the user details from the users database using the user_id from the connection
+        user = db.users.find_one({'user_id': conn['user_id']})
+        conn['_id'] = str(conn['_id'])
+        conn['user_id'] = str(conn['user_id'])
+        conn['dest_user_id'] = str(conn['dest_user_id'])
+        conn['user_name'] = user['username'] if user else 'Unknown'
+    
+    return render_template('connectionList.html', connections=connections)
+
+
+@app.route('/connections/<connection_id>', methods=['POST'])
+def handle_connection(connection_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.get_json()
+    action = data.get('action')
+    
+    if action not in ['accept', 'reject']:
+        return jsonify({'error': 'Invalid action'}), 400
+        
+    try:
+        connection = db.connections.find_one({'_id': ObjectId(connection_id)})
+        if not connection:
+            return jsonify({'error': 'Connection not found'}), 404
+            
+        if action == 'accept':
+            # Update connection status or move to accepted connections collection
+            db.connections.update_one(
+                {'_id': ObjectId(connection_id)},
+                {'$set': {'status': 'accepted'}}
+            )
+        else:
+            # Remove the connection request
+            db.connections.delete_one({'_id': ObjectId(connection_id)})
+            
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/posts/audio')
 @login_required
