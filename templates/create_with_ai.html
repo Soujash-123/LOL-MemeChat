@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L❤L - Create Your Meme</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .heart-logo {
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+            color: #FF1493;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-3xl font-bold">
+                        L<span class="heart-logo">❤</span>L
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/dashboard" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-home mr-2"></i>Feed
+                    </a>
+                    <a href="/create" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-plus mr-2"></i>Create with AI
+                    </a>
+                    <a href="/chat" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-comments mr-2"></i>Chat
+                    </a>
+                    <a href="/list_connect" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-heart mr-2"></i>Matches
+                    </a>
+                    <a href="#" onclick="navigateToProfile(event)" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-user mr-2"></i>Profile
+                    </a>
+                    <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-lg mx-auto p-4 pt-20">
+        <div class="bg-gray-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold mb-6">Create Your Meme</h2>
+            
+            <form method="POST" action="{{ url_for('create') }}" class="space-y-6">
+                <div class="space-y-4">
+                    <textarea 
+                        name="input_text" 
+                        placeholder="Enter your meme text here..."
+                        class="w-full bg-gray-700 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-pink-500 h-32"
+                        required>{{ input_text if input_text else '' }}</textarea>
+                    
+                    <p class="text-gray-400 text-sm">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Your text will be automatically split into top and bottom text
+                    </p>
+                </div>
+
+                <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg shadow-lg hover:opacity-90 transition-opacity">
+                    <i class="fas fa-magic mr-2"></i>Generate Meme
+                </button>
+            </form>
+
+            {% if meme_url %}
+            <div class="mt-8 space-y-4">
+                <h3 class="text-xl font-bold">Your Generated Meme</h3>
+                <div class="bg-gray-700 rounded-2xl p-4">
+                    <img src="{{ meme_url }}" alt="Generated Meme" class="w-full rounded-lg shadow-lg">
+                    
+                    <div class="mt-4 flex justify-between items-center">
+                        <a href="{{ meme_url }}" download target="_blank" 
+                           class="gradient-bg text-white px-6 py-2 rounded-lg shadow-lg hover:opacity-90 transition-opacity">
+                            <i class="fas fa-download mr-2"></i>Download
+                        </a>
+                        
+                        <button onclick="shareToFeed()" 
+                                class="bg-purple-600 text-white px-6 py-2 rounded-lg shadow-lg hover:opacity-90 transition-opacity">
+                            <i class="fas fa-share mr-2"></i>Share to Feed
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        async function navigateToProfile(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/user/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const data = await response.json();
+                window.location.href = `/${data.username}`;
+            } catch (error) {
+                console.error('Error navigating to profile:', error);
+            }
+        }
+
+        async function shareToFeed() {
+            const formData = new FormData();
+            formData.append('type', 'image');
+            formData.append('file_url', '{{ meme_url }}');
+            formData.append('content', '{{ input_text if input_text else "" }}');
+
+            try {
+                const response = await fetch('/posts', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('Meme shared to feed successfully!');
+                    window.location.href = '/dashboard';
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to share meme');
+                }
+            } catch (error) {
+                console.error('Error sharing meme:', error);
+                alert('Failed to share meme');
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to logout');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                alert('Failed to logout');
+            }
+        }
+    </script>
+</body>
+</html>

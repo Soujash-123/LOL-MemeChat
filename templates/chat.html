@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L❤L - Chats</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .heart-logo {
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+            color: #FF1493;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+        }
+
+        .chat-container {
+            height: calc(100vh - 4rem);
+        }
+
+        .messages-container {
+            height: calc(100vh - 12rem);
+        }
+
+        .message-bubble {
+            max-width: 70%;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 20, 147, 0.5);
+        }
+
+        .active-chat {
+            background-color: rgba(255, 105, 180, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-3xl font-bold">
+                        L<span class="heart-logo">❤</span>L
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/dashboard" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-home mr-2"></i>Feed
+                    </a>
+                    <a href="/list_connect" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-heart mr-2"></i>Matches
+                    </a>
+                    <a href="#" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-user mr-2"></i>Profile
+                    </a>
+                    <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Chat Interface -->
+    <div class="chat-container flex pt-16">
+        <!-- Chat List -->
+        <div class="w-1/3 border-r border-gray-800">
+            <div class="p-4 border-b border-gray-800">
+                <div class="relative">
+                    <input type="text" 
+                           id="chat-search" 
+                           placeholder="Search chats..." 
+                           class="w-full bg-gray-800 rounded-lg px-4 py-2 pl-10">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+            <div id="chat-list" class="overflow-y-auto h-full">
+                <!-- Chat list items will be populated from chat_users -->
+                {% for chat in chat_users %}
+                <div class="chat-item p-4 border-b border-gray-800 hover:bg-gray-800 cursor-pointer" 
+                     onclick="loadChat('{{ chat._id }}')"
+                     data-user-id="{{ chat.user_id }}"
+                     data-dest-user-id="{{ chat.dest_user_id }}">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <div class="flex justify-between">
+                                <h3 class="font-bold">
+                                    {% if chat.user_id == session.user_id %}
+                                        {{ chat.dest_user_username }}
+                                    {% else %}
+                                        {{ chat.user_username }}
+                                    {% endif %}
+                                </h3>
+                                <span class="text-sm text-gray-400">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="flex-1 flex flex-col">
+            <!-- Chat Header -->
+            <div id="chat-header" class="p-4 border-b border-gray-800 flex items-center">
+                <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 id="chat-user-name" class="font-bold">Select a chat</h2>
+                    <p id="chat-status" class="text-sm text-gray-400">-</p>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="messages-container" class="messages-container flex-1 overflow-y-auto p-4">
+                <!-- Messages will be dynamically inserted here -->
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-gray-800">
+                <div class="flex items-center">
+                    <button class="p-2 hover:text-pink-500">
+                        <i class="fas fa-image text-xl"></i>
+                    </button>
+                    <button class="p-2 hover:text-pink-500">
+                        <i class="fas fa-face-smile text-xl"></i>
+                    </button>
+                    <input type="text" 
+                           id="chat-input" 
+                           placeholder="Type a message..." 
+                           class="chat-input flex-1 bg-gray-800 rounded-lg px-4 py-2 mx-2"
+                           disabled>
+                    <button id="send-message" 
+                            class="gradient-bg p-2 rounded-lg hover:opacity-90" 
+                            disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChatId = null;
+        const currentUserId = "{{ session.user_id }}";  // Get current user ID from session
+        
+        // Load a specific chat
+        async function loadChat(chatId) {
+            try {
+                const response = await fetch(`/chat/${chatId}`);
+                if (!response.ok) throw new Error('Failed to fetch chat');
+                const chat = await response.json();
+                
+                // Update current chat ID
+                currentChatId = chatId;
+                
+                // Update UI
+                updateChatUI(chat);
+                
+                // Enable input
+                document.getElementById('chat-input').disabled = false;
+                document.getElementById('send-message').disabled = false;
+                
+                // Mark this chat as active
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('active-chat');
+                });
+                document.querySelector(`[data-chat-id="${chatId}"]`)?.classList.add('active-chat');
+            } catch (error) {
+                console.error('Error loading chat:', error);
+            }
+        }
+
+        // Update the chat UI with messages
+        function updateChatUI(chat) {
+            const messagesContainer = document.getElementById('messages-container');
+            messagesContainer.innerHTML = '';
+            
+            // Update header
+            const chatItem = document.querySelector(`[data-chat-id="${currentChatId}"]`);
+            const username = chatItem ? chatItem.querySelector('h3').textContent : 'Unknown User';
+            document.getElementById('chat-user-name').textContent = username;
+            document.getElementById('chat-status').textContent = 'Online';
+            
+            // Add messages
+            chat.messages?.forEach(message => {
+                const messageElement = createMessageElement(message);
+                messagesContainer.appendChild(messageElement);
+            });
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Create a message element
+        function createMessageElement(message) {
+            const div = document.createElement('div');
+            const isOwnMessage = message.user_id === currentUserId;
+            
+            div.className = `flex mb-4 ${isOwnMessage ? 'justify-end' : ''}`;
+            div.innerHTML = `
+                <div class="message-bubble ${isOwnMessage ? 'gradient-bg' : 'bg-gray-800'} rounded-lg p-3">
+                    <p>${message.content}</p>
+                    <span class="text-xs ${isOwnMessage ? 'text-gray-300' : 'text-gray-400'} mt-1">
+                        ${new Date(message.timestamp).toLocaleTimeString()}
+                    </span>
+                </div>
+            `;
+            return div;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-message');
+            
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && chatInput.value.trim()) {
+                    sendMessage(chatInput.value);
+                    chatInput.value = '';
+                }
+            });
+            
+            sendButton.addEventListener('click', () => {
+                if (chatInput.value.trim()) {
+                    sendMessage(chatInput.value);
+                    chatInput.value = '';
+                }
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('chat-search');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    const username = item.querySelector('h3').textContent.toLowerCase();
+                    item.style.display = username.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+        });
+
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to logout');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                alert('Failed to logout');
+            }
+        }
+    </script>
+</body>
+</html>

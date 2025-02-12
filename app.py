@@ -15,6 +15,8 @@ from functools import wraps
 from gridfs import GridFS
 import mimetypes
 import tempfile
+import random
+import requests
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -209,40 +211,33 @@ def signup():
 
     try:
         # Retrieve form data
-        print(request.form)
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        dob = request.form.get('dob')
-        gender = request.form.get('gender', '')
-        interested_in = request.form.get('interested-in', '')
-        location = request.form.get('location', '')
-        meme_genre = request.form.get('meme-genre', '')
-        meme_style = request.form.get('meme-style', '')
-        meme_template = request.form.get('meme-template', '')
+        confirm_password = request.form.get('confirm-password')
+        meme_preference = request.form.get('meme-preference', '')
 
         # Validate required fields
-        print([username, email, password, dob])
-        if not all([username, email, password, dob]):
+        if not all([username, email, password, confirm_password]):
             return jsonify({"error": "Missing required fields"}), 400
 
-        # Validate date of birth
-        try:
-            birth_date = datetime.strptime(dob, '%Y-%m-%d')
-            age = datetime.now().year - birth_date.year
-            if age < 18:
-                return jsonify({"error": "You must be at least 18 years old"}), 400
-        except ValueError:
-            return jsonify({"error": "Invalid date format"}), 400
-
-        # File handling
-        profile_picture = request.files.get('profile-picture')
-        meme_upload = request.files.get('meme-upload')
+        # Validate password match
+        if password != confirm_password:
+            return jsonify({"error": "Passwords do not match"}), 400
 
         # Generate encryption
         user_id = str(uuid.uuid4())
         encryption_key = generate_key()
         fernet = get_fernet(encryption_key)
+
+        # Handle meme uploads
+        '''meme_urls = []
+        for i in range(1, 5):  # Handle up to 4 meme uploads
+            meme_file = request.files.get(f'meme{i}')
+            if meme_file:
+                meme_result = upload_image(meme_file)
+                if meme_result:
+                    meme_urls.append(meme_result['file_url'])'''
 
         # Prepare user data
         user = {
@@ -251,29 +246,10 @@ def signup():
             "email": encrypt_data(email, fernet),
             "password": encrypt_data(hash_password(password), fernet),
             "role": encrypt_data("User", fernet),
-            "dob": birth_date,
-            "gender": encrypt_data(gender, fernet) if gender else None,
-            "interested_in": encrypt_data(interested_in, fernet) if interested_in else None,
-            "location": encrypt_data(location, fernet) if location else None,
-            "meme_preferences": {
-                "genre": encrypt_data(meme_genre, fernet) if meme_genre else None,
-                "style": encrypt_data(meme_style, fernet) if meme_style else None,
-                "template": encrypt_data(meme_template, fernet) if meme_template else None
-            },
+            "meme_preference": encrypt_data(meme_preference, fernet) if meme_preference else None,
+            #"meme_urls": encrypt_data(json.dumps(meme_urls), fernet) if meme_urls else None,
             "created_at": datetime.utcnow()
         }
-
-        # Handle profile picture upload
-        if profile_picture:
-            profile_pic_result = upload_image(profile_picture)
-            if profile_pic_result:
-                user['profile_picture_url'] = profile_pic_result['file_url']
-
-        # Handle meme upload
-        if meme_upload:
-            meme_result = upload_image(meme_upload)
-            if meme_result:
-                user['favorite_meme_url'] = meme_result['file_url']
 
         # Prepare encryption key document
         key_doc = {
@@ -292,13 +268,112 @@ def signup():
         session['role'] = "User"  # Default role for new users
 
         logger.info(f"New user registered: {username}")
-        return jsonify({"message": "Signup successful", "redirect": url_for('dashboard')}), 201
+        return jsonify({
+            "message": "Signup successful", 
+            "redirect": url_for('dashboard')
+        }), 201
 
     except DuplicateKeyError:
-        return jsonify({"error": "Username or email already exists"}), 400
+        return jsonify({
+            "error": "Username or email already exists"
+        }), 400
     except Exception as e:
         logger.error(f"Signup error: {str(e)}")
-        return jsonify({"error": "An error occurred during signup"}), 500
+        return jsonify({
+            "error": "An error occurred during signup"
+        }), 500
+    
+# Define keyword-based mapping to templates
+template_mapping = {
+    "aliens": "aag",
+    "trap": "ackbar",
+    "afraid": "afraid",
+    "winking": "agnes",
+    "sweet brown": "aint-got-time",
+    "awkward": "ams",
+    "ants": "ants",
+    "redneck": "apcr",
+    "always has been": "astronaut",
+    "then i said": "atis",
+    "life finds a way": "away",
+    "awesome": "awesome",
+    "penguin": "awesome-awkward",
+    "bad": "bad",
+    "milk": "badchoice",
+    "balloon": "balloon",
+    "butthurt": "bd",
+    "men in black": "because",
+    "bender": "bender",
+    "honest work": "bihw",
+    "bilbo": "bilbo",
+    "insanity wolf": "biw",
+    "bad luck": "blb",
+    "boat": "boat",
+    "bongo": "bongo",
+    "both": "both",
+    "box": "box",
+    "shark": "bs",
+    "everywhere": "buzz",
+    "cake": "cake",
+    "captain": "captain",
+    "elevator": "captain-america",
+    "confession": "cb",
+    "communist": "cbb",
+    "comic book": "cbg",
+    "center for ants": "center",
+    "hindsight": "ch",
+    "chopper": "chair",
+    "cheems": "cheems",
+    "chosen": "chosen",
+    "change my mind": "cmm",
+    "crazy pills": "crazypills",
+    "grind my gears": "gears",
+    "doge": "doge",
+    "drake": "drake",
+    "distracted boyfriend": "db",
+    "elon": "musk",
+    "matrix": "morpheus",
+    "keanu": "keanu",
+    "joke": "joker",
+    "padme": "right",
+    "salt bae": "saltbae",
+    "stonks": "stonks",
+    "spiderman": "spiderman",
+    "trump": "trump",
+    "knuckles": "ugandanknuck",
+    "y u no": "yuno",
+    "all your base": "zero-wing"
+}
+
+def choose_template(text):
+    for keyword, template in template_mapping.items():
+        if keyword in text.lower():
+            return template
+    return random.choice(list(template_mapping.values()))
+
+def generate_meme(top_text, bottom_text):
+    template_id = choose_template(top_text + " " + bottom_text)
+    top_text = top_text.replace(" ", "_")
+    bottom_text = bottom_text.replace(" ", "_")
+    return f"https://api.memegen.link/images/{template_id}/{top_text}/{bottom_text}.png"
+
+@app.route('/create', methods=['GET', 'POST'])
+@login_required
+def create():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        text = request.form.get('input_text', '').strip()
+        words = text.split()
+        mid = len(words) // 2
+        top_text, bottom_text = " ".join(words[:mid]), " ".join(words[mid:])
+        meme_url = generate_meme(top_text, bottom_text)
+        print(meme_url)
+        return render_template('create_with_ai.html', input_text=text, meme_url=meme_url)
+    
+    return render_template('create_with_ai.html')
+
     
 @app.route('/logout')
 def logout():
@@ -1098,6 +1173,48 @@ def format_datetime(value, format='%Y-%m-%d %H:%M:%S'):
     if isinstance(value, str):
         value = datetime.fromisoformat(value)
     return value.strftime(format)
+
+
+@app.route('/chat', methods=['GET'])
+@login_required
+def get_chats():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    user_id = session['user_id']
+    connections = db.connections.find({
+        "$or": [
+            {"user_id": user_id},
+            {"dest_user_id": user_id}
+        ],
+        "status": "accepted"
+    })
+    
+    chat_users = []
+    for conn in connections:
+        user_info = db.users.find_one({"user_id": conn["user_id"]}, {"username": 1})
+        dest_user_info = db.users.find_one({"user_id": (conn["dest_user_id"])} , {"username": 1})
+        chat_users.append({
+            "user_id": conn["user_id"],
+            "user_username": user_info["username"] if user_info else None,
+            "dest_user_id": conn["dest_user_id"],
+            "dest_user_username": dest_user_info["username"] if dest_user_info else None
+        })
+    print(chat_users)
+    return render_template('chat.html', chat_users=chat_users)
+
+
+@app.route('/chat/<chat_id>', methods=['GET'])
+def get_chat(chat_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    chat = db.chats.find_one({"_id": ObjectId(chat_id)})
+    if not chat:
+        return jsonify({'error': 'Chat not found'}), 404
+    
+    return jsonify(json_util.loads(json_util.dumps(chat)))
+
 
 @app.route('/<username>')
 def user_profile(username):
