@@ -1,0 +1,164 @@
+00:00 Welcome to Start-Upathon, where your dreams of becoming a boss and CEO can come to life with 10% equity in a groundbreaking startup and all without needing formal qualifications.
+00:12 Imagine a world where your passion and determination are all you need to succeed. At Persist Ventures, we believe that greatness isn't about what you have but what you can achieve.
+00:23 Your journey to the top starts with a spark of ambition and a relentless drive to make a difference. Guided by Jim O'Neal, founder of the Theal Fellowship, the same program that empowered visionaries like Vitalik buterin and Dylan Field.
+00:36 We're here to ignite your potential. These trailblazes didn't wait for opportunities. They created them and so can you. Success isn't handed to you on a silver platter.
+00:47 It's forged through ownership and perseverance. With persistent ventures, you're not just joining a project. You're stepping into the role of CEO, with the tools, support, and resources to turn your vision into reality.
+01:00 Our network will help you build, grow, and fundraise transforming your ideas into impactful successes. Think about the giants of the tech world.
+01:10 Uber wasn't profitable for a decade. But with unyielding persistence and strategic support, they changed the game. This is the power of resilience.
+01:20 And it's exactly what we offer you at Persist Ventures. We help you navigate the challenges, scale your ideas, and turn dreams into reality.
+01:28 Remember, it's not just about having a great idea, it's about the persistence and belief that drive you to make it happen.
+01:35 Together, let's turn ambition into achievement. Welcome to Start Upathon, where your path to success begins today.
+03:30 Yo. Hi. Started the recording already. I'm just going to dive right in your throws. Okay, I think it's good. What's up everybody.
+03:53 Just had a fresh idea. What's the blue and it's nice. Uh, something to celebrate. And it's called meme mates. So I actually just.
+04:07 opened up while I was waiting for you, chat GPT and just asked to make a logo for meme mates. I don't think any of them are a final version but yeah starting to curate a vibe.
+04:26 The basis around it is basically I mean we would consider it Gen Z dating app, but I think it's millennial and should be even older.
+04:43 I think memes and basically what means your soul connects to shows the depth of your soul. As some background, me and Sophia, I think I originally just saw her memes.
+04:58 and then messagester, and then we had like a conversation purely through memes, which we both agreed was one of the more deep conversations we've had.
+05:11 And that was like, that was like, whoa, obviously memes are a super hot topic in the world right now, and we'll continue to be because of meme coins.
+05:23 I also just want to reference real quick this app which I think brought a similar vibe of what we're thinking.
+05:30 They kind of remade my space but allowed you to create your own custom mood board. Sophia also just sent me a meme right now that I think also came in the picture for thinking of this idea, which was something about vibe curation?
+05:51 Oh, yeah. Let me see what it was called. I'm majoring in vibe curation. Yes. And it's like, yeah, I mean, I think memes show so much more depth of your soul.
+06:11 I can get to know someone much quicker if I just see their meme board. It's basically a mood board that is fun and funny.
+06:23 It's their vibe. So I think there's a really easy marketing on this. The same way this no space app blew up because it was just Gen Z My Space.
+06:35 It's just super I think like the design is super key here Sophia in regards to this app will continue to be the vibe curator She's she's majored in vibe curation and so she is the perfect fit for leading the vibes of the startup and Right now we the idea is still new.
+06:59 This was just the basis of the idea. I'm like, let's just hop on call and go film it because was, I think, I know that this is a great idea.
+07:08 I know that we want a team behind it who also sees this as like something that's gonna be a viral idea, something that you would wanna use.
+07:19 Like, I think the whole dating app scene is just lacking depth. They have bios, which is pure text. And no, it should really just be photos of you sprinkled in with a bunch of photos of your favorite memes.
+07:36 I have the views dating apps in the past myself. I must say putting a meme on there that was like my highest response rate was to my meme and it was a really great meme and that felt like a hack and so we should give everyone that hack because obviously that's what people resonated with the most that
+07:56 they had something to talk about. When I just see someone's face I can be like yeah I think you're pretty, but I can't, doesn't give me anything to talk about, doesn't give me anything deeper to resonate with, and I think memes have the highest capability to actually resonate.
+08:15 Also, one of the things that we can integrate into this, which I think is, is genius, another team who also went through this startup with on process.
+08:30 Let's see my screenshot button as well. It disappeared. I'm going to refresh it. My exit. All right. Don't know what happened there, but So another assignment that we sent out recently was for an AI music platform that our developers have been building, and it's called Sound with Me.
+09:33 So similar space, one of my favorite things to do recently has actually been to, you can make a song out of a meme when we named it Sound with Me and we didn't even think at that use case that first funneling out because it's the best use case ever.
+09:53 Let's find that exact name and let's make a song out of it. One of the things that I think would be really cool to add to this is like while you're scrolling on people's pages, it auto plays a song.
+10:13 Like let's let music someone's into also as tons of depth to it And we can actually give people access to creating their song.
+10:21 What is your anthem? If you had infinite access to all the bands in the world and all intelligence in the world, you can create your anthem.
+10:32 And I don't think anyone's properly used this. Let's take the depth of this meme and make a deep song about it.
+10:43 Then we'll make it sent with. And so we have the APIs for this, it'll actually be pretty easy for anyone to integrate it.
+10:56 We can scroll down here and go view some other memes that almost this scrolled over it.
+11:20 Another is one recently I was playing with, yeah, here it is. So this one is just this meme, before enlightenment, I need to understand everything, after enlightenment, I like memes.
+11:38 And here's the song that it made. The world was black and white.
+11:54 A puzzle to solve. I craved to understand Every thought and every evolve. But knowledge is a river So, pretty, awesome.
+12:29 The work was black and white, a puzzle to solve, I craved to a dark with a frown, a relatable situation that brings me down, but then the memes came, a foot of danger to joy.
+12:54 And so when we actually generate songs, we can generate immediate options for people based on the memes that they put on their page.
+13:04 We can even make each meme on the page a song that someone could click on while they're on a profile.
+13:12 I think that actually might be too, because someone wouldn't want to listen to whole songs while in someone's profile. I don't know how that mechanic would mix in.
+13:30 Any thoughts on that Sophia? I don't think that someone would listen to an entire song when checking out those profile.
+13:40 I think maybe there's a cool headphone Instagram where in someone's bio you can add a song and you can basically check out that song when looking at someone's profile.
+13:51 I think maybe you can do something like that, or just like a melody that you can put in someone's profile that you can put in someone else to listen to.
+13:59 I think the song, because people, if they actually really like someone, they'll continue to stalk them. And so if while you're scrolling each page that pops up starts playing a song and then as you're just doing your deeper dive and even when you go to message that person, the song still playing in the
+14:25 background, I think it just adds this engaging component because there's more stimulation, more knowledge happening. You're listening to the song while you're still doing your visual research.
+14:36 if you don't like the person you just skip to the next one. So I don't think we need a song for every meme on their page.
+14:43 Just one song per page is correct. They're like when you're listening to someone's song, you can send them a meme that would go with how you felt about the song, as like asking like you sending like a high or an emoji or something.
+15:07 Here's a really interesting thing, so sound of meme actually got an invest and it got someone who's paying funds for us to fork it to a platform called Zellity, which they want to make as a music messaging app.
+15:30 So what I just realized is that music messaging is a really interesting thing. so I can go write some custom lyrics here.
+15:38 I'll say, I really think we should meet up and have dinner. Have my favorite diner. How is 6pm?
+16:01 Okay, so you will be able in the app, and this can be a premium feature. We can charge people to send the that send the message as a song.
+16:17 And I'll show you how that feels right now. And basically, this idea came to him because I missed a meeting with these people.
+16:29 And after I missed the meeting, I sent them a song apologizing for missing the meeting. And they just loved it and that's what made them go whoa yeah songs songs will be a part of the future of how we express ourselves because it's so much more expressive so also we're gonna get the load time down on
+16:57 the creation of this so it will be much quicker right now it's a little bit slow because I think people want to listen to their how the song comes out before you actually send the message.
+17:09 So we're getting this down to like real time, because basically we're switching to as it generates, it'll be completed. So I think these are really key ideas that will make this meme, I mean we could call it meme space.
+17:28 I'll see if that's available. Okay, let's hear my message. I really shouldn't help them have better.
+17:41 I'm afraid we'd done a house six feet home. We'd do one of them. I really think we should meet up in half dinner.
+18:08 I'm afraid we'd done a house six feet home. That alone, so I guess what we'll need to allow is people to snip easily.
+18:17 just trim the song down to the part that they want. It would be a part of it, and that would.
+18:24 Because then you can just get right to your your favorite part. You can keep an outro, you can keep an intro.
+18:29 It gets a little bit of more choice over self-expression. And you could even attach a meme to the song when you're sending it.
+18:42 So it will be very Very much so of the platform in the dating space, which is offering the most amount of depth for Wow researching were more like TikTok.
+18:57 I mean it comes up with someone's anthem How's their memes? It's more like a mood board so you can really see it and digest it all at once and then dive in as you want So how I view this is TikTok's trial vertical scroll left-right slide for same like Tinder for yes I like them or no I don't click on
+19:19 any image to zoom into that image message button and you can message based on any image similar to hinge which allows you to do that so that's the core of the app that's how I see it do you have any input on that Sophia I don't know much about dating apps but yeah I think that sounds good.
+19:43 I think that would work for many people sounds easy and interesting and fun. And what do we feel about the name, meme space versus meme mates?
+19:56 I think it makes it sound more like a hangout place so it doesn't sound as intimidating so I think that is a good idea.
+20:05 Maybe you could still think of some other ideas about to call it But I think that sounds good. It kind of sounds like just like a hangout place to meet friends or people and make memes.
+20:16 I think it sounds nice. So you like meme space more than meme mates? Think. Yeah. I think meme space sounds good for it.
+21:05 So I'm reading more about no space. I think they might have got a lawsuit. Where did I read that? No space.
+21:58 And they changed to no place rather than no space. So they What do you mean, what keep me? Oh, look.
+22:36 Name species is a remake of my space, but from main coins. I mean, it's. Okay, I'm going to get private access.
+23:32 Now this doesn't mean we can't do meme space. This is still a brand new. They have dot org, but we can get dot AI.
+23:44 Because we would like the AI would try to connect you with people with similar means. We could have that feature so your feed is auto curated based on that.
+23:58 We could even have people upload their type. Because we could actually use AI to analyze faces and you could you could AI generate your perfect match, and then you could get recommendations which is most similar to your perfect match, if you want it.
+24:18 It could be a premium feature. These are like future features. Not requesting that these are built directly into the app.
+24:25 Guys, just still ideating because I want you guys to fall in love with the idea as well. I think that's really important.
+24:32 Again, watch the video on the home page to learn more about startup and see the other founders who have won through this process and obviously this is the opportunity just to show that you can build and you get to become a founder and a CEO and a boss.
+24:53 Often we'll do co-founders based on the top submissions or if a team submits. So memespace.ai versus meme.
+25:09 What was the other one? What was the other name? I thought meme cute would be interesting, like, meme cute, but meme cute.
+25:34 Okay, okay, okay. But isn't meme cute, like, hey, what is that? A meet cute is like a rom-com or the way that you met someone, like touching the same book when in a bookstore and then getting coffee after.
+25:52 Okay. Is that your favorite? I mean, I don't know. This is your strongest and not mine. That was just an idea.
+26:01 That was throwing out there. Well, I think that that I think this will go viral more with your age bracket, I mean, we're off that far off, but, Yeah.
+26:24 I think it's cute. I think you get attention. Even cute. I'm just thinking what's the most viral name, right? I don't really know.
+26:35 I didn't really know the term meet you. Like, I actually have heard it. Now that you said it, I thought it was more like that bad term, which is.
+26:46 There's like a quick hook up term. That's a one night stand. No, there's like a there's a Gen Z version for it.
+26:54 Ghosty? Ghosty? No. What are you thinking about? We have none of that. What's the Gen Z term for like a quick hook-up partner?
+27:18 Sneaky-leaf? Sneaky-leaf. You don't have that. Meet Q is closer to sneaky. Meet Q is the complete and total opposite. I just thought it'd be Q because it's a dating app and meet Q to like a cute, innocent, rom-com-worthy way to meet someone by getting them to the same taxi cab or something.
+27:41 Yep. And because it's a dating app. Okay, then meet Q is perfect. Because MeetQ already has this idea that it's like a more divine way to meet, and one of the biggest downsides of dating apps is when people ask you, you're like, sucks if you say we met on Tinder, way better if you say, we met on Fumble
+28:03 or we met on Hinge, right? Those ones have bad rap, but we met on MeetQ is actually like super cute.
+28:16 So I like the brand. This is perfect. So I want you to create a little bit of a mood board or vibe board for this.
+28:34 Okay, like, I already have an idea I wanted to look, but I just don't know if that would be appealing to everyone.
+28:43 Yeah, so the goal is to be a bit more universal. I do think no place like this style. I think something along the lines of just like, cute style is nice.
+28:58 Yeah. Super Gen Z, right? Well, I think because you're kind of comparing it to TikTok. TikTok does have its own, the caters to a certain group of people, but not just like one.
+29:10 There's like an algorithm for it. And I think maybe this app could also eventually have that catering to different types of people showing different types of memes and stuff.
+29:20 You get your app differently. Yes. that's perfect and I actually I think if we offer like four different it's almost like dark mode light mode in this case we'll offer like this vibe I think that could actually give us information on what type of person they are obviously if you don't want to pair up
+29:44 a emo goth person with someone who picked did this for a while. You know, me and you. Do you like this?
+30:28 Sophia, can you see my screen? you're on mute. Okay, I'm here. So here's one of my favorite styles of art that I think would actually be perfect.
+31:06 That's cute. So this I really like this style of art. Wow, look at it so much worse.
+31:25 No. Squidels. Wow, the doodles website changed and it's like it used to be so cool. it used to be all colorful and fun.
+31:52 It's so sad, but you can still get somewhat of a picture of the vibe here. Like a pastel look? Yes, I think pastel is, that's the term.
+32:10 Yeah, Yeah, Pestel could be cute. It's almost like neon pastel, but faded. And it's like pastel, that'd be cute. That's cute.
+32:28 Yeah, so it's really fun just to use AI, just like, continue prompting it. Because we do need one, we need to select one main brand.
+32:44 That's like well, I guess we don't necessarily need to So I'm thinking about the homepage Mm-hmm. Honestly We could have like four different styles Yeah, for like well, there's like the icon of the app Which I think I agree.
+33:11 I think it should be like a cute pastel look Yeah, there can only be one main, main queue, logo. Make it more pastel and make it an app logo.
+33:38 Okay, so it could be like alchemy. Do it like what? You know what alchemy, like alchemy and stuff like maybe like when like making the app, the theme could be like, yeah, like making up and curating the mean, Yeah, yeah, that's good.
+34:06 Alchemy has a really good like vibe curator like magic wand. Potion. Yeah, exactly. make it more like magic wine slash and fun game style pastel color.
+34:24 Make app logo and banner. You're working AI right now. Actual app design on iPhone for taking app feed with lots of theme images in the center.
+34:45 like tender but worth being portfolio. Yo, we cook it on this one. That's actually cute. Maybe a little more pastel-y, but like, yeah.
+35:01 Yeah, because it's too girly here. Yeah, it needs to kind of like appeal to these two. Yes. Although I think dudes will be more down to like join a dating app that looks like it's for cute girls.
+35:19 Yes, yes. While you're aptly to appeal to women because basically if you've got women on your app, then the men will come.
+35:31 Yeah, that's true. Okay, so add more pastel. So anyways, a recap of the base of this idea and what you need to build to get selected.
+36:01 Flutter or React are obviously the main things to use. Create a ability to basically create mood board.
+36:17 So I'll give an example of a mood board. Okay. So somewhat like this, but the entire phone screen is a mood board.
+36:47 Each person creates their own. You basically can just upload photos into it and resize them and stick them wherever you want.
+36:57 So someone can create their own mood. You would request that there's at least four photos of them and then obviously they can make memes in the future.
+37:16 For now, we don't need a meme editor in app. Just drag and drop, make your mood board. then after you make your profile you select if you're into you know which gender your age and then you get other people's mood boards pop up and you have a little message button and you can message people each time
+37:43 you scroll you see another mood board. Do you message people would you message them with a mean. Yeah, this is this is where we can like I think there's a lot of plane with the actual mechanics.
+38:03 Or maybe you have to send a meme first and then you can talk. Yeah, that works because I mean we we can just use an API to make sure that there's no nudity.
+38:21 Maybe you can like keep this trip as well. What's that you know like how like snap and tick tock they have streaks and you have to like send this or in something in order to keep the streak maybe you have to send like a meme a day in order to keep a streak I haven't seen streaks on dating apps used because
+39:12 that's more like, where you keep your friends. I do like the idea. Memes you. I just don't think we get to compete with like messaging apps.
+39:49 There's a future where it does go to compete with messaging apps. And streaks would be a good thing to add if that's the case.
+40:02 I think that future comes along when you type in what you want to say and you get an auto generated song that you can choose from and an auto-generated meme selection that has the essence of what you typed and so actually you're just by curating and maybe you can't actually send text, you can only send
+40:26 songs and memes and so it stands out as a whole new form of messaging and it's almost like going the same way in the world we like to go to like a coffee shop has a vibe, right?
+40:41 And so sometimes you'll take people to a coffee shop. That's why sometimes you'll give someone your Instagram. Sometimes you'll get their WhatsApp.
+40:49 Sometimes you'll get them on iMessage. Sometimes you'll go on Instagram. Sometimes you'll get them on Signal. And sometimes you'll connect on Snapchat.
+41:00 And I'd say that all of those are things that But I have certain patterns of, okay, this person's, I'm going to connect on telegram, this person's, I'm connecting on iMessage, this person I'm just going to get exchange Instagrams.
+41:19 And so I do feel like to meme cute with someone is a whole experience, and so you're really inviting someone to like a different sort of conversational experience.
+41:37 The same way Snapchat's a different conversation of experience. So I think I think I think redefining that space is is very, very interesting.
+41:54 But if you're only communicating through means, how could you further make plants like could you make up a meme so like you can make your text you're you can put text onto the meme and you can have direct but essentially we just remove any standard text what's that yeah is that like what you're I'm thinking
+42:27 of how it should look on the screen. No, this isn't final, I don't think. Okay. More pastel. More pastel. That, yeah, that would be cute, a winter doll.
+42:49 Right now, it's still too girly. Good. Like doodles has a good fiber. It's just fun. It doesn't feel, Hmm. I think this is like a good color palette.
+44:36 Yeah, that's cute. Okay, now I actually, for branding, I want to check Google trends. Oh, I actually really like this look.
+45:26 That's a vibe. What, how would you change this? Okay, we're going on here and we're typing in meat, cute, worldwide, 2004 to present.
+46:00 Okay, meet Q as a term peaked in 2022. That's fine. My space probably trumps this like crazy. Yeah, you can't even see meet Q obviously.
+46:22 Although now they're the same. Of course, how does meme space have as much searches? Okay, so here's what I'm thinking.
+47:24 Just going to give a recap now. Then a good in-depth branding exercise. I actually would hire two different teams. One to build meme space and one to build meme cute because I think this is a, I mean I don't think it is, it's for sure a $10 billion opportunity and that's what these dating apps become
+47:55 worth. Obviously messaging platform is even worth over $100 billion if you become that big. And so I think it, I think there's a world in which this does, I personally want to actually use it myself and interact with it and iterate.
+48:13 And so I know you were probably used to getting assignments which are very straightforward. And so what we actually look for is for people who are a bit of independent thinkers because, you know, you have to lead the idea.
+48:28 you have to take feedback, you have to iterate and change the idea over time and we're not just going to do that for you every step of the way.
+48:37 I think Sophia will just continue to try each version and provide great feedback, and I will too. But I think more independent research is always important.
+48:51 And being able to discern and place your own bets is also good. So there's some different mechanics in terms of should messaging be restricted or not.
+49:06 We could test that between the two apps. One can restrict messaging, could only a song version slash meme sending the other can allow text in these initial submissions the MVPs they can both be like that.
+49:25 This is definitely a highly design oriented app so hopefully someone with some good UI UX knowledge here or if you don't know that if you're a developer and you see this and you're like I want to win.
+49:42 If you bring on a co-founder we'll give you both 10% equity and salaries. If you go to your friend who's great at graphic designing and you have them design your UIUX.
+49:53 So those are always important. A good technical guy and a good designer is always a good core starting team. So feel free to build a team out of this.
+50:07 So, if you had any last words, I'm just curious to see how it work out, I think the way you had it generated AI is kind of how I think it would get attention, how it would look.
+50:22 I like the name, not too I own horn, but I like the name. I think we should kind of keep the alchemy idea in just because I think it would kind of drawn attention to people who are attracted to memes and like making memes because it kind of go hand in hand and I think they're just being cool to see how
+50:39 it works. I mean, I don't really know how to do all that stuff but I like to be posted on what's made and what new ideas are made up and yeah that's it.
+50:54 Yeah and when it comes to market this I think we just pay meme pages to post some of our memes.
+51:00 We can make it all about meme marketing. People who aren't like meme pages are the perfect target audience. We can buy a meme page.
+51:09 And so I think this is what's really cool about it is that it's almost built for virality. Like, it's something that will go viral on TikTok because it's just like, I mean, 500,000 wait list sign-ups is what that no place app got.
+51:24 even if we just make a really cool looking thing and so if you have a good marketer guy or guy who runs a memepage and you want them as a co-founder bring them in and go ahead and submit a video with your founding team and the MVP that gets built and we will select a team and you guys will be the founders
+51:47 in future truly billionaires made off of memes made off of the meme dating app which could pivot into just messaging platform but I think dating has a stronger entry point because it solves sort of the hard part to start a new messaging platform is typically getting people to onboard so this has a little
+52:10 bit of a more direct thing to sell but yeah you know just the messaging app that focuses on memes and music also I think is pretty interesting where you just remove text and it's so it's like a whole new environment to communicate but I think the mid-board dating thing I mean that could turn into a friend
+52:33 option you know maybe it's less about meeting soul mates but but more just about meeting soul friends.
+52:46 Well, see, I think different dating apps have implemented, you know, friend finding now and I think it's just weird to use Tinder friend finding, right?
+52:54 And so this could be just a much cooler way, especially meme space, meme space is a lot more friendly. Then meme cute, meme cute is definitely a more dating app.
+53:08 So feel free to choose the name which is more preferred. All right. Good video. Good luck to all those founders out there are really engineers.
+53:25 Typically that we'll see this who have the potential to be a boss and not just a wage slave for the rest of your life.
+53:36 Much love. Bye.

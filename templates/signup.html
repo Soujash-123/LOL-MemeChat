@@ -18,7 +18,7 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            animation: fadeOut 0.5s ease 5s forwards;
+            animation: fadeOut 0.5s ease 1s forwards;
         }
         
         .logo {
@@ -40,22 +40,46 @@
             color: #FF0000 !important;
         }
         
-        input::placeholder, select {
+        input::placeholder {
             color: #FF69B4 !important;
             opacity: 0.7;
-        }
-        
-        select option {
-            background-color: #1a1a1a;
-            color: #FF0000;
         }
         
         .gradient-bg {
             background: linear-gradient(135deg, #FF0000, #FF69B4);
         }
+
+        .meme-preference-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .meme-preference-card.selected {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            border: 2px solid #FF0000;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.dragover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #FF0000;
+        }
+
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-red-500 to-pink-400 min-h-screen text-white">
+    <!-- Preloader remains the same -->
     <div class="preloader">
         <div class="text-center">
             <div class="logo">♥</div>
@@ -64,7 +88,8 @@
     </div>
 
     <div class="container mx-auto px-4 py-8">
-        <div class="max-w-lg mx-auto">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header remains the same -->
             <div class="text-center mb-12">
                 <h1 class="text-5xl font-bold mb-4 flex items-center justify-center">
                     L<span class="mx-2">♥</span>L
@@ -77,7 +102,22 @@
                     <i class="fas fa-heart mr-3"></i>
                     Create Your Profile
                 </h2>
-                <form id="signup-form" class="space-y-4" enctype="multipart/form-data">
+
+                <!-- Google Sign-in Button remains the same -->
+                <button id="google-signin" class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center mb-6 transition duration-300">
+                    <img src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/6.0.0/google.svg" class="w-5 h-5 mr-2" alt="Google logo">
+                    Sign up with Google
+                </button>
+                
+                <div class="relative my-6">
+                    <hr class="border-t border-white/30">
+                    <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-transparent px-4 text-white text-sm">
+                        or
+                    </span>
+                </div>
+
+                <form id="signup-form" class="space-y-6" enctype="multipart/form-data">
+                    <!-- Basic fields remain the same -->
                     <div>
                         <label for="username" class="block text-sm font-medium mb-1">Username</label>
                         <input type="text" id="username" name="username" placeholder="Choose a unique username" 
@@ -102,26 +142,48 @@
                             class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
                     </div>
 
+                    <!-- New Meme Preference Cards -->
                     <div>
-                        <label for="meme-preference" class="block text-sm font-medium mb-1">Meme Preference</label>
-                        <select id="meme-preference" name="meme-preference" 
-                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
-                            <option value="">Select Meme Preference</option>
-                            <option value="DarkHumor">Dark Humor</option>
-                            <option value="Wholesome">Wholesome</option>
-                            <option value="Sarcasm">Sarcasm</option>
-                            <option value="Dank">Dank</option>
-                            <option value="Surreal">Surreal</option>
-                        </select>
+                        <label class="block text-sm font-medium mb-3">Meme Preference</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="DarkHumor">
+                                <i class="fas fa-moon text-2xl mb-2"></i>
+                                <p class="font-medium">Dark Humor</p>
+                            </div>
+                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Wholesome">
+                                <i class="fas fa-heart text-2xl mb-2"></i>
+                                <p class="font-medium">Wholesome</p>
+                            </div>
+                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Sarcasm">
+                                <i class="fas fa-grin-wink text-2xl mb-2"></i>
+                                <p class="font-medium">Sarcasm</p>
+                            </div>
+                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Dank">
+                                <i class="fas fa-fire text-2xl mb-2"></i>
+                                <p class="font-medium">Dank</p>
+                            </div>
+                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Surreal">
+                                <i class="fas fa-ghost text-2xl mb-2"></i>
+                                <p class="font-medium">Surreal</p>
+                            </div>
+                        </div>
+                        <input type="hidden" name="meme-preference" id="meme-preference">
                     </div>
 
-                    <div class="space-y-4">
-                        <label class="block text-sm font-medium mb-1">Upload Your Favorite Memes (Max 4)</label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="file" name="meme1" accept="image/*" class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
-                            <input type="file" name="meme2" accept="image/*" class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
-                            <input type="file" name="meme3" accept="image/*" class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
-                            <input type="file" name="meme4" accept="image/*" class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none">
+                    <!-- New Drag and Drop Zone -->
+                    <div>
+                        <label class="block text-sm font-medium mb-3">Upload Your Favorite Memes</label>
+                        <div id="drop-zone" class="drop-zone w-full h-48 rounded-lg flex flex-col items-center justify-center p-4 text-center">
+                            <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
+                            <p>Drag and drop your memes here</p>
+                            <p class="text-sm opacity-70">or</p>
+                            <button type="button" id="browse-files" class="mt-2 px-4 py-2 bg-white/30 rounded-lg hover:bg-white/40 transition duration-300">
+                                Browse Files
+                            </button>
+                            <input type="file" id="file-input" multiple accept="image/*" class="hidden">
+                        </div>
+                        <div id="preview-container" class="mt-4 grid grid-cols-4 gap-2">
+                            <!-- Preview images will be inserted here -->
                         </div>
                     </div>
 
@@ -144,6 +206,85 @@
     </div>
 
     <script>
+        // Meme Preference Card Selection
+        document.querySelectorAll('.meme-preference-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.meme-preference-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                document.getElementById('meme-preference').value = this.dataset.value;
+            });
+        });
+
+        // Drag and Drop Functionality
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const browseFiles = document.getElementById('browse-files');
+        const previewContainer = document.getElementById('preview-container');
+        const maxFiles = 4;
+        let files = [];
+
+        browseFiles.addEventListener('click', () => fileInput.click());
+
+        function handleFiles(newFiles) {
+            const remainingSlots = maxFiles - files.length;
+            const filesToAdd = Array.from(newFiles).slice(0, remainingSlots);
+
+            filesToAdd.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    files.push(file);
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'relative';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" class="preview-image" />
+                            <button type="button" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600" data-index="${files.length - 1}">
+                                ×
+                            </button>
+                        `;
+                        previewContainer.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            if (files.length >= maxFiles) {
+                dropZone.classList.add('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        previewContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const index = parseInt(e.target.dataset.index);
+                files.splice(index, 1);
+                e.target.parentElement.remove();
+                dropZone.classList.remove('opacity-50', 'pointer-events-none');
+                
+                // Update remaining preview indices
+                previewContainer.querySelectorAll('button').forEach((btn, i) => {
+                    btn.dataset.index = i;
+                });
+            }
+        });
+
+        // Form Submission
         document.getElementById('signup-form').addEventListener('submit', function(event) {
             event.preventDefault();
             
@@ -156,6 +297,11 @@
             }
 
             const formData = new FormData(this);
+            
+            // Add files to form data
+            files.forEach((file, index) => {
+                formData.append(`meme${index + 1}`, file);
+            });
             
             fetch('/signup', {
                 method: 'POST',
@@ -175,5 +321,76 @@
             });
         });
     </script>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLblSMwAUztf-ciQqIzLUe9jeYWvvqDrk",
+        authDomain: "lol-mchat.firebaseapp.com",
+        projectId: "lol-mchat",
+        storageBucket: "lol-mchat.firebasestorage.app",
+        messagingSenderId: "764134602597",
+        appId: "1:764134602597:web:ae4a6537626170cb4d938c",
+        measurementId: "G-1TRKSZ3GHP"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // Add Google Sign-in functionality
+    document.getElementById('google-signin').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // The signed-in user info
+                const user = result.user;
+                console.log('Google Sign-in successful:', user);
+                
+                // Prepare the data to send to your backend
+                const userData = {
+                    username: user.displayName,
+                    email: user.email,
+                    googleId: user.uid,
+                    photoURL: user.photoURL,
+                    signupMethod: 'google'
+                };
+
+                // Send the data to your signup endpoint
+                fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(data.message);
+                        window.location.href = '/dashboard';
+                    }
+                })
+                .catch(error => {
+                    console.error('Signup error:', error);
+                    alert('An error occurred during signup. Please try again.');
+                });
+            })
+            .catch((error) => {
+                console.error('Google Sign-in error:', error);
+                alert('An error occurred during Google sign-in. Please try again.');
+            });
+    });
+</script>
 </body>
 </html>

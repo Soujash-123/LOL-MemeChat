@@ -7,6 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Keep your existing styles */
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.3); }
@@ -18,46 +19,81 @@
             color: #FF1493;
         }
 
-        .gradient-bg {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
+        /* Add new mobile menu styles */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
         }
 
-        .card {
-            transition: all 0.3s ease;
+        .mobile-menu.active {
+            transform: translateX(0);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 20, 147, 0.2);
+        /* Burger menu animation */
+        .burger-line {
+            transition: all 0.3s ease-in-out;
         }
 
-        .action-button {
-            transition: all 0.2s;
+        .burger.active .burger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
         }
 
-        .action-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+        .burger.active .burger-line:nth-child(2) {
+            opacity: 0;
         }
 
-        .response-toast {
-            animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.5s forwards;
-            pointer-events: none;
+        .burger.active .burger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
         }
+        #color-picker-btn {
+        position: fixed;
+        right: 2rem;
+        z-index: 49;
+    }
 
-        @keyframes slideIn {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; visibility: hidden; }
-        }
+    #background-color-picker {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+    }
+    
+    #background-color-picker::-webkit-color-swatch {
+        border-radius: 0.5rem;
+        border: 2px solid #4a5568;
+    }
+    
+    #background-color-picker::-moz-color-swatch {
+        border-radius: 0.5rem;
+        border: 2px solid #4a5568;
+    }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
-    <!-- Navigation -->
+    <button id="color-picker-btn" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform" style="bottom: 8rem;">
+        <i class="fas fa-palette"></i>
+    </button>
+    
+    <!-- Add this modal for the color picker -->
+    <div id="color-picker-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-4">Choose Background Color</h2>
+            <div class="mb-6">
+                <input type="color" id="background-color-picker" class="w-full h-14 cursor-pointer">
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-400">Selected color: <span id="selected-color-hex">#000000</span></p>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button onclick="hideColorPickerModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
+                <button onclick="saveBackgroundColor()" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90">Save</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Updated Navigation -->
     <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between h-16">
@@ -66,20 +102,62 @@
                         L<span class="heart-logo">❤</span>L
                     </h1>
                 </div>
-                <div class="flex items-center space-x-6">
-                    <a href="/dashboard" class="text-gray-300 hover:text-pink-500">
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/feed" class="nav-link">
+                        <i class="fas fa-heart"></i>Feed
+                    </a>
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-home"></i>Dashboard
+                    </a>
+                    <a href="/create" class="nav-link">
+                        <i class="fas fa-plus"></i>Create with AI
+                    </a>
+                    <a href="/chat" class="nav-link">
+                        <i class="fas fa-comments"></i>Chat
+                    </a>
+                    <a href="/list_connect" class="nav-link">
+                        <i class="fas fa-users"></i>Matches
+                    </a>
+                    <a href="/music-feed" class="nav-link">
+                        <i class="fas fa-headphones"></i>Music Feed
+                    </a>
+                    
+                    <a href="#" class="nav-link" onclick="navigateToProfile(event)">
+                        <i class="fas fa-user"></i>Profile
+                    </a>
+                    <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit;">
+                        <i class="fas fa-sign-out-alt"></i>Logout
+                    </button>
+                </div>
+
+                <!-- Burger Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="burger-btn" class="burger text-gray-300 hover:text-pink-500 p-2">
+                        <div class="burger-line w-6 h-0.5 bg-current my-1"></div>
+                        <div class="burger-line w-6 h-0.5 bg-current my-1"></div>
+                        <div class="burger-line w-6 h-0.5 bg-current my-1"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="mobile-menu md:hidden absolute top-16 left-0 w-full bg-gray-800 shadow-lg">
+                <div class="px-4 py-2 space-y-3">
+                    <a href="/dashboard" class="block text-gray-300 hover:text-pink-500 py-2">
                         <i class="fas fa-home mr-2"></i>Feed
                     </a>
-                    <a href="/create" class="text-gray-300 hover:text-pink-500">
+                    <a href="/create" class="block text-gray-300 hover:text-pink-500 py-2">
                         <i class="fas fa-plus mr-2"></i>Create with AI
-                        </a>
-                    <a href="/list_connect" class="text-gray-300 hover:text-pink-500">
+                    </a>
+                    <a href="/list_connect" class="block text-gray-300 hover:text-pink-500 py-2">
                         <i class="fas fa-heart mr-2"></i>Matches
                     </a>
-                    <a href="#" onclick="navigateToProfile(event)" class="text-gray-300 hover:text-pink-500">
+                    <a href="#" onclick="navigateToProfile(event)" class="block text-gray-300 hover:text-pink-500 py-2">
                         <i class="fas fa-user mr-2"></i>Profile
                     </a>
-                    <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
+                    <button onclick="logout()" class="block w-full text-left text-gray-300 hover:text-pink-500 py-2">
                         <i class="fas fa-sign-out-alt mr-2"></i>Logout
                     </button>
                 </div>
@@ -132,6 +210,64 @@
     <div id="response-toast" class="response-toast fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white hidden"></div>
 
     <script>
+        // Color picker functionality
+        function showColorPickerModal() {
+        document.getElementById('color-picker-modal').classList.remove('hidden');
+    }
+
+    function hideColorPickerModal() {
+        document.getElementById('color-picker-modal').classList.add('hidden');
+    }
+
+    function saveBackgroundColor() {
+        const color = document.getElementById('background-color-picker').value;
+        localStorage.setItem('backgroundColor', color);
+        document.body.style.backgroundColor = color;
+        hideColorPickerModal();
+    }
+
+    // Update color display when picker changes
+    document.getElementById('background-color-picker').addEventListener('input', (e) => {
+        document.getElementById('selected-color-hex').textContent = e.target.value;
+    });
+
+    // Show color picker modal when button is clicked
+    document.getElementById('color-picker-btn').addEventListener('click', showColorPickerModal);
+
+    // Apply saved background color on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedColor = localStorage.getItem('backgroundColor');
+        if (savedColor) {
+            document.body.style.backgroundColor = savedColor;
+            document.getElementById('background-color-picker').value = savedColor;
+            document.getElementById('selected-color-hex').textContent = savedColor;
+        }
+    });
+        document.addEventListener('DOMContentLoaded', function() {
+            const burgerBtn = document.getElementById('burger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            burgerBtn.addEventListener('click', function() {
+                burgerBtn.classList.toggle('active');
+                mobileMenu.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!burgerBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    burgerBtn.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                }
+            });
+
+            // Close mobile menu when window is resized to desktop view
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) { // md breakpoint
+                    burgerBtn.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                }
+            });
+        });
         async function navigateToProfile(event) {
         event.preventDefault();
         try {

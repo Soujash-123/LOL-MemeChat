@@ -1,100 +1,33 @@
 import requests
-import random
 
-# Define keyword-based mapping to templates
-template_mapping = {
-    "aliens": "aag",
-    "trap": "ackbar",
-    "afraid": "afraid",
-    "winking": "agnes",
-    "sweet brown": "aint-got-time",
-    "awkward": "ams",
-    "ants": "ants",
-    "redneck": "apcr",
-    "always has been": "astronaut",
-    "then i said": "atis",
-    "life finds a way": "away",
-    "awesome": "awesome",
-    "penguin": "awesome-awkward",
-    "bad": "bad",
-    "milk": "badchoice",
-    "balloon": "balloon",
-    "butthurt": "bd",
-    "men in black": "because",
-    "bender": "bender",
-    "honest work": "bihw",
-    "bilbo": "bilbo",
-    "insanity wolf": "biw",
-    "bad luck": "blb",
-    "boat": "boat",
-    "bongo": "bongo",
-    "both": "both",
-    "box": "box",
-    "shark": "bs",
-    "everywhere": "buzz",
-    "cake": "cake",
-    "captain": "captain",
-    "elevator": "captain-america",
-    "confession": "cb",
-    "communist": "cbb",
-    "comic book": "cbg",
-    "center for ants": "center",
-    "hindsight": "ch",
-    "chopper": "chair",
-    "cheems": "cheems",
-    "chosen": "chosen",
-    "change my mind": "cmm",
-    "crazy pills": "crazypills",
-    "grind my gears": "gears",
-    "doge": "doge",
-    "drake": "drake",
-    "distracted boyfriend": "db",
-    "elon": "musk",
-    "matrix": "morpheus",
-    "keanu": "keanu",
-    "joke": "joker",
-    "padme": "right",
-    "salt bae": "saltbae",
-    "stonks": "stonks",
-    "spiderman": "spiderman",
-    "trump": "trump",
-    "knuckles": "ugandanknuck",
-    "y u no": "yuno",
-    "all your base": "zero-wing"
-}
+BASE_URL = "https://discoveryprovider.audius.co"
 
-def choose_template(text):
-    """Choose a meme template based on keywords."""
-    for keyword, template in template_mapping.items():
-        if keyword in text.lower():
-            return template
-    return random.choice(list(template_mapping.values()))  # Default to a random template
-
-def generate_meme(top_text, bottom_text):
-    """Generate a meme using the Memegen API."""
-    template_id = choose_template(top_text + " " + bottom_text)
+def get_trending_tracks():
+    """Fetch trending tracks and return a list of (track_id, title, artist)."""
+    url = f"{BASE_URL}/v1/tracks/trending"
+    response = requests.get(url)
     
-    # Format text properly for URL
-    top_text = top_text.replace(" ", "_")
-    bottom_text = bottom_text.replace(" ", "_")
-
-    # Generate the meme URL
-    meme_url = f"https://api.memegen.link/images/{template_id}/{top_text}/{bottom_text}.png"
-    
-    return meme_url
-
-if __name__ == "__main__":
-    # Get user input
-    text = input("Enter your meme text: ").strip()
-    
-    # Split into top and bottom text
-    if " " in text:
-        words = text.split()
-        mid = len(words) // 2
-        top_text, bottom_text = " ".join(words[:mid]), " ".join(words[mid:])
+    if response.status_code == 200:
+        data = response.json()
+        tracks = data.get('data', [])
+        return [(track['id'], track['title'], track['user']['name']) for track in tracks]
     else:
-        top_text, bottom_text = text, ""
+        print(f"Error: {response.status_code}, {response.text}")
+        return None
 
-    # Generate meme
-    meme_url = generate_meme(top_text, bottom_text)
-    print(f"Generated Meme URL: {meme_url}")
+def get_stream_url(track_id):
+    """Generate the streaming URL for a given track ID."""
+    return f"{BASE_URL}/v1/tracks/{track_id}/stream"
+
+# Fetch trending tracks and display their streaming links
+trending_tracks = get_trending_tracks()
+
+if trending_tracks:
+    print("\nTrending Tracks and their Stream URLs:\n")
+    for track_id, title, artist in trending_tracks[:5]:  # Display top 5 tracks
+        stream_url = get_stream_url(track_id)
+        print(f"🎵 {title} by {artist}")
+        print(f"🔗 Stream URL: {stream_url}\n")
+else:
+    print("Failed to fetch trending tracks.")
+

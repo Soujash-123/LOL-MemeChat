@@ -3,167 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L❤L - Find Your Meme Match</title>
+    <title>L❤L - Your Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-          .connection-prompt {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #FF69B4, #8A2BE2);
-        color: white;
-        padding: 20px 40px;
-        border-radius: 20px;
-        z-index: 100;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
-        max-width: 90%;
-        width: 300px;
-        animation: 
-            popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
-            fadeOut 0.5s ease-in 2.5s forwards;
-    }
-
-    @keyframes popIn {
-        0% { 
-            transform: translate(-50%, -50%) scale(0.2);
-            opacity: 0;
-        }
-        100% { 
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-    }
-
-    @keyframes fadeOut {
-        0% { 
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        100% { 
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.8);
-            visibility: hidden;
-        }
-    }
-    
         @keyframes heartbeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
         }
-        @keyframes pulse {
-    0% { transform: scale(1); opacity: 0.7; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.7; }
-}
-
-@keyframes gradient-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, #FF69B4, #FF1493, #8A2BE2, #9932CC);
-    background-size: 400% 400%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: all 1.5s ease-in-out;
-    animation: 
-        gradient-shift 15s ease infinite,
-        preloaderVanish 1.5s ease-in-out 3s forwards;
-    will-change: transform, opacity, filter;  
-    overflow: hidden;
-}
-
-.preloader-logo {
-    font-size: 6rem;
-    font-weight: bold;
-    color: white;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    display: flex;
-    align-items: center;
-    animation: pulse 2s infinite;
-}
-
-.preloader-heart {
-    color: white;
-    font-size: 1.2em;
-    margin: 0 10px;
-    display: inline-block;
-    animation: 
-        heartbeat 1s ease-in-out infinite,
-        pulse 2s infinite alternate;
-    transform-origin: center;
-}
-
-@keyframes preloaderVanish {
-    0% { 
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0);
-    }
-    60% {
-        opacity: 0.3;
-        transform: scale(1.05) translateY(-50px);
-        filter: blur(10px);
-    }
-    100% { 
-        opacity: 0;
-        transform: scale(0.5) translateY(-100px);
-        filter: blur(20px);
-        visibility: hidden;
-    }
-}
-
-
-
-
-@keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-}
         
-
         .heart-logo {
             animation: heartbeat 1.5s infinite;
             display: inline-block;
             color: #FF1493;
         }
 
-        .card {
-            position: relative;
-            transition: transform 0.3s, opacity 0.3s;
-            touch-action: pan-y pinch-zoom;
-        }
-        
-        .card.swiped-left {
-            transform: translateX(-150%) rotate(-30deg);
-            opacity: 0;
-        }
-        
-        .card.swiped-right {
-            transform: translateX(150%) rotate(30deg);
-            opacity: 0;
+        .gradient-bg {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
         }
 
-        .action-button {
-            transition: all 0.2s;
+        .post-card {
+            transition: transform 0.3s ease;
         }
 
-        .action-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+        .post-card:hover {
+            transform: translateY(-5px);
         }
 
         .floating-button {
@@ -173,23 +37,410 @@
             z-index: 50;
         }
 
-        .gradient-bg {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
-        }
-
         .upload-overlay {
             backdrop-filter: blur(5px);
         }
-        
+        .chat-window {
+    position: fixed;
+    bottom: 0;
+    right: 2rem;
+    width: 350px;
+    height: 500px;
+    background: #1f2937;
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    transform: translateY(450px);
+    z-index: 40;
+}
+
+.chat-window.expanded {
+    transform: translateY(0);
+}
+
+.chat-header {
+    padding: 1rem;
+    background: linear-gradient(135deg, #0e135b, #000b18);
+    border-radius: 1rem 1rem 0 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-content {
+    height: calc(100% - 48px);
+    border: none;
+    width: 100%;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.post-card {
+  position: relative;
+  background: #1f2937;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.post-image-container {
+  position: relative;
+  height: 140px;
+  overflow: hidden;
+}
+
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.5s ease;
+}
+
+.post-content {
+  padding: 0.5rem;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.post-username {
+  font-weight: bold;
+  color: #ec4899;
+  font-size: 0.75rem;
+}
+
+.post-date {
+  font-size: 0.675rem;
+  color: #9ca3af;
+}
+
+.post-caption {
+  color: #e5e7eb;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Keep the modal and hover functionality the same */
+.post-card:hover .post-image-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+  max-width: 90vw;
+  max-height: 90vh;
+  z-index: 100;
+}
+
+    .post-card:hover .post-image {
+      height: auto;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+
+    .post-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 99;
+    }
+
+    .post-card:hover .post-overlay {
+      display: block;
+    }
+
+    .post-content {
+      padding: 1rem;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .post-username {
+      font-weight: bold;
+      color: #ec4899;
+    }
+
+    .post-date {
+      font-size: 0.875rem;
+      color: #9ca3af;
+    }
+
+    .post-caption {
+      color: #e5e7eb;
+      margin-bottom: 1rem;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      color: #ec4899;
+    }
+
+    .post-action-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .post-action-button:hover {
+      color: #f472b6;
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      padding: 2rem;
+    }
+
+    .modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      background: #1f2937;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-image {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #374151;
+      border: none;
+      color: white;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+      z-index: 1010;
+    }
+
+    .modal-close:hover {
+      background: #4b5563;
+    }
+
+    .vote-buttons {
+      position: absolute;
+      right: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: #374151;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+    }
+
+    .vote-button {
+      background: transparent;
+      border: none;
+      color: white;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .vote-button:hover {
+      background: #4b5563;
+    }
+
+    .vote-button.upvote:hover {
+      color: #10B981;
+    }
+
+    .vote-button.downvote:hover {
+      color: #EF4444;
+    }
+
+    .voted-up {
+      color: #10B981;
+    }
+
+    .voted-down {
+      color: #EF4444;
+    }
+.preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1f2937;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s;
+    }
+
+    .preloader.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .lol-text {
+      display: flex;
+      font-size: 5rem;
+      font-weight: bold;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .letter {
+      margin: 0 0.2em;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      40% { transform: scale(1); }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .heart {
+      color: #FF1493;
+      animation: heartBeat 1s infinite;
+    }
+
+    #L1 { animation: popIn 0.5s ease forwards; opacity: 0; }
+    #heart { animation: popIn 0.5s ease 0.2s forwards, heartBeat 1s infinite 0.7s; opacity: 0; }
+    #L2 { animation: popIn 0.5s ease 0.4s forwards; opacity: 0; }
+
+    #color-picker-btn {
+        position: fixed;
+        right: 2rem;
+        z-index: 49;
+    }
+
+    #background-color-picker {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+    }
+    
+    #background-color-picker::-webkit-color-swatch {
+        border-radius: 0.5rem;
+        border: 2px solid #4a5568;
+    }
+    
+    #background-color-picker::-moz-color-swatch {
+        border-radius: 0.5rem;
+        border: 2px solid #4a5568;
+    }
+
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
     <div class="preloader">
-        <div class="preloader-logo">
-            L<span class="preloader-heart">❤</span>L
+        <div class="lol-text">
+          <span class="letter" id="L1">L</span>
+          <span class="letter heart" id="heart">❤</span>
+          <span class="letter" id="L2">L</span>
+        </div>
+      </div>
+
+      <button id="color-picker-btn" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform" style="bottom: 8rem;">
+        <i class="fas fa-palette"></i>
+    </button>
+    
+    <!-- Add this modal for the color picker -->
+    <div id="color-picker-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-4">Choose Background Color</h2>
+            <div class="mb-6">
+                <input type="color" id="background-color-picker" class="w-full h-14 cursor-pointer">
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-400">Selected color: <span id="selected-color-hex">#000000</span></p>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button onclick="hideColorPickerModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
+                <button onclick="saveBackgroundColor()" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90">Save</button>
+            </div>
         </div>
     </div>
 
+      <div id="post-modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close">
+        <i class="fas fa-times"></i>
+      </button>
+      <img class="modal-image" src="" alt="Post">
+      <div class="vote-buttons">
+        <button class="vote-button upvote">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="vote-button downvote">
+          <i class="fas fa-arrow-down"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+    
     <!-- Navigation -->
     <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
@@ -200,212 +451,119 @@
                     </h1>
                 </div>
                 <div class="flex items-center space-x-6">
-                    <a href="/dashboard" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-home mr-2"></i>Feed
-                    </a>
-                    
-                    <a href="/create" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-plus mr-2"></i>Create with AI
-                        </a>
-                    <a href="/chat" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-home mr-2"></i>Chat
-                    </a>
-                    <a href="/list_connect" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-heart mr-2"></i>Matches
-                    </a>
-                    <a href="#" onclick="navigateToProfile(event)" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-user mr-2"></i>Profile
-                    </a>
-                    <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                    </button>
+                  <a href="/feed" class="nav-link">
+                    <i class="fas fa-heart"></i>Feed
+                </a>
+                <a href="/dashboard" class="nav-link">
+                    <i class="fas fa-home"></i>Dashboard
+                </a>
+                <a href="/create" class="nav-link">
+                    <i class="fas fa-plus"></i>Create with AI
+                </a>
+                <a href="/chat" class="nav-link">
+                    <i class="fas fa-comments"></i>Chat
+                </a>
+                <a href="/list_connect" class="nav-link">
+                    <i class="fas fa-users"></i>Matches
+                </a>
+                <a href="/music-feed" class="nav-link">
+                    <i class="fas fa-headphones"></i>Music Feed
+                </a>
+                
+                <a href="#" class="nav-link" onclick="navigateToProfile(event)">
+                    <i class="fas fa-user"></i>Profile
+                </a>
+                <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit;">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </button>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-lg mx-auto p-4 pt-20">
-        <!-- Meme Card Stack -->
-        <div id="card-stack" class="relative h-[600px] mt-8">
-            <!-- Cards will be dynamically inserted here -->
+    <div class="container mx-auto px-4 pt-20">
+
+        <!-- Posts Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="posts-grid">
+            <!-- Posts will be dynamically inserted here -->
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex justify-center space-x-8 mt-6">
-            <button onclick="swipeLeft()" class="action-button w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-2xl shadow-lg">
-                <i class="fas fa-times"></i>
-            </button>
-            <button onclick="swipeRight()" class="action-button w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-2xl shadow-lg">
-                <i class="fas fa-heart"></i>
-            </button>
-        </div>
-
-        <!-- Floating Post Meme Button -->
-        <button onclick="showUploadModal()" class="floating-button action-button w-14 h-14 gradient-bg rounded-full flex items-center justify-center text-xl shadow-lg">
+        <!-- Floating Post Button -->
+        <button onclick="showUploadModal()" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform">
             <i class="fas fa-plus"></i>
         </button>
     </div>
 
-    <!-- Upload Meme Modal -->
+    <!-- Upload Modal -->
     <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
-            <h2 class="text-2xl font-bold mb-4">Post Your Best Meme</h2>
+            <h2 class="text-2xl font-bold mb-4">Create New Post</h2>
             <form id="upload-form" enctype="multipart/form-data">
                 <div class="mb-4">
-                    <div class="border-2 border-dashed border-pink-500 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-700 transition-colors" onclick="document.getElementById('meme-file').click()">
+                    <div class="border-2 border-dashed border-pink-500 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-700 transition-colors" onclick="document.getElementById('post-file').click()">
                         <i class="fas fa-upload text-4xl text-pink-500 mb-4"></i>
-                        <p>Drop your meme here or click to upload</p>
-                        <input type="file" id="meme-file" name="post-file" class="hidden" accept="image/*">
+                        <p>Drop your content here or click to upload</p>
+                        <input type="file" id="post-file" name="post-file" class="hidden" accept="image/*">
                     </div>
                 </div>
                 <div class="mb-4">
                     <input type="text" name="content" placeholder="Add a caption (optional)" class="w-full bg-gray-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 <div class="flex justify-end space-x-4">
-                    <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg">Cancel</button>
-                    <button type="submit" class="px-4 py-2 gradient-bg rounded-lg">Post Meme</button>
+                    <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
+                    <button type="submit" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90">Post</button>
                 </div>
             </form>
         </div>
     </div>
+    <div class="chat-window">
+        <div class="chat-header">
+            <span>Chat</span>
+            <i class="fas fa-chevron-up"></i>
+        </div>
+        <iframe src="/chat" class="chat-content"></iframe>
+    </div>
 
     <script>
-        
-         async function navigateToProfile(event) {
-        event.preventDefault();
-        try {
-            const response = await fetch('/user/profile');
-            if (!response.ok) throw new Error('Failed to fetch profile');
-            const data = await response.json();
-            window.location.href = `/${data.username}`;
-        } catch (error) {
-            console.error('Error navigating to profile:', error);
-        }
+      function showColorPickerModal() {
+        document.getElementById('color-picker-modal').classList.remove('hidden');
     }
 
-    // Modify the profile fetching function
-    async function fetchProfile() {
-        try {
-            const response = await fetch('/user/profile');
-            if (!response.ok) throw new Error('Failed to fetch profile');
-            const data = await response.json();
-            
-            document.getElementById('user-profile-mini').innerHTML = `
-                <p class="font-bold">${data.username}</p>
-                <p>${data.role}</p>
-                ${data.instrument ? `<p>Instrument: ${data.instrument}</p>` : ''}
-            `;
-
-            // Add click handler to username in mini profile
-            document.querySelector('#user-profile-mini .font-bold').onclick = function() {
-                window.location.href = `/${data.username}`;
-            };
-            document.querySelector('#user-profile-mini .font-bold').style.cursor = 'pointer';
-        } catch (error) {
-            console.error('Error fetching profile:', error);
-            document.getElementById('user-profile-mini').innerHTML = `
-                <p class="text-red-300">Error loading profile</p>
-            `;
-        }
+    function hideColorPickerModal() {
+        document.getElementById('color-picker-modal').classList.add('hidden');
     }
 
-    // Add profile loading by username
-    async function loadProfileByUsername(username) {
-        try {
-            const response = await fetch(`/api/users/${username}`);
-            if (!response.ok) throw new Error('Failed to fetch user profile');
-            const data = await response.json();
-            
-            // Hide feed section and show user profile section
-            document.getElementById('feed-section').classList.add('hidden');
-            document.getElementById('user-profile-section').classList.remove('hidden');
-            
-            // Update profile content
-            document.getElementById('viewed-username').textContent = data.username;
-            document.getElementById('viewed-profile-details').innerHTML = `
-                <p><i class="fas fa-user-tag mr-2"></i>${data.role}</p>
-                ${data.instrument ? `<p><i class="fas fa-music mr-2"></i>${data.instrument}</p>` : ''}
-            `;
-            
-            // Update stats
-            document.getElementById('total-posts').textContent = data.stats?.posts || 0;
-            document.getElementById('total-likes').textContent = data.stats?.likes || 0;
-            document.getElementById('total-comments').textContent = data.stats?.comments || 0;
-            
-            // Update follow button state
-            const followButton = document.getElementById('follow-button');
-            followButton.innerHTML = `<i class="fas fa-${data.isFollowing ? 'user-minus' : 'user-plus'} mr-2"></i>${data.isFollowing ? 'Unfollow' : 'Follow'}`;
-            
-            // Load user's posts
-            await loadUserPosts(username);
-        } catch (error) {
-            console.error('Error loading profile:', error);
-        }
+    function saveBackgroundColor() {
+        const color = document.getElementById('background-color-picker').value;
+        localStorage.setItem('backgroundColor', color);
+        document.body.style.backgroundColor = color;
+        hideColorPickerModal();
     }
 
-    // Add function to load user posts
-    async function loadUserPosts(username) {
-        try {
-            const response = await fetch(`/api/users/${username}/posts`);
-            if (!response.ok) throw new Error('Failed to fetch user posts');
-            const posts = await response.json();
-            
-            document.getElementById('user-posts-container').innerHTML = posts.map(post => `
-                <div class="bg-purple-900 bg-opacity-30 backdrop-blur-md rounded-lg p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-purple-700 rounded-full flex items-center justify-center mr-4">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold">${post.username}</p>
-                                <p class="text-sm text-purple-300">${new Date(post.time).toLocaleString()}</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-4">
-                            <button onclick="handleLike('${post.post_id}')" class="text-purple-300 hover:text-purple-100">
-                                <i class="fas fa-heart"></i> ${post.likes}
-                            </button>
-                            <button onclick="showComments('${post.post_id}')" class="text-purple-300 hover:text-purple-100">
-                                <i class="fas fa-comment"></i> ${post.comments}
-                            </button>
-                        </div>
-                    </div>
-                    ${post.content ? `<p class="mb-4">${post.content}</p>` : ''}
-                    ${post.type === 'image' ? `
-                        <img src="${post.file_url}" alt="Post image" class="rounded-lg max-h-96 w-full object-cover mb-4">
-                    ` : post.type === 'audio' ? `
-                        <audio src="${post.file_url}" controls class="w-full mb-4"></audio>
-                    ` : ''}
-                </div>
-            `).join('');
-        } catch (error) {
-            console.error('Error loading user posts:', error);
-        }
-    }
+    // Update color display when picker changes
+    document.getElementById('background-color-picker').addEventListener('input', (e) => {
+        document.getElementById('selected-color-hex').textContent = e.target.value;
+    });
 
-    // Update the initialization to handle URL-based profile loading
+    // Show color picker modal when button is clicked
+    document.getElementById('color-picker-btn').addEventListener('click', showColorPickerModal);
+
+    // Apply saved background color on page load
     document.addEventListener('DOMContentLoaded', () => {
-            const preloader = document.querySelector('.preloader');
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 3500);
-
-        fetchProfile();
-        
-        // Check if URL is a profile URL
-        const pathParts = window.location.pathname.split('/');
-        if (pathParts.length === 2 && pathParts[1]) {
-            loadProfileByUsername(pathParts[1]);
-        } else {
-            // Load feed as normal
-            fetchPosts();
-            fetchAudioPosts();
+        const savedColor = localStorage.getItem('backgroundColor');
+        if (savedColor) {
+            document.body.style.backgroundColor = savedColor;
+            document.getElementById('background-color-picker').value = savedColor;
+            document.getElementById('selected-color-hex').textContent = savedColor;
         }
     });
-    
-        let currentCardIndex = 0;
+        setTimeout(() => {
+      document.querySelector('.preloader').classList.add('fade-out');
+      setTimeout(() => {
+        document.querySelector('.preloader').style.display = 'none';
+      }, 500);
+    }, 1000);
         let posts = [];
         let lastUpdate = null;
 
@@ -417,133 +575,114 @@
                 const data = await response.json();
                 
                 if (data.posts) {
-                    posts = [...posts, ...data.posts];
+                    posts = data.posts;
                     lastUpdate = data.last_update;
-                    if (posts.length > 0 && !document.querySelector('.card')) {
-                        loadNextCard();
-                    }
+                    renderPosts();
+                    updateStats();
                 }
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
         }
+        document.querySelector('.chat-header').addEventListener('click', () => {
+    const chatWindow = document.querySelector('.chat-window');
+    chatWindow.classList.toggle('expanded');
+    const icon = chatWindow.querySelector('.fa-chevron-up');
+    icon.style.transform = chatWindow.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
+});
 
-        // Create a card element for a post
-        function createCard(post) {
-            const card = document.createElement('div');
-            card.className = 'card absolute inset-0 bg-gray-800 rounded-2xl shadow-xl overflow-hidden';
-            card.innerHTML = `
-                <img src="${post.file_url}" alt="Meme" class="w-full h-[400px] object-cover">
-                <div class="absolute top-4 right-4 bg-pink-500 rounded-full px-3 py-1 text-sm">
-                    <i class="fas fa-fire mr-1"></i>Trending
-                </div>
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div>
-                            <h3 class="text-xl font-bold">${post.username}</h3>
-                            <p class="text-sm text-gray-400">${post.content || 'Meme Lord Supreme'}</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-sm text-gray-400">
-                                <i class="fas fa-heart mr-1"></i>${post.likes} Likes
-                            </div>
-                            <div class="text-sm text-gray-400">
-                                <i class="fas fa-comment mr-1"></i>${post.comments} Comments
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
 
-        // Load the next card
-        function loadNextCard() {
-            const cardStack = document.getElementById('card-stack');
-            if (currentCardIndex >= posts.length) {
-                fetchPosts();
-                return;
-            }
-
-            const post = posts[currentCardIndex];
-            const newCard = createCard(post);
-            cardStack.innerHTML = '';
-            cardStack.appendChild(newCard);
-        }
-
-        // Swipe actions
-        function swipeLeft() {
-            const card = document.querySelector('.card');
-            card.classList.add('swiped-left');
-            setTimeout(() => {
-                currentCardIndex++;
-                loadNextCard();
-            }, 300);
-        }
-        function showConnectionPrompt(username) {
-        // Remove any existing prompts first
-        const existingPrompt = document.querySelector('.connection-prompt');
-        if (existingPrompt) {
-            existingPrompt.remove();
-        }
-
-        // Create new prompt
-        const prompt = document.createElement('div');
-        prompt.className = 'connection-prompt';
-        prompt.innerHTML = `
-            <i class="fas fa-heart text-2xl mb-2"></i>
-            <p>Connection request sent to ${username}!</p>
-        `;
-        
-        // Add to body
-        document.body.appendChild(prompt);
-
-        // Automatically remove after animation
-        setTimeout(() => {
-            if (prompt.parentNode) {
-                prompt.remove();
-            }
-        }, 3000);
+        // Render posts to the grid
+        function renderPosts() {
+      const postsGrid = document.getElementById('posts-grid');
+      postsGrid.innerHTML = posts.map(post => `
+        <div class="post-card" onclick="openModal('${post.file_url}', ${post.id})">
+          <img src="${post.file_url}" alt="Post" class="post-image">
+          <div class="post-content">
+            <div class="post-header">
+              <div class="post-username">${post.username}</div>
+              <div class="post-date">${new Date(post.created_at).toLocaleDateString()}</div>
+            </div>
+            <p class="post-caption">${post.content || ''}</p>
+          </div>
+        </div>
+      `).join('');
     }
 
-    async function swipeRight() {
-        const card = document.querySelector('.card');
-        card.classList.add('swiped-right');
-        
-        try {
-            // Get the user ID and username of the current post's creator
-            const currentPost = posts[currentCardIndex];
-            const destUserId = currentPost.user_id;
-            const username = currentPost.username;
+    // Modal Functions
+    const modal = document.getElementById('post-modal');
+    let currentPostId = null;
 
-            // Send connection request
-            const response = await fetch('/connect', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ dest_user_id: destUserId })
-            });
-
-            const result = await response.json();
-            
-            if (response.ok) {
-                // Show connection prompt
-                showConnectionPrompt(username);
-            } else {
-                // Handle error (e.g., connection already exists)
-                console.error(result.error);
-            }
-        } catch (error) {
-            console.error('Error sending connection request:', error);
-        }
-
-        // Move to next card
-        setTimeout(() => {
-            currentCardIndex++;
-            loadNextCard();
-        }, 300);
+    function openModal(imageUrl, postId) {
+      currentPostId = postId;
+      const modalImage = modal.querySelector('.modal-image');
+      modalImage.src = imageUrl;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      currentPostId = null;
+    }
+
+    // Vote Functions
+    async function vote(type) {
+      if (!currentPostId) return;
+      
+      try {
+        const response = await fetch(`/posts/${currentPostId}/vote`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ type })
+        });
+
+        if (response.ok) {
+          const button = modal.querySelector(`.${type}vote`);
+          const oppositeButton = modal.querySelector(`.${type === 'up' ? 'down' : 'up'}vote`);
+          
+          button.classList.toggle(`voted-${type}`);
+          oppositeButton.classList.remove(`voted-${type === 'up' ? 'down' : 'up'}`);
+        }
+      } catch (error) {
+        console.error('Error voting:', error);
+      }
+    }
+
+    // Event Listeners
+    document.querySelector('.modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.querySelector('.upvote').addEventListener('click', (e) => {
+      e.stopPropagation();
+      vote('up');
+    });
+
+    document.querySelector('.downvote').addEventListener('click', (e) => {
+      e.stopPropagation();
+      vote('down');
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+        // Update stats
+        function updateStats() {
+            const totalPosts = posts.length;
+            const totalLikes = posts.reduce((sum, post) => sum + post.likes, 0);
+            const totalComments = posts.reduce((sum, post) => sum + post.comment_count, 0);
+
+            document.getElementById('total-posts').textContent = totalPosts;
+            document.getElementById('total-likes').textContent = totalLikes;
+            document.getElementById('total-comments').textContent = totalComments;
+        }
 
         // Modal functions
         function showUploadModal() {
@@ -570,18 +709,31 @@
                 if (response.ok) {
                     const newPost = await response.json();
                     posts.unshift(newPost);
-                    currentCardIndex = 0;
-                    loadNextCard();
+                    renderPosts();
+                    updateStats();
                     hideUploadModal();
                 } else {
                     const error = await response.json();
-                    alert(error.error || 'Failed to upload meme');
+                    alert(error.error || 'Failed to upload post');
                 }
             } catch (error) {
-                console.error('Error uploading meme:', error);
-                alert('Failed to upload meme');
+                console.error('Error uploading post:', error);
+                alert('Failed to upload post');
             }
         });
+
+        // Navigate to profile
+        async function navigateToProfile(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/user/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const data = await response.json();
+                window.location.href = `/${data.username}`;
+            } catch (error) {
+                console.error('Error navigating to profile:', error);
+            }
+        }
 
         // Logout function
         async function logout() {
@@ -601,55 +753,8 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             fetchPosts();
-        });
-
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') swipeLeft();
-            if (e.key === 'ArrowRight') swipeRight();
-        });
-
-        // Touch controls
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            const card = document.querySelector('.card');
-            if (!card) return;
+            // Fetch posts every 30 seconds
             
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            const card = document.querySelector('.card');
-            if (!card || !touchStartX || !touchStartY) return;
-
-            const touchEndX = e.touches[0].clientX;
-            const touchEndY = e.touches[0].clientY;
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            const rotation = deltaX * 0.1;
-
-            card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
-        });
-
-        document.addEventListener('touchend', (e) => {
-            const card = document.querySelector('.card');
-            if (!card) return;
-
-            const touchEndX = e.changedTouches[0].clientX;
-            const deltaX = touchEndX - touchStartX;
-
-            if (Math.abs(deltaX) > 100) {
-                if (deltaX > 0) swipeRight();
-                else swipeLeft();
-            } else {
-                card.style.transform = '';
-            }
-
-            touchStartX = null;
-            touchStartY = null;
         });
     </script>
 </body>

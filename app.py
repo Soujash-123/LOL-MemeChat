@@ -156,6 +156,32 @@ def dashboard():
     except Exception as e:
         logger.error(f"Error fetching user list: {str(e)}")
         return render_template('dashboard.html', users=[])
+@app.route('/feed')
+@login_required
+def feedboard():
+    try:
+        all_users = list(users_collection.find(
+            {},
+            {'username': 1, 'user_id': 1, 'role': 1, 'instrument': 1, '_id': 0}
+        ))
+
+        user_list = []
+        for user in all_users:
+            key_doc = keys_collection.find_one({"user_id": user['user_id']})
+            if key_doc:
+                fernet = get_fernet(key_doc['key'])
+                user_info = {
+                    'username': user['username'],
+                    'role': decrypt_data(user['role'], fernet)
+                }
+                if 'instrument' in user:
+                    user_info['instrument'] = decrypt_data(user['instrument'], fernet)
+                user_list.append(user_info)
+
+        return render_template('feed.html', users=user_list)
+    except Exception as e:
+        logger.error(f"Error fetching user list: {str(e)}")
+        return render_template('feed.html', users=[])
 
 @app.route('/ping', methods=['GET'])
 def ping():
@@ -164,115 +190,208 @@ def ping():
         "message": "Pong!",
         "timestamp": datetime.utcnow().isoformat()
     }), 200
+
 # Authentication routes
 @app.route('/login', methods=['POST'])
 def login():
     try:
         data = request.json
-        username = data.get('username')
-        password = data.get('password')
+        login_method = data.get('loginMethod')
 
-        if not username or not password:
-            return jsonify({"error": "Missing required fields"}), 400
+        if login_method == 'google':
+            google_id = data.get('googleId')
+            email = data.get('email')
 
-        user = users_collection.find_one({"username": username})
-        if not user:
-            return jsonify({"error": "Invalid credentials"}), 401
+            if not google_id or not email:
+                return jsonify({"error": "Missing required fields"}), 400
 
-        key_doc = keys_collection.find_one({"user_id": user['user_id']})
-        if not key_doc:
-            return jsonify({"error": "Invalid credentials"}), 401
+            # Check if user exists in database
+            user = users_collection.find_one({"auth_type": "google", "email": email})
+            if not user:
+                return jsonify({
+                    "error": "No account found. Please sign up first.",
+                    "redirect": url_for('signup')
+                }), 401
 
-        fernet = get_fernet(key_doc['key'])
-        decrypted_password = decrypt_data(user['password'], fernet)
-        decrypted_role = decrypt_data(user['role'], fernet)
+            key_doc = keys_collection.find_one({"user_id": user['user_id']})
+            if not key_doc:
+                return jsonify({"error": "Invalid credentials"}), 401
 
-        if decrypted_password != hash_password(password):
-            return jsonify({"error": "Invalid credentials"}), 401
+            fernet = get_fernet(key_doc['key'])
+            decrypted_role = decrypt_data(user['role'], fernet)
 
-        session.permanent = True
-        session['user_id'] = user['user_id']
-        session['username'] = user['username']
-        session['role'] = decrypted_role
+            session.permanent = True
+            session['user_id'] = user['user_id']
+            session['username'] = user['username']
+            session['role'] = decrypted_role
 
-        logger.info(f"User logged in: {username}")
-        return jsonify({
-            "message": "Login successful",
-            "redirect": url_for('dashboard')
-        }), 200
+            logger.info(f"User logged in via Google: {user['username']}")
+            return jsonify({
+                "message": "Login successful",
+                "redirect": url_for('dashboard')
+            }), 200
+
+        else:  # Regular email/password login
+            username = data.get('username')
+            password = data.get('password')
+
+            if not username or not password:
+                return jsonify({"error": "Missing required fields"}), 400
+
+            user = users_collection.find_one({"username": username})
+            if not user:
+                return jsonify({
+                    "error": "No account found. Please sign up first.",
+                    "redirect": url_for('signup')
+                }), 401
+
+            if user.get('auth_type') == 'google':
+                return jsonify({"error": "Please use Google Sign-in for this account"}), 400
+
+            key_doc = keys_collection.find_one({"user_id": user['user_id']})
+            if not key_doc:
+                return jsonify({"error": "Invalid credentials"}), 401
+
+            fernet = get_fernet(key_doc['key'])
+            decrypted_password = decrypt_data(user['password'], fernet)
+            decrypted_role = decrypt_data(user['role'], fernet)
+
+            if decrypted_password != hash_password(password):
+                return jsonify({"error": "Invalid credentials"}), 401
+
+            session.permanent = True
+            session['user_id'] = user['user_id']
+            session['username'] = user['username']
+            session['role'] = decrypted_role
+
+            logger.info(f"User logged in: {username}")
+            return jsonify({
+                "message": "Login successful",
+                "redirect": url_for('dashboard')
+            }), 200
 
     except Exception as e:
         logger.error(f"Login error: {str(e)}")
         return jsonify({"error": "An error occurred during login"}), 500
+
+        
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'GET':
         return render_template('signup.html')
-
+    
     try:
-        # Retrieve form data
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        confirm_password = request.form.get('confirm-password')
-        meme_preference = request.form.get('meme-preference', '')
-
-        # Validate required fields
-        if not all([username, email, password, confirm_password]):
-            return jsonify({"error": "Missing required fields"}), 400
-
-        # Validate password match
-        if password != confirm_password:
-            return jsonify({"error": "Passwords do not match"}), 400
-
-        # Generate encryption
-        user_id = str(uuid.uuid4())
-        encryption_key = generate_key()
-        fernet = get_fernet(encryption_key)
-
-        # Handle meme uploads
-        '''meme_urls = []
-        for i in range(1, 5):  # Handle up to 4 meme uploads
-            meme_file = request.files.get(f'meme{i}')
-            if meme_file:
-                meme_result = upload_image(meme_file)
-                if meme_result:
-                    meme_urls.append(meme_result['file_url'])'''
-
-        # Prepare user data
-        user = {
-            "user_id": user_id,
-            "username": username,
-            "email": encrypt_data(email, fernet),
-            "password": encrypt_data(hash_password(password), fernet),
-            "role": encrypt_data("User", fernet),
-            "meme_preference": encrypt_data(meme_preference, fernet) if meme_preference else None,
-            #"meme_urls": encrypt_data(json.dumps(meme_urls), fernet) if meme_urls else None,
-            "created_at": datetime.utcnow()
+        meme_music_mapping = {
+            "dark": "metal",
+            "wholesome": "acoustic",
+            "sarcastic": "punk rock",
+            "dank": "lofi",
+            "edgy": "industrial",
+            "random": "electronic"
         }
 
+        # Check if the request is from Google Sign-in
+        if request.is_json:
+            data = request.get_json()
+            
+            # Extract Google user data
+            username = data.get('username')
+            email = data.get('email')
+            google_id = data.get('googleId')
+            photo_url = data.get('photoURL')
+            
+            # Validate required fields
+            if not all([username, email, google_id]):
+                return jsonify({"error": "Missing required fields"}), 400
+            
+            # Generate encryption
+            user_id = str(uuid.uuid4())
+            encryption_key = generate_key()
+            fernet = get_fernet(encryption_key)
+            
+            # Assign random meme preference
+            meme_preference = random.choice(list(meme_music_mapping.keys()))
+            music_preference = meme_music_mapping[meme_preference]
+            
+            # Prepare user data for Google sign-in
+            user = {
+                "user_id": user_id,
+                "username": username,
+                "email": email,
+                "google_id": encrypt_data(google_id, fernet),
+                "photo_url": encrypt_data(photo_url, fernet) if photo_url else None,
+                "role": encrypt_data("User", fernet),
+                "auth_type": "google",
+                "meme_preference": encrypt_data(meme_preference, fernet),
+                "music_preference": encrypt_data(music_preference, fernet),
+                "created_at": datetime.utcnow()
+            }
+            
+        else:
+            # Regular form signup
+            username = request.form.get('username')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            confirm_password = request.form.get('confirm-password')
+            meme_preference = request.form.get('meme-preference', '')
+            
+            # Validate required fields
+            if not all([username, email, password, confirm_password]):
+                return jsonify({"error": "Missing required fields"}), 400
+                
+            # Validate password match
+            if password != confirm_password:
+                return jsonify({"error": "Passwords do not match"}), 400
+            
+            # Generate encryption
+            user_id = str(uuid.uuid4())
+            encryption_key = generate_key()
+            fernet = get_fernet(encryption_key)
+            
+            # Determine music preference based on meme preference
+            music_preference = meme_music_mapping.get(meme_preference, "unknown")
+            
+            # Prepare user data for regular signup
+            user = {
+                "user_id": user_id,
+                "username": username,
+                "email": encrypt_data(email, fernet),
+                "password": encrypt_data(hash_password(password), fernet),
+                "role": encrypt_data("User", fernet),
+                "meme_preference": encrypt_data(meme_preference, fernet) if meme_preference else None,
+                "music_preference": encrypt_data(music_preference, fernet),
+                "auth_type": "email",
+                "created_at": datetime.utcnow()
+            }
+
+        # Check if username or email already exists
+        existing_user = users_collection.find_one({"username": username})
+        if existing_user:
+            return jsonify({"error": "Username already exists"}), 400
+            
         # Prepare encryption key document
         key_doc = {
             "user_id": user_id,
             "key": encryption_key
         }
-
+        
         # Insert user and key documents
         users_collection.insert_one(user)
         keys_collection.insert_one(key_doc)
-
+        
         # Set up session for the new user
         session.permanent = True
         session['user_id'] = user_id
         session['username'] = username
         session['role'] = "User"  # Default role for new users
-
-        logger.info(f"New user registered: {username}")
+        
+        logger.info(f"New user registered: {username} via {'Google' if request.is_json else 'email'}")
+        
         return jsonify({
-            "message": "Signup successful", 
+            "message": "Signup successful",
             "redirect": url_for('dashboard')
         }), 201
-
+        
     except DuplicateKeyError:
         return jsonify({
             "error": "Username or email already exists"
@@ -282,7 +401,67 @@ def signup():
         return jsonify({
             "error": "An error occurred during signup"
         }), 500
+
+from flask import render_template, request
+import requests
+
+BASE_URL = "https://discoveryprovider2.audius.co"
+
+@app.route('/music-feed', methods=['GET'])
+@login_required
+def search_songs():
+    query = request.args.get('query', 'trending')
+
+    if query.lower() == "trending":
+        url = f"{BASE_URL}/v1/tracks/trending"
+    else:
+        url = f"{BASE_URL}/v1/tracks/search?query={query}"
+
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        results = []
+
+        for track in data.get("data", []):
+            track_id = track.get("id")
+            stream_url = f"{BASE_URL}/v1/tracks/{track_id}/stream"
+
+            results.append({
+                "id": track_id,
+                "title": track["title"],
+                "album": track.get("album", "N/A"),  # Audius API doesn't have albums
+                "artist": track["user"]["name"],
+                "genre": track.get("genre", "Unknown"),
+                "link": track.get("permalink", "#"),
+                "image": track.get("artwork", {}).get("150x150", ""),  # Fetch artwork
+                "stream_url": stream_url
+            })
+
+        return render_template('music-feed.html', songs=results, query=query)
+    else:
+        return render_template('music-feed.html', error="Failed to fetch data", songs=[], query=query)
     
+@app.route('/stream/<song_id>', methods=['GET'])
+def stream_song(song_id):
+    # Fetch the song details including streaming URL
+    url = f"https://jiosaavn-api.vercel.app/song?id={song_id}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        song_data = response.json()
+        # Get the actual streaming URL
+        stream_url = song_data.get('media_url')
+        
+        if stream_url:
+            # Redirect to the actual streaming URL
+            return redirect(stream_url)
+        else:
+            return jsonify({"error": "No streaming URL found"}), 404
+    else:
+        return jsonify({"error": "Failed to fetch song data"}), response.status_code
+    
+
 # Define keyword-based mapping to templates
 template_mapping = {
     "aliens": "aag",
@@ -721,6 +900,146 @@ def handle_posts():
             logger.error(f"Error creating post: {str(e)}")
             return jsonify({"error": "An error occurred creating post"}), 500
 
+@app.route('/feed', methods=['GET', 'POST'])
+@login_required
+def handle_feed():
+    if request.method == 'GET':
+        try:
+            # Get the last update timestamp if provided
+            last_update = request.args.get('last_update', None)
+            user_id = session.get('user_id')  # Get the logged-in user ID
+            user_data = users_collection.find_one({"user_id": user_id})
+            
+            if not user_data:
+                return jsonify({"error": "User not found"}), 404
+            
+            # Retrieve user's encryption key
+            key_doc = keys_collection.find_one({"user_id": user_id})
+            if not key_doc:
+                return jsonify({"error": "Encryption key not found"}), 401
+            
+            fernet = get_fernet(key_doc['key'])
+            
+            # Decrypt user's genre preference
+            encrypted_genre = user_data.get("meme_preferences", {}).get("genre", None)
+            user_genre_preference = decrypt_data(encrypted_genre, fernet) if encrypted_genre else None
+            
+            query = {}  # Fetch all posts without filtering by user_id
+            
+            if last_update:
+                query['created_at'] = {'$gt': datetime.fromisoformat(last_update)}
+            
+            # Retrieve all posts
+            all_posts = list(posts_collection.find(query, {
+                '_id': 0,
+                'username': 1,
+                'created_at': 1,
+                'file_url': 1,
+                'likes': 1,
+                'comment_count': 1,
+                'content': 1,
+                'type': 1,
+                'user_id': 1
+            }))
+            
+            # Remove posts belonging to the logged-in user
+            filtered_posts = [post for post in all_posts if post['user_id'] != user_id]
+            
+            def preference_match(post):
+                post_user = users_collection.find_one({"user_id": post["user_id"]})
+                if not post_user:
+                    return 0
+                
+                # Retrieve and decrypt post creator's genre preference
+                key_doc = keys_collection.find_one({"user_id": post["user_id"]})
+                if not key_doc:
+                    return 0
+                
+                fernet = get_fernet(key_doc['key'])
+                encrypted_post_genre = post_user.get("meme_preferences", {}).get("genre", None)
+                post_genre_preference = decrypt_data(encrypted_post_genre, fernet) if encrypted_post_genre else None
+                
+                # Return 1 if genres match, else 0
+                return 1 if user_genre_preference and user_genre_preference == post_genre_preference else 0
+            
+            # Sort posts by preference match and get latest post per user
+            sorted_posts = sorted(filtered_posts, key=lambda post: (preference_match(post), post['created_at']), reverse=True)
+            
+            # Keep only the most recent post from each user
+            seen_users = set()
+            unique_user_posts = []
+            for post in sorted_posts:
+                if post['user_id'] not in seen_users:
+                    unique_user_posts.append(post)
+                    seen_users.add(post['user_id'])
+            print(unique_user_posts)
+            return jsonify({
+                'posts': unique_user_posts,
+                'last_update': datetime.now().isoformat()
+            }), 200
+        except Exception as e:
+            logger.error(f"Error fetching posts: {str(e)}")
+            return jsonify({"error": "An error occurred while fetching posts"}), 500
+
+    elif request.method == 'POST':
+        try:
+            # Validate request data
+            post_type = request.form.get('type')
+            content = request.form.get('content', '')
+            file = request.files.get('post-file')
+
+            if not file:
+                return jsonify({"error": "No file provided"}), 400
+            if not post_type:
+                return jsonify({"error": "Post type is required"}), 400
+
+            # Check file type
+            allowed_image_types = {'image/jpeg', 'image/png', 'image/gif'}
+            allowed_audio_types = {'audio/mpeg', 'audio/wav', 'audio/mp3'}
+            file_type = file.content_type
+
+            if post_type == 'image' and file_type not in allowed_image_types:
+                return jsonify({"error": "Invalid image format"}), 400
+            elif post_type == 'audio' and file_type not in allowed_audio_types:
+                return jsonify({"error": "Invalid audio format"}), 400
+
+            # Upload file to Appwrite
+            upload_result = upload_image(file)
+            if not upload_result:
+                return jsonify({"error": "Failed to upload file"}), 500
+
+            # Create post in MongoDB
+            post_data = {
+                "post_id": str(uuid.uuid4()),
+                "user_id": session['user_id'],
+                "username": session['username'],
+                "type": post_type,
+                "content": content,
+                "file_url": upload_result['file_url'],
+                "file_id": upload_result['file_id'],
+                "created_at": datetime.utcnow(),
+                "likes": 0,
+                "likes_by": [],
+                "comment_count": 0
+            }
+
+            result = posts_collection.insert_one(post_data)
+            if not result.inserted_id:
+                # If MongoDB insert fails, attempt to delete the uploaded file
+                try:
+                    delete_file_from_appwrite(upload_result['file_id'])
+                except Exception as e:
+                    logger.error(f"Failed to cleanup Appwrite file after MongoDB error: {str(e)}")
+                return jsonify({"error": "Failed to create post"}), 500
+
+            post_data.pop('_id', None)
+            logger.info(f"Post created successfully by {session['username']}")
+            return json.loads(json.dumps(post_data, default=mongo_json_serializer)), 201
+
+        except Exception as e:
+            logger.error(f"Error creating post: {str(e)}")
+            return jsonify({"error": "An error occurred creating post"}), 500
+        
 
 @app.route('/files/<file_id>')
 def serve_file(file_id):

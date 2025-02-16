@@ -18,7 +18,7 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            animation: fadeOut 0.5s ease 5s forwards;
+            animation: fadeOut 0.5s ease 1s forwards;
         }
         
         .logo {
@@ -72,6 +72,20 @@
                     <i class="fas fa-heart mr-3"></i>
                     Login
                 </h2>
+
+                <!-- Google Sign-in Button -->
+                <button id="google-signin" class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center mb-6 transition duration-300">
+                    <img src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/6.0.0/google.svg" class="w-5 h-5 mr-2" alt="Google logo">
+                    Sign in with Google
+                </button>
+                
+                <div class="relative my-6">
+                    <hr class="border-t border-white/30">
+                    <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-transparent px-4 text-white text-sm">
+                        or
+                    </span>
+                </div>
+
                 <form id="login-form" class="space-y-4">
                     <div>
                         <label for="login-username" class="block text-sm font-medium mb-1">Username</label>
@@ -124,7 +138,11 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ 
+                    username, 
+                    password,
+                    loginMethod: 'email'
+                }),
             })
             .then(response => response.json())
             .then(data => {
@@ -138,6 +156,69 @@
             .catch(error => {
                 alert('An error occurred during login. Please try again.');
             });
+        });
+    </script>
+
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLblSMwAUztf-ciQqIzLUe9jeYWvvqDrk",
+            authDomain: "lol-mchat.firebaseapp.com",
+            projectId: "lol-mchat",
+            storageBucket: "lol-mchat.firebasestorage.app",
+            messagingSenderId: "764134602597",
+            appId: "1:764134602597:web:ae4a6537626170cb4d938c",
+            measurementId: "G-1TRKSZ3GHP"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Add Google Sign-in handler
+        document.getElementById('google-signin').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    
+                    fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            googleId: user.uid,
+                            email: user.email,
+                            loginMethod: 'google'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            alert(data.message);
+                            window.location.href = '/dashboard';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Login error:', error);
+                        alert('An error occurred during login. Please try again.');
+                    });
+                })
+                .catch((error) => {
+                    console.error('Google Sign-in error:', error);
+                    alert('An error occurred during Google sign-in. Please try again.');
+                });
         });
     </script>
 </body>

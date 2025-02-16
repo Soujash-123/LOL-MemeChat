@@ -42,6 +42,59 @@
         .active-chat {
             background-color: rgba(255, 105, 180, 0.1);
         }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: calc(100vh - 2rem);
+            }
+
+            .mobile-nav {
+                display: none;
+                position: fixed;
+                top: 4rem;
+                left: 0;
+                right: 0;
+                background-color: #1a202c;
+                padding: 1rem;
+                z-index: 40;
+            }
+
+            .mobile-nav.show {
+                display: block;
+            }
+
+            .chat-list-mobile {
+                position: fixed;
+                left: 0;
+                top: 4rem;
+                bottom: 0;
+                width: 100%;
+                z-index: 30;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                background-color: #1a202c;
+            }
+
+            .chat-list-mobile.show {
+                transform: translateX(0);
+            }
+
+            .chat-window-mobile {
+                position: fixed;
+                left: 0;
+                top: 4rem;
+                bottom: 0;
+                width: 100%;
+                z-index: 20;
+                background-color: #1a202c;
+            }
+
+            .messages-container {
+                height: calc(100vh - 14rem);
+            }
+        }
+        
     </style>
 </head>
 <body class="bg-gray-900 text-white">
@@ -53,15 +106,33 @@
                     <h1 class="text-3xl font-bold">
                         L<span class="heart-logo">❤</span>L
                     </h1>
+                    <!-- Mobile menu button -->
+                    <button id="mobile-menu-button" class="ml-4 md:hidden">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <!-- Mobile chat list toggle -->
+                    <button id="chat-list-toggle" class="ml-4 md:hidden">
+                        <i class="fas fa-comments"></i>
+                    </button>
                 </div>
-                <div class="flex items-center space-x-6">
+                <!-- Desktop navigation -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/feed" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-heart mr-2"></i>Feed
+                    </a>
                     <a href="/dashboard" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-home mr-2"></i>Feed
+                        <i class="fas fa-home mr-2"></i>Dashboard
+                    </a>
+                    <a href="/create" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-plus mr-2"></i>Create with AI
+                    </a>
+                    <a href="/chat" class="text-gray-300 hover:text-pink-500">
+                        <i class="fas fa-comments mr-2"></i>Chat
                     </a>
                     <a href="/list_connect" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-heart mr-2"></i>Matches
+                        <i class="fas fa-users mr-2"></i>Matches
                     </a>
-                    <a href="#" class="text-gray-300 hover:text-pink-500">
+                    <a href="#" onclick="navigateToProfile(event)" class="text-gray-300 hover:text-pink-500">
                         <i class="fas fa-user mr-2"></i>Profile
                     </a>
                     <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
@@ -70,12 +141,36 @@
                 </div>
             </div>
         </div>
+        <!-- Mobile navigation menu -->
+        <div id="mobile-nav" class="mobile-nav md:hidden">
+            <a href="/feed" class="nav-link">
+                <i class="fas fa-heart"></i>Feed
+            </a>
+            <a href="/dashboard" class="nav-link">
+                <i class="fas fa-home"></i>Dashboard
+            </a>
+            <a href="/create" class="nav-link">
+                <i class="fas fa-plus"></i>Create with AI
+            </a>
+            <a href="/chat" class="nav-link">
+                <i class="fas fa-comments"></i>Chat
+            </a>
+            <a href="/list_connect" class="nav-link">
+                <i class="fas fa-users"></i>Matches
+            </a>
+            <a href="#" class="nav-link" onclick="navigateToProfile(event)">
+                <i class="fas fa-user"></i>Profile
+            </a>
+            <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit; text-align: left; width: 100%;">
+                <i class="fas fa-sign-out-alt"></i>Logout
+            </button>
+        </div>
     </nav>
 
     <!-- Chat Interface -->
     <div class="chat-container flex pt-16">
         <!-- Chat List -->
-        <div class="w-1/3 border-r border-gray-800">
+        <div class="chat-list-mobile md:relative md:w-1/3 bg-gray-900 border-r border-gray-800">
             <div class="p-4 border-b border-gray-800">
                 <div class="relative">
                     <input type="text" 
@@ -90,6 +185,7 @@
                 {% for chat in chat_users %}
                 <div class="chat-item p-4 border-b border-gray-800 hover:bg-gray-800 cursor-pointer" 
                      onclick="loadChat('{{ chat._id }}')"
+                     data-chat-id="{{ chat._id }}"
                      data-user-id="{{ chat.user_id }}"
                      data-dest-user-id="{{ chat.dest_user_id }}">
                     <div class="flex items-center">
@@ -115,7 +211,7 @@
         </div>
 
         <!-- Chat Window -->
-        <div class="flex-1 flex flex-col">
+        <div class="chat-window-mobile flex-1 flex flex-col">
             <!-- Chat Header -->
             <div id="chat-header" class="p-4 border-b border-gray-800 flex items-center">
                 <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
@@ -187,6 +283,28 @@
             }
         }
 
+        // Send a message
+        async function sendMessage(content) {
+            if (!currentChatId || !content.trim()) return;
+            
+            try {
+                const response = await fetch(`/chat/${currentChatId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: content.trim() })
+                });
+                
+                if (!response.ok) throw new Error('Failed to send message');
+                
+                // Reload chat to show new message
+                await loadChat(currentChatId);
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
+
         // Update the chat UI with messages
         function updateChatUI(chat) {
             const messagesContainer = document.getElementById('messages-container');
@@ -225,36 +343,7 @@
             return div;
         }
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatInput = document.getElementById('chat-input');
-            const sendButton = document.getElementById('send-message');
-            
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && chatInput.value.trim()) {
-                    sendMessage(chatInput.value);
-                    chatInput.value = '';
-                }
-            });
-            
-            sendButton.addEventListener('click', () => {
-                if (chatInput.value.trim()) {
-                    sendMessage(chatInput.value);
-                    chatInput.value = '';
-                }
-            });
-            
-            // Search functionality
-            const searchInput = document.getElementById('chat-search');
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    const username = item.querySelector('h3').textContent.toLowerCase();
-                    item.style.display = username.includes(searchTerm) ? 'block' : 'none';
-                });
-            });
-        });
-
+        // Logout function
         async function logout() {
             try {
                 const response = await fetch('/logout');
@@ -268,6 +357,79 @@
                 alert('Failed to logout');
             }
         }
-    </script>
+
+        // Initialize mobile navigation and event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileNav = document.getElementById('mobile-nav');
+            const chatListToggle = document.getElementById('chat-list-toggle');
+            const chatList = document.querySelector('.chat-list-mobile');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-message');
+            
+            // Toggle mobile navigation
+            mobileMenuButton.addEventListener('click', () => {
+                mobileNav.classList.toggle('show');
+            });
+            
+            // Toggle chat list on mobile
+            chatListToggle.addEventListener('click', () => {
+                chatList.classList.toggle('show');
+            });
+            
+            // Hide chat list when a chat is selected (mobile only)
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        chatList.classList.remove('show');
+                    }
+                });
+            });
+            
+            // Close mobile nav when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileNav.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                    mobileNav.classList.remove('show');
+                }
+            });
+            
+            // Handle message input
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && chatInput.value.trim()) {
+                    sendMessage(chatInput.value);
+                    chatInput.value = '';
+                }
+            });
+            
+            sendButton.addEventListener('click', () => {
+                if (chatInput.value.trim()) {
+                    sendMessage(chatInput.value);
+                    chatInput.value = '';
+                }
+            });
+            // Search functionality
+            const searchInput = document.getElementById('chat-search');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    const username = item.querySelector('h3').textContent.toLowerCase();
+                    item.style.display = username.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    // Reset mobile navigation elements when switching to desktop
+                    mobileNav.classList.remove('show');
+                    chatList.classList.remove('show');
+                }
+            });
+
+            
+        });
+
+        
+        </script>
 </body>
 </html>
