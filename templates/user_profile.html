@@ -55,6 +55,67 @@
         border-radius: 0.5rem;
         border: 2px solid #4a5568;
     }
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+    }
+    
+    .heart-logo {
+        animation: heartbeat 1.5s infinite;
+        display: inline-block;
+        color: #ec4899;
+    }
+
+    .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+    
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-link i {
+        width: 1.5rem;
+        text-align: center;
+    }
+    
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #ec4899, #f43f5e);
+        transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .nav-link span {
+            display: none;
+        }
+        
+        .nav-link {
+            padding: 0.5rem;
+        }
+    }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
