@@ -101,8 +101,8 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 350px;
-            height: calc(100vh - 5rem);
+            width: 400px;
+            height: calc(90vh - 5rem);
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -113,7 +113,7 @@
         }
 
         .music-feed-container.collapsed {
-            transform: translateX(calc(100% + 2rem));
+            transform: translateX(calc(100% + 0));
             opacity: 0;
             pointer-events: none;
         }
@@ -134,32 +134,33 @@
         .close-music:hover {
             transform: scale(1.1);
         }
-        
+
+        /* Chat window styles */
         .chat-window {
             position: fixed;
-            bottom: 1rem;
+            bottom: 0;
             right: 2rem;
             width: 450px;
-            height: calc(70vh - 2rem);
+            height: 600px;
             z-index: 40;
             transition: transform 0.3s ease;
-            border-radius: 1rem;
+            border-radius: 1rem 1rem 0 0;
             box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(calc(100% - 48px));
         }
-        
-        .chat-window.collapsed {
-            transform: translateY(calc(50vh - 70px));
-        }
-        
+
         .chat-header {
             padding: 1rem;
-            bottom : 0.5rem;
             background: linear-gradient(135deg, #6366f1, #4f46e5);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 48px;
+            min-height: 48px;
         }
 
         .sidebar-content {
@@ -169,10 +170,23 @@
             background: transparent;
         }
 
+        .chat-window.expanded {
+            transform: translateY(0);
+        }
+
+        .chat-toggle {
+            transition: transform 0.3s ease;
+        }
+
+        .chat-window.expanded .chat-toggle {
+            transform: rotate(180deg);
+        }
+
         .post-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
+            padding: 1rem;
         }
 
         .nav-link {
@@ -209,33 +223,120 @@
             width: 100%;
         }
 
-        .stats-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
-            padding: 1rem;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-        
-        .post-card:hover .stats-overlay {
-            opacity: 1;
-        }
-        
-        .interaction-stats {
-            display: flex;
-            justify-content: space-between;
-            color: white;
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        /* Responsive styles */
+        @media (max-width: 1024px) {
+            .chat-window {
+                width: 350px;
+            }
+            
+            .music-feed-container {
+                width: 400px;
+            height: calc(90vh - 5rem);
+            }
+            
+            .main-container {
+                max-width: calc(100% - 2rem);
+                margin-right: 1rem;
+                margin-left: 1rem;
+            }
         }
 
+        @media (max-width: 768px) {
+            /* Hide chat window on mobile */
+            .chat-window {
+                display: none;
+            }
+            
+            /* Full width container on mobile */
+            .main-container {
+                max-width: 100%;
+                margin: 0 1rem;
+            }
+            
+            /* Adjust navigation for mobile */
+            .nav-link span {
+                display: none;
+            }
+            
+            .nav-link {
+                padding: 0.5rem;
+            }
+            
+            /* Adjust post grid for mobile */
+            .post-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            /* Adjust floating buttons for mobile */
+            .floating-button {
+                bottom: 1rem;
+                right: 1rem;
+            }
+            
+            #color-picker-btn {
+                bottom: 5rem;
+                right: 1rem;
+            }
+            
+            /* Music feed adjustments for mobile */
+            .music-feed-container {
+                width: 100%;
+                right: 0;
+                height: 300px;
+                border-radius: 0;
+            }
+            
+            .music-feed-container.collapsed {
+                transform: translateY(-100%);
+            }
+            
+            .music-toggle-btn {
+                right: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-link {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .post-card {
+                margin-bottom: 1rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 0 auto;
+            }
+            
+            .upload-modal .glass-card {
+                width: 90%;
+                margin: 0 auto;
+            }
+        }
+
+        /* Color picker styles */
+        #background-color-picker {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        #background-color-picker::-webkit-color-swatch {
+            border-radius: 0.5rem;
+            border: 2px solid #4a5568;
+        }
+
+        #background-color-picker::-moz-color-swatch {
+            border-radius: 0.5rem;
+            border: 2px solid #4a5568;
+        }
+
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -252,156 +353,26 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s ease;
         }
 
-        .modal-content {
-            position: relative;
-            max-width: 90vw;
-            max-height: 90vh;
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .modal-image {
-            max-width: 100%;
-            max-height: 80vh;
-            object-fit: contain;
-        }
-
-        .modal-close {
+        .stats-overlay {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(55, 65, 81, 0.7);
-            border: none;
-            color: white;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s ease;
-            z-index: 1010;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            padding: 1rem;
+            transition: opacity 0.3s ease;
+            opacity: 0;
         }
-
-        .vote-buttons {
-            position: absolute;
-            right: 1rem;
-            bottom: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            background: rgba(55, 65, 81, 0.7);
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            backdrop-filter: blur(5px);
+        
+        .post-card:hover .stats-overlay {
+            opacity: 1;
         }
-
-        .vote-button {
-            background: transparent;
-            border: none;
-            color: white;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .voted-up {
-            color: #10B981;
-        }
-
-        .voted-down {
-            color: #EF4444;
-        }
-
-        @media (max-width: 1024px) {
-            .music-feed-container {
-                width: 300px;
-            }
-            
-            .chat-window {
-                width: 300px;
-            }
-
-            .main-container {
-                max-width: calc(100% - 350px);
-                margin-right: 350px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-link span {
-                display: none;
-            }
-            
-            .nav-link {
-                padding: 0.5rem;
-            }
-
-            .music-feed-container {
-                position: fixed;
-                width: 100%;
-                right: 0;
-                height: 300px;
-                border-radius: 0;
-            }
-            
-            .music-feed-container.collapsed {
-                transform: translateY(-100%);
-            }
-            
-            .music-toggle-btn {
-                position: fixed;
-                right: 2rem;
-            }
-
-            .chat-window {
-                width: 100%;
-                right: 0;
-                border-radius: 0;
-            }
-
-            .main-container {
-                max-width: 100%;
-                margin-right: 0;
-            }
-            
-            .post-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        #background-color-picker {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-#background-color-picker::-webkit-color-swatch {
-    border-radius: 0.5rem;
-    border: 2px solid #4a5568;
-}
-
-#background-color-picker::-moz-color-swatch {
-    border-radius: 0.5rem;
-    border: 2px solid #4a5568;
-}
     </style>
 </head>
-<body class="text-white min-h-screen">
+<body>
+    <!-- Rest of your HTML content remains the same -->
     <!-- Navigation -->
     <nav class="glass-card fixed w-full top-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
@@ -448,32 +419,10 @@
             </div>
         </div>
     </nav>
-    <!-- Color Picker Button -->
-<!-- Color Picker Button -->
-<button id="color-picker-btn" class="floating-button w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform" style="position: fixed; right: 2rem; bottom: 8rem; background: linear-gradient(135deg, #FF69B4, #FF1493);">
-  <i class="fas fa-palette"></i>
-</button>
 
-<!-- Color Picker Modal -->
-<div id="color-picker-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-  <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
-      <h2 class="text-2xl font-bold mb-4">Choose Background Color</h2>
-      <div class="mb-6">
-          <input type="color" id="background-color-picker" class="w-full h-14 cursor-pointer">
-      </div>
-      <div class="mb-4">
-          <p class="text-sm text-gray-400">Selected color: <span id="selected-color-hex">#000000</span></p>
-      </div>
-      <div class="flex justify-end space-x-4">
-          <button onclick="hideColorPickerModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
-          <button onclick="saveBackgroundColor()" class="px-4 py-2 rounded-lg hover:opacity-90" style="background: linear-gradient(135deg, #FF69B4, #FF1493);">Save</button>
-      </div>
-  </div>
-</div>
     <!-- Main Content -->
     <div class="pt-20">
         <div class="main-container">
-            <!-- Posts Grid -->
             <div class="post-grid" id="posts-grid">
                 <!-- Posts will be dynamically inserted here -->
             </div>
@@ -481,12 +430,10 @@
 
         <!-- Music Feed -->
         <div class="music-feed-wrapper">
-            <!-- Music Toggle Button -->
             <button class="music-toggle-btn glass-card">
                 <i class="fas fa-headphones text-2xl"></i>
             </button>
             
-            <!-- Music Feed Container -->
             <div class="music-feed-container collapsed">
                 <div class="music-header">
                     <span class="font-medium">Your Music Vibe</span>
@@ -496,7 +443,7 @@
             </div>
         </div>
 
-        <!-- Chat Window -->
+        <!-- Chat Window (hidden on mobile) -->
         <div class="chat-window glass-card">
             <div class="chat-header" id="chat-header">
                 <span class="font-medium">Chat</span>
@@ -505,120 +452,176 @@
             <iframe src="/chat" class="sidebar-content" id="chat-iframe"></iframe>
         </div>
 
-        <!-- Floating Post Button -->
-       <!-- Continuing from floating button -->
-       <button onclick="showUploadModal()" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform">
-        <i class="fas fa-plus"></i>
-    </button>
-</div>
-
-<!-- Post Modal -->
-<div id="post-modal" class="modal">
-    <div class="modal-content">
-        <button class="modal-close">
-            <i class="fas fa-times"></i>
+        <!-- Floating Buttons -->
+        <button id="color-picker-btn" class="floating-button w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #FF69B4, #FF1493);">
+            <i class="fas fa-palette"></i>
         </button>
-        <img class="modal-image" src="" alt="Post">
-        <div class="vote-buttons">
-            <button class="vote-button upvote">
-                <i class="fas fa-arrow-up"></i>
+
+        <button onclick="showUploadModal()" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform">
+            <i class="fas fa-plus"></i>
+        </button>
+        <!-- Color Picker Modal -->
+    <div id="color-picker-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-4">Choose Background Color</h2>
+            <div class="mb-6">
+                <input type="color" id="background-color-picker" class="w-full h-14 cursor-pointer">
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-400">Selected color: <span id="selected-color-hex">#000000</span></p>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button onclick="hideColorPickerModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
+                <button onclick="saveBackgroundColor()" class="px-4 py-2 rounded-lg hover:opacity-90" style="background: linear-gradient(135deg, #FF69B4, #FF1493);">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Modal -->
+    <div id="post-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">
+                <i class="fas fa-times"></i>
             </button>
-            <button class="vote-button downvote">
-                <i class="fas fa-arrow-down"></i>
-            </button>
+            <img class="modal-image" src="" alt="Post">
+            <div class="vote-buttons">
+                <button class="vote-button upvote">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+                <button class="vote-button downvote">
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
+        <div class="glass-card p-6 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-4">Share Your Moment</h2>
+            <form id="upload-form" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <div class="border-2 border-dashed border-pink-500 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-700 transition-colors" onclick="document.getElementById('post-file').click()">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-pink-500 mb-4"></i>
+                        <p>Drop your content here or click to upload</p>
+                        <input type="file" id="post-file" name="post-file" class="hidden" accept="image/*">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <input type="text" name="content" placeholder="What's on your mind?" class="w-full bg-gray-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90 transition">Post</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- Upload Modal -->
-<div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
-    <div class="glass-card p-6 max-w-md w-full mx-4">
-        <h2 class="text-2xl font-bold mb-4">Share Your Moment</h2>
-        <form id="upload-form" enctype="multipart/form-data">
-            <div class="mb-4">
-                <div class="border-2 border-dashed border-pink-500 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-700 transition-colors" onclick="document.getElementById('post-file').click()">
-                    <i class="fas fa-cloud-upload-alt text-4xl text-pink-500 mb-4"></i>
-                    <p>Drop your content here or click to upload</p>
-                    <input type="file" id="post-file" name="post-file" class="hidden" accept="image/*">
-                </div>
-            </div>
-            <div class="mb-4">
-                <input type="text" name="content" placeholder="What's on your mind?" class="w-full bg-gray-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
-            </div>
-            <div class="flex justify-end space-x-4">
-                <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition">Cancel</button>
-                <button type="submit" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90 transition">Post</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
-  // Show color picker modal
-function showColorPickerModal() {
-    document.getElementById('color-picker-modal').classList.remove('hidden');
-}
-
-// Hide color picker modal
-function hideColorPickerModal() {
-    document.getElementById('color-picker-modal').classList.add('hidden');
-}
-
-// Save the selected background color
-function saveBackgroundColor() {
-    const color = document.getElementById('background-color-picker').value;
-    localStorage.setItem('backgroundColor', color);
-    document.body.style.backgroundColor = color;
-    hideColorPickerModal();
-}
-
-// Initialize event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Update color display when picker changes
-    document.getElementById('background-color-picker').addEventListener('input', (e) => {
-        document.getElementById('selected-color-hex').textContent = e.target.value;
-    });
-
-    // Show color picker modal when button is clicked
-    document.getElementById('color-picker-btn').addEventListener('click', showColorPickerModal);
-
-    // Load saved background color on page load
-    const savedColor = localStorage.getItem('backgroundColor');
-    if (savedColor) {
-        document.body.style.backgroundColor = savedColor;
-        document.getElementById('background-color-picker').value = savedColor;
-        document.getElementById('selected-color-hex').textContent = savedColor;
-    }
-});
     let posts = [];
     let lastUpdate = null;
-    let chatCollapsed = false;
 
-    // Chat window toggle functionality
-    document.querySelector('#chat-header').addEventListener('click', () => {
-        const chatWindow = document.querySelector('.chat-window');
-        chatWindow.classList.toggle('collapsed');
-        chatCollapsed = chatWindow.classList.contains('collapsed');
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchPosts();
+        initializeResponsiveHandlers();
+        loadSavedBackgroundColor();
+    });
+
+    // Responsive handlers initialization
+    function initializeResponsiveHandlers() {
+        // Only initialize chat functionality if not on mobile
+        if (window.innerWidth > 768) {
+            initializeChatWindow();
+        }
         
-        const icon = chatWindow.querySelector('.chat-toggle');
-        icon.style.transform = chatCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
-    });
+        initializeMusicFeed();
+        initializeColorPicker();
+    }
 
-    // Music feed toggle functionality
-    const musicToggleBtn = document.querySelector('.music-toggle-btn');
-    const musicFeedContainer = document.querySelector('.music-feed-container');
-    const closeMusic = document.querySelector('.close-music');
+    // Chat window initialization and handlers
+    function initializeChatWindow() {
+        const chatWindow = document.querySelector('.chat-window');
+        const chatHeader = document.querySelector('#chat-header');
+        
+        if (chatHeader && chatWindow) {
+            chatHeader.addEventListener('click', () => {
+                chatWindow.classList.toggle('expanded');
+            });
+        }
+    }
 
-    musicToggleBtn.addEventListener('click', () => {
-        musicFeedContainer.classList.remove('collapsed');
-    });
+    // Music feed initialization and handlers
+    function initializeMusicFeed() {
+        const musicToggleBtn = document.querySelector('.music-toggle-btn');
+        const musicFeedContainer = document.querySelector('.music-feed-container');
+        const closeMusic = document.querySelector('.close-music');
 
-    closeMusic.addEventListener('click', (e) => {
-        e.stopPropagation();
-        musicFeedContainer.classList.add('collapsed');
-    });
+        if (musicToggleBtn && musicFeedContainer && closeMusic) {
+            musicToggleBtn.addEventListener('click', () => {
+                musicFeedContainer.classList.remove('collapsed');
+            });
 
-    // Fetch posts from the backend
+            closeMusic.addEventListener('click', (e) => {
+                e.stopPropagation();
+                musicFeedContainer.classList.add('collapsed');
+            });
+        }
+    }
+
+    // Color picker initialization and handlers
+    function initializeColorPicker() {
+        const colorPicker = document.getElementById('background-color-picker');
+        
+        if (colorPicker) {
+            colorPicker.addEventListener('input', (e) => {
+                document.getElementById('selected-color-hex').textContent = e.target.value;
+            });
+        }
+    }
+
+    // Load saved background color
+    function loadSavedBackgroundColor() {
+        const savedColor = localStorage.getItem('backgroundColor');
+        if (savedColor) {
+            document.body.style.backgroundColor = savedColor;
+            const colorPicker = document.getElementById('background-color-picker');
+            if (colorPicker) {
+                colorPicker.value = savedColor;
+                document.getElementById('selected-color-hex').textContent = savedColor;
+            }
+        }
+    }
+
+    // Color picker modal functions
+    function showColorPickerModal() {
+        document.getElementById('color-picker-modal').classList.remove('hidden');
+    }
+
+    function hideColorPickerModal() {
+        document.getElementById('color-picker-modal').classList.add('hidden');
+    }
+
+    function saveBackgroundColor() {
+        const color = document.getElementById('background-color-picker').value;
+        localStorage.setItem('backgroundColor', color);
+        document.body.style.backgroundColor = color;
+        hideColorPickerModal();
+    }
+
+    // Upload modal functions
+    function showUploadModal() {
+        document.getElementById('upload-modal').classList.remove('hidden');
+    }
+
+    function hideUploadModal() {
+        document.getElementById('upload-modal').classList.add('hidden');
+        document.getElementById('upload-form').reset();
+    }
+
+    // Fetch and render posts
     async function fetchPosts() {
         try {
             const url = lastUpdate ? `/posts?last_update=${lastUpdate}` : '/posts';
@@ -635,15 +638,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Generate random stats for demo purposes
-    function getRandomStats() {
-        return {
-            likes: Math.floor(Math.random() * 500),
-            comments: Math.floor(Math.random() * 50)
-        };
-    }
-
-    // Render posts to the grid
     function renderPosts() {
         const postsGrid = document.getElementById('posts-grid');
         postsGrid.innerHTML = posts.map(post => {
@@ -677,109 +671,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // Modal Functions
-    let currentPostId = null;
-    const modal = document.getElementById('post-modal');
-
-    function openModal(imageUrl, postId) {
-        currentPostId = postId;
-        const modalImage = modal.querySelector('.modal-image');
-        modalImage.src = imageUrl;
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    // Helper functions
+    function getRandomStats() {
+        return {
+            likes: Math.floor(Math.random() * 500),
+            comments: Math.floor(Math.random() * 50)
+        };
     }
 
-    function closeModal() {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-        currentPostId = null;
-    }
-
-    // Upload Modal Functions
-    function showUploadModal() {
-        document.getElementById('upload-modal').classList.remove('hidden');
-    }
-
-    function hideUploadModal() {
-        document.getElementById('upload-modal').classList.add('hidden');
-        document.getElementById('upload-form').reset();
-    }
-
-    // Vote Functions
-    async function vote(type) {
-        if (!currentPostId) return;
-        
-        try {
-            const response = await fetch(`/posts/${currentPostId}/vote`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ type })
-            });
-
-            if (response.ok) {
-                const button = modal.querySelector(`.${type}vote`);
-                const oppositeButton = modal.querySelector(`.${type === 'up' ? 'down' : 'up'}vote`);
-                
-                button.classList.toggle(`voted-${type}`);
-                oppositeButton.classList.remove(`voted-${type === 'up' ? 'down' : 'up'}`);
-            }
-        } catch (error) {
-            console.error('Error voting:', error);
+    // Event listeners
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+            hideColorPickerModal();
+            hideUploadModal();
         }
-    }
-
-    // Profile Navigation
-    async function navigateToProfile(event) {
-        event.preventDefault();
-        try {
-            const response = await fetch('/user/profile');
-            if (!response.ok) throw new Error('Failed to fetch profile');
-            const data = await response.json();
-            window.location.href = `/${data.username}`;
-        } catch (error) {
-            console.error('Error navigating to profile:', error);
-        }
-    }
-
-    // Logout Function
-    async function logout() {
-        try {
-            const response = await fetch('/logout');
-            if (response.ok) {
-                window.location.href = '/';
-            } else {
-                alert('Failed to logout');
-            }
-        } catch (error) {
-            console.error('Error logging out:', error);
-            alert('Failed to logout');
-        }
-    }
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchPosts();
     });
 
-    // Event Listeners
-    document.querySelector('.modal-close').addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
-
-    document.querySelector('.upvote').addEventListener('click', (e) => {
-        e.stopPropagation();
-        vote('up');
-    });
-
-    document.querySelector('.downvote').addEventListener('click', (e) => {
-        e.stopPropagation();
-        vote('down');
-    });
-
-    // Handle file upload
+    // Upload form handler
     document.getElementById('upload-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -805,11 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Failed to upload post');
         }
     });
-
-    // Close modal with Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
 </script>
 </body>
 </html>
+        
