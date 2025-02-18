@@ -3,18 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L❤L - Your Vibe</title>
+    <title>L❤L - Your Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0f172a;
-            transition: background-color 0.3s ease;
-        }
-        
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.3); }
@@ -29,164 +21,12 @@
         .gradient-bg {
             background: linear-gradient(135deg, #ec4899, #f43f5e);
         }
-        
+
         .glass-card {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .post-card {
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .post-image-container {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .post-image {
-            transition: transform 0.5s ease;
-        }
-        
-        .post-card:hover .post-image {
-            transform: scale(1.05);
-        }
-
-        .floating-button {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 50;
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
-        }
-
-        .music-feed-wrapper {
-            position: fixed;
-            right: 2rem;
-            top: 5rem;
-            z-index: 40;
-        }
-
-        .music-toggle-btn {
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .music-toggle-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .music-feed-container {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 400px;
-            height: calc(90vh - 5rem);
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border-radius: 1rem;
-            overflow: hidden;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .music-feed-container.collapsed {
-            transform: translateX(calc(100% + 0));
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .music-header {
-            padding: 0.75rem;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .close-music {
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .close-music:hover {
-            transform: scale(1.1);
-        }
-
-        /* Chat window styles */
-        .chat-window {
-            position: fixed;
-            bottom: 0;
-            right: 2rem;
-            width: 450px;
-            height: 600px;
-            z-index: 40;
-            transition: transform 0.3s ease;
-            border-radius: 1rem 1rem 0 0;
-            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transform: translateY(calc(100% - 48px));
-        }
-
-        .chat-header {
-            padding: 1rem;
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 48px;
-            min-height: 48px;
-        }
-
-        .sidebar-content {
-            border: none;
-            width: 100%;
-            height: calc(100% - 48px);
-            background: transparent;
-        }
-
-        .chat-window.expanded {
-            transform: translateY(0);
-        }
-
-        .chat-toggle {
-            transition: transform 0.3s ease;
-        }
-
-        .chat-window.expanded .chat-toggle {
-            transform: rotate(180deg);
-        }
-
-        .post-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem;
         }
 
         .nav-link {
@@ -223,37 +63,124 @@
             width: 100%;
         }
 
-        /* Responsive styles */
-        @media (max-width: 1024px) {
-            .chat-window {
-                width: 350px;
-            }
-            
-            .music-feed-container {
-                width: 400px;
-            height: calc(90vh - 5rem);
-            }
-            
-            .main-container {
-                max-width: calc(100% - 2rem);
-                margin-right: 1rem;
-                margin-left: 1rem;
-            }
+        .post-card {
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .floating-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+
+        .iframe-container {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 40;
+        }
+
+        .collapsible-iframe {
+            background: rgba(17, 24, 39, 0.95);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .iframe-header {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .iframe-content {
+            height: 400px;
+            width: 350px;
+            transition: height 0.3s ease;
+            overflow: hidden;
+        }
+
+        .collapsed .iframe-content {
+            height: 0;
+        }
+
+        .iframe-toggle {
+            transition: transform 0.3s ease;
+        }
+
+        .collapsed .iframe-toggle {
+            transform: rotate(180deg);
+        }
+
+        .left-iframe-container {
+            position: fixed;
+            left: 2rem;
+            top: 5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 40;
+            height: calc(100vh - 7rem);
+        }
+
+        .left-iframe {
+            background: rgba(17, 24, 39, 0.95);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.2);
+            backdrop-filter: blur(10px);
+            height: 100%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .left-iframe-header {
+            background: linear-gradient(135deg, #FF69B4, #FF1493);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .left-iframe-content {
+            height: calc(100% - 3rem);
+            width: 350px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .left-iframe.collapsed {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .left-iframe.collapsed .left-iframe-content {
+            display: none;
+        }
+
+        .left-iframe.collapsed .left-iframe-header {
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .left-iframe.collapsed .header-text {
+            display: none;
         }
 
         @media (max-width: 768px) {
-            /* Hide chat window on mobile */
-            .chat-window {
-                display: none;
-            }
-            
-            /* Full width container on mobile */
-            .main-container {
-                max-width: 100%;
-                margin: 0 1rem;
-            }
-            
-            /* Adjust navigation for mobile */
             .nav-link span {
                 display: none;
             }
@@ -261,118 +188,164 @@
             .nav-link {
                 padding: 0.5rem;
             }
-            
-            /* Adjust post grid for mobile */
-            .post-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+
+            .iframe-container {
+                right: 1rem;
+                bottom: 1rem;
             }
-            
-            /* Adjust floating buttons for mobile */
+
+            .left-iframe-container {
+                left: 1rem;
+                top: 4rem;
+            }
+
+            .iframe-content, .left-iframe-content {
+                width: 300px;
+                height: 300px;
+            }
+
             .floating-button {
                 bottom: 1rem;
                 right: 1rem;
             }
-            
-            #color-picker-btn {
-                bottom: 5rem;
-                right: 1rem;
-            }
-            
-            /* Music feed adjustments for mobile */
-            .music-feed-container {
-                width: 100%;
-                right: 0;
-                height: 300px;
-                border-radius: 0;
-            }
-            
-            .music-feed-container.collapsed {
-                transform: translateY(-100%);
-            }
-            
-            .music-toggle-btn {
-                right: 1rem;
-            }
         }
+        .left-iframe-container {
+    position: fixed;
+    left: 2rem;
+    top: 5rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+    height: calc(100vh - 7rem);
+}
 
-        @media (max-width: 480px) {
-            .nav-link {
-                padding: 0.5rem 0.25rem;
-            }
-            
-            .post-card {
-                margin-bottom: 1rem;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 0 auto;
-            }
-            
-            .upload-modal .glass-card {
-                width: 90%;
-                margin: 0 auto;
-            }
-        }
+.left-iframe {
+    background: rgba(17, 24, 39, 0.95);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.2);
+    backdrop-filter: blur(10px);
+    height: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        /* Color picker styles */
-        #background-color-picker {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-        }
+.left-iframe-header {
+    background: linear-gradient(135deg, #FF69B4, #FF1493);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+}
 
-        #background-color-picker::-webkit-color-swatch {
-            border-radius: 0.5rem;
-            border: 2px solid #4a5568;
-        }
+.left-iframe-content {
+    height: calc(100% - 3rem);
+    width: 350px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        #background-color-picker::-moz-color-swatch {
-            border-radius: 0.5rem;
-            border: 2px solid #4a5568;
-        }
+.left-iframe.collapsed {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+}
 
-        /* Modal styles */
-        .modal {
+.left-iframe.collapsed .left-iframe-content {
+    display: none;
+}
+
+.left-iframe.collapsed .left-iframe-header {
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    padding: 0;
+}
+
+.left-iframe.collapsed .header-text {
+    display: none;
+}
+
+.headphone-icon {
+    transition: transform 0.5s ease;
+}
+
+.left-iframe.collapsed .headphone-icon {
+    animation: rotateHeadphones 2s infinite linear;
+    font-size: 1.5rem;
+}
+
+@keyframes rotateHeadphones {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+ .hamburger {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            padding: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
         }
 
-        .modal.active {
+        .nav-menu {
             display: flex;
-            justify-content: center;
             align-items: center;
         }
 
-        .stats-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
-            padding: 1rem;
-            transition: opacity 0.3s ease;
-            opacity: 0;
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: fixed;
+                top: 4rem;
+                left: 0;
+                right: 0;
+                background: rgba(30, 41, 59, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .nav-link span {
+                display: inline-block !important;
+                margin-left: 0.5rem;
+            }
         }
-        
-        .post-card:hover .stats-overlay {
-            opacity: 1;
+
+        /* Updated post styles */
+        .post-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .post-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-username {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .post-timestamp {
+            font-size: 0.875rem;
+            color: #94a3b8;
         }
     </style>
 </head>
-<body>
-    <!-- Rest of your HTML content remains the same -->
+<body class="bg-gray-900 text-white min-h-screen">
     <!-- Navigation -->
     <nav class="glass-card fixed w-full top-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
@@ -382,38 +355,33 @@
                         L<span class="heart-logo">❤</span>L
                     </h1>
                 </div>
-                <div class="flex items-center space-x-2">
+                <button class="hamburger" onclick="toggleMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="nav-menu">
                     <a href="/feed" class="nav-link">
-                        <i class="fas fa-heart"></i>
-                        <span>Feed</span>
+                        <i class="fas fa-heart"></i><span>Feed</span>
                     </a>
                     <a href="/dashboard" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
+                        <i class="fas fa-home"></i><span>Dashboard</span>
                     </a>
                     <a href="/create" class="nav-link">
-                        <i class="fas fa-plus"></i>
-                        <span>Create with AI</span>
+                        <i class="fas fa-plus"></i><span>Create with AI</span>
                     </a>
                     <a href="/chat" class="nav-link">
-                        <i class="fas fa-comments"></i>
-                        <span>Chat</span>
+                        <i class="fas fa-comments"></i><span>Chat</span>
                     </a>
                     <a href="/list_connect" class="nav-link">
-                        <i class="fas fa-users"></i>
-                        <span>Matches</span>
+                        <i class="fas fa-users"></i><span>Matches</span>
                     </a>
                     <a href="/music-feed" class="nav-link">
-                        <i class="fas fa-headphones"></i>
-                        <span>Music</span>
+                        <i class="fas fa-headphones"></i><span>Music Feed</span>
                     </a>
                     <a href="#" class="nav-link" onclick="navigateToProfile(event)">
-                        <i class="fas fa-user"></i>
-                        <span>Profile</span>
+                        <i class="fas fa-user"></i><span>Profile</span>
                     </a>
                     <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit;">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
+                        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
                     </button>
                 </div>
             </div>
@@ -421,300 +389,252 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="pt-20">
-        <div class="main-container">
-            <div class="post-grid" id="posts-grid">
+    <div class="pt-20 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div id="posts-container" class="grid gap-6">
                 <!-- Posts will be dynamically inserted here -->
             </div>
         </div>
+    </div>
 
-        <!-- Music Feed -->
-        <div class="music-feed-wrapper">
-            <button class="music-toggle-btn glass-card">
-                <i class="fas fa-headphones text-2xl"></i>
-            </button>
-            
-            <div class="music-feed-container collapsed">
-                <div class="music-header">
-                    <span class="font-medium">Your Music Vibe</span>
-                    <i class="fas fa-times close-music"></i>
+    <!-- Music Feed -->
+    <div class="left-iframe-container">
+        <div class="left-iframe" id="music-feed-container" onclick="toggleMusicFeed(event)">
+            <div class="left-iframe-header">
+                <div class="flex items-center">
+                    <i class="fas fa-headphones mr-2 headphone-icon"></i>
+                    <span class="font-bold header-text">Music Feed</span>
                 </div>
-                <iframe src="/music-feed" class="sidebar-content"></iframe>
             </div>
-        </div>
-
-        <!-- Chat Window (hidden on mobile) -->
-        <div class="chat-window glass-card">
-            <div class="chat-header" id="chat-header">
-                <span class="font-medium">Chat</span>
-                <i class="fas fa-chevron-up chat-toggle"></i>
-            </div>
-            <iframe src="/chat" class="sidebar-content" id="chat-iframe"></iframe>
-        </div>
-
-        <!-- Floating Buttons -->
-        <button id="color-picker-btn" class="floating-button w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform" style="background: linear-gradient(135deg, #FF69B4, #FF1493);">
-            <i class="fas fa-palette"></i>
-        </button>
-
-        <button onclick="showUploadModal()" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform">
-            <i class="fas fa-plus"></i>
-        </button>
-        <!-- Color Picker Modal -->
-    <div id="color-picker-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
-            <h2 class="text-2xl font-bold mb-4">Choose Background Color</h2>
-            <div class="mb-6">
-                <input type="color" id="background-color-picker" class="w-full h-14 cursor-pointer">
-            </div>
-            <div class="mb-4">
-                <p class="text-sm text-gray-400">Selected color: <span id="selected-color-hex">#000000</span></p>
-            </div>
-            <div class="flex justify-end space-x-4">
-                <button onclick="hideColorPickerModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
-                <button onclick="saveBackgroundColor()" class="px-4 py-2 rounded-lg hover:opacity-90" style="background: linear-gradient(135deg, #FF69B4, #FF1493);">Save</button>
+            <div class="left-iframe-content">
+                <iframe src="/music-feed" width="100%" height="100%" frameborder="0"></iframe>
             </div>
         </div>
     </div>
 
-    <!-- Post Modal -->
-    <div id="post-modal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close">
-                <i class="fas fa-times"></i>
-            </button>
-            <img class="modal-image" src="" alt="Post">
-            <div class="vote-buttons">
-                <button class="vote-button upvote">
-                    <i class="fas fa-arrow-up"></i>
-                </button>
-                <button class="vote-button downvote">
-                    <i class="fas fa-arrow-down"></i>
-                </button>
+    <!-- Chat Window -->
+    <div class="iframe-container">
+        <div class="collapsible-iframe collapsed" id="chat-container">
+            <div class="iframe-header gradient-animate" onclick="toggleIframe('chat-container')">
+                <div class="flex items-center">
+                    <i class="fas fa-comments mr-2"></i>
+                    <span class="font-bold">Chat</span>
+                </div>
+                <i class="fas fa-chevron-up iframe-toggle"></i>
+            </div>
+            <div class="iframe-content">
+                <iframe src="/chat" width="100%" height="100%" frameborder="0"></iframe>
             </div>
         </div>
     </div>
+
+    <!-- Floating Post Button -->
+    <button onclick="showUploadModal()" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform">
+        <i class="fas fa-plus"></i>
+    </button>
 
     <!-- Upload Modal -->
-    <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
-        <div class="glass-card p-6 max-w-md w-full mx-4">
+    <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
             <h2 class="text-2xl font-bold mb-4">Share Your Moment</h2>
             <form id="upload-form" enctype="multipart/form-data">
                 <div class="mb-4">
                     <div class="border-2 border-dashed border-pink-500 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-700 transition-colors" onclick="document.getElementById('post-file').click()">
                         <i class="fas fa-cloud-upload-alt text-4xl text-pink-500 mb-4"></i>
                         <p>Drop your content here or click to upload</p>
-                        <input type="file" id="post-file" name="post-file" class="hidden" accept="image/*">
+                        <input type="file" id="post-file" name="post-file" class="hidden" accept="image/*,video/*,audio/*">
                     </div>
                 </div>
                 <div class="mb-4">
                     <input type="text" name="content" placeholder="What's on your mind?" class="w-full bg-gray-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 <div class="flex justify-end space-x-4">
-                    <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition">Cancel</button>
-                    <button type="submit" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90 transition">Post</button>
+                    <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
+                    <button type="submit" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90">Post</button>
                 </div>
             </form>
         </div>
     </div>
-</div>
 
-<script>
-    let posts = [];
-    let lastUpdate = null;
+    <script>
+    
+        let posts = [];
+        let lastUpdate = null;
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchPosts();
-        initializeResponsiveHandlers();
-        loadSavedBackgroundColor();
-    });
-
-    // Responsive handlers initialization
-    function initializeResponsiveHandlers() {
-        // Only initialize chat functionality if not on mobile
-        if (window.innerWidth > 768) {
-            initializeChatWindow();
-        }
-        
-        initializeMusicFeed();
-        initializeColorPicker();
-    }
-
-    // Chat window initialization and handlers
-    function initializeChatWindow() {
-        const chatWindow = document.querySelector('.chat-window');
-        const chatHeader = document.querySelector('#chat-header');
-        
-        if (chatHeader && chatWindow) {
-            chatHeader.addEventListener('click', () => {
-                chatWindow.classList.toggle('expanded');
-            });
-        }
-    }
-
-    // Music feed initialization and handlers
-    function initializeMusicFeed() {
-        const musicToggleBtn = document.querySelector('.music-toggle-btn');
-        const musicFeedContainer = document.querySelector('.music-feed-container');
-        const closeMusic = document.querySelector('.close-music');
-
-        if (musicToggleBtn && musicFeedContainer && closeMusic) {
-            musicToggleBtn.addEventListener('click', () => {
-                musicFeedContainer.classList.remove('collapsed');
-            });
-
-            closeMusic.addEventListener('click', (e) => {
-                e.stopPropagation();
-                musicFeedContainer.classList.add('collapsed');
-            });
-        }
-    }
-
-    // Color picker initialization and handlers
-    function initializeColorPicker() {
-        const colorPicker = document.getElementById('background-color-picker');
-        
-        if (colorPicker) {
-            colorPicker.addEventListener('input', (e) => {
-                document.getElementById('selected-color-hex').textContent = e.target.value;
-            });
-        }
-    }
-
-    // Load saved background color
-    function loadSavedBackgroundColor() {
-        const savedColor = localStorage.getItem('backgroundColor');
-        if (savedColor) {
-            document.body.style.backgroundColor = savedColor;
-            const colorPicker = document.getElementById('background-color-picker');
-            if (colorPicker) {
-                colorPicker.value = savedColor;
-                document.getElementById('selected-color-hex').textContent = savedColor;
+        // Fetch posts from the backend
+        async function fetchPosts() {
+            try {
+                const url = lastUpdate ? `/posts?last_update=${lastUpdate}` : '/posts';
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.posts) {
+                    posts = [...posts, ...data.posts];
+                    lastUpdate = data.last_update;
+                    renderPosts();
+                }
+            } catch (error) {
+                console.error('Error fetching posts:', error);
             }
         }
-    }
-
-    // Color picker modal functions
-    function showColorPickerModal() {
-        document.getElementById('color-picker-modal').classList.remove('hidden');
-    }
-
-    function hideColorPickerModal() {
-        document.getElementById('color-picker-modal').classList.add('hidden');
-    }
-
-    function saveBackgroundColor() {
-        const color = document.getElementById('background-color-picker').value;
-        localStorage.setItem('backgroundColor', color);
-        document.body.style.backgroundColor = color;
-        hideColorPickerModal();
-    }
-
-    // Upload modal functions
-    function showUploadModal() {
-        document.getElementById('upload-modal').classList.remove('hidden');
-    }
-
-    function hideUploadModal() {
-        document.getElementById('upload-modal').classList.add('hidden');
-        document.getElementById('upload-form').reset();
-    }
-
-    // Fetch and render posts
-    async function fetchPosts() {
-        try {
-            const url = lastUpdate ? `/posts?last_update=${lastUpdate}` : '/posts';
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (data.posts) {
-                posts = data.posts;
-                lastUpdate = data.last_update;
-                renderPosts();
-            }
-        } catch (error) {
-            console.error('Error fetching posts:', error);
+ function toggleMenu() {
+            const menu = document.querySelector('.nav-menu');
+            menu.classList.toggle('active');
         }
-    }
 
-    function renderPosts() {
-        const postsGrid = document.getElementById('posts-grid');
-        postsGrid.innerHTML = posts.map(post => {
-            const stats = getRandomStats();
-            return `
-            <div class="post-card glass-card rounded-xl overflow-hidden" onclick="openModal('${post.file_url}', ${post.id})">
-                <div class="post-image-container h-64 sm:h-72">
-                    <img src="${post.file_url}" alt="Post" class="post-image w-full h-full object-cover">
-                    <div class="stats-overlay">
-                        <div class="interaction-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-heart text-pink-500"></i>
-                                <span>${stats.likes}</span>
+        // Update the renderPosts function
+        function renderPosts() {
+            const postsContainer = document.getElementById('posts-container');
+            postsContainer.innerHTML = posts.map(post => `
+                <div class="post-card glass-card rounded-xl overflow-hidden">
+                    <div class="p-4">
+                        <div class="flex flex-col mb-4">
+                            <span class="font-semibold text-lg text-white mb-1">@${post.username}</span>
+                            <span class="text-sm text-gray-400">${new Date(post.created_at).toLocaleString()}</span>
+                        </div>
+                        ${post.content ? `<p class="mb-4 text-gray-200">${post.content}</p>` : ''}
+                        ${post.file_url ? `
+                            <div class="relative rounded-lg overflow-hidden mb-4">
+                                <img src="${post.file_url}" 
+                                     alt="Post content" 
+                                     class="w-full h-64 object-cover">
                             </div>
-                            <div class="stat-item">
-                                <i class="fas fa-comment text-blue-400"></i>
-                                <span>${stats.comments}</span>
+                        ` : ''}
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-4">
+                                <button onclick="handleLike(${post.id})" 
+                                        class="flex items-center space-x-2 text-pink-500 hover:text-pink-400 transition-colors">
+                                    <i class="fas fa-heart"></i>
+                                    <span>${post.likes || 0}</span>
+                                </button>
+                                <button onclick="handleDislike(${post.id})" 
+                                        class="flex items-center space-x-2 text-blue-500 hover:text-blue-400 transition-colors">
+                                    <i class="fas fa-thumbs-down"></i>
+                                    <span>${post.dislikes || 0}</span>
+                                </button>
                             </div>
+                            <button class="flex items-center space-x-2 text-gray-400 hover:text-gray-300 transition-colors">
+                                <i class="fas fa-comment"></i>
+                                <span>${post.comments || 0}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="p-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="font-medium">${post.username}</div>
-                        <div class="text-sm text-gray-400">${new Date(post.created_at).toLocaleDateString()}</div>
-                    </div>
-                    <p class="text-gray-300">${post.content || ''}</p>
-                </div>
-            </div>
-            `;
-        }).join('');
-    }
-
-    // Helper functions
-    function getRandomStats() {
-        return {
-            likes: Math.floor(Math.random() * 500),
-            comments: Math.floor(Math.random() * 50)
-        };
-    }
-
-    // Event listeners
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeModal();
-            hideColorPickerModal();
-            hideUploadModal();
+            `).join('');
         }
-    });
 
-    // Upload form handler
-    document.getElementById('upload-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        formData.append('type', 'image');
-
-        try {
-            const response = await fetch('/posts', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                const newPost = await response.json();
-                posts.unshift(newPost);
-                renderPosts();
-                hideUploadModal();
-            } else {
-                const error = await response.json();
-                alert(error.error || 'Failed to upload post');
+        // Handle like
+        async function handleLike(postId) {
+            try {
+                const response = await fetch(`/posts/${postId}/like`, { method: 'POST' });
+                if (response.ok) {
+                    const updatedPost = await response.json();
+                    posts = posts.map(post => post.id === postId ? updatedPost : post);
+                    renderPosts();
+                }
+            } catch (error) {
+                console.error('Error liking post:', error);
             }
-        } catch (error) {
-            console.error('Error uploading post:', error);
-            alert('Failed to upload post');
         }
-    });
-</script>
+
+        // Handle dislike
+        async function handleDislike(postId) {
+            try {
+                const response = await fetch(`/posts/${postId}/dislike`, { method: 'POST' });
+                if (response.ok) {
+                    const updatedPost = await response.json();
+                    posts = posts.map(post => post.id === postId ? updatedPost : post);
+                    renderPosts();
+                }
+            } catch (error) {
+                console.error('Error disliking post:', error);
+            }
+        }
+
+        // Show upload modal
+        function showUploadModal() {
+            document.getElementById('upload-modal').classList.remove('hidden');
+        }
+
+        // Hide upload modal
+        function hideUploadModal() {
+            document.getElementById('upload-modal').classList.add('hidden');
+            document.getElementById('upload-form').reset();
+        }
+
+        // Handle file upload
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            try {
+                const response = await fetch('/posts', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const newPost = await response.json();
+                    posts.unshift(newPost);
+                    renderPosts();
+                    hideUploadModal();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to upload post');
+                }
+            } catch (error) {
+                console.error('Error uploading post:', error);
+                alert('Failed to upload post');
+            }
+        });
+
+        // Toggle iframe
+        function toggleIframe(containerId) {
+            const container = document.getElementById(containerId);
+            container.classList.toggle('collapsed');
+        }
+
+        // Toggle music feed
+        function toggleMusicFeed(event) {
+            const container = document.getElementById('music-feed-container');
+            if (container.classList.contains('collapsed') || 
+                event.target.closest('.left-iframe-header')) {
+                container.classList.toggle('collapsed');
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to logout');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                alert('Failed to logout');
+            }
+        }
+
+        // Navigate to profile
+        async function navigateToProfile(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/user/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const data = await response.json();
+                window.location.href = `/${data.username}`;
+            } catch (error) {
+                console.error('Error navigating to profile:', error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPosts();
+        });
+    </script>
 </body>
 </html>
-        

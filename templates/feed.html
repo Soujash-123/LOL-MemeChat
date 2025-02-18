@@ -480,6 +480,65 @@
             padding: 0.5rem;
         }
     }
+    .mobile-nav-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.mobile-nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav-link i {
+    margin-right: 0.75rem;
+}
+
+.mobile-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #ec4899, #f43f5e);
+    transition: width 0.3s ease;
+}
+
+.mobile-nav-link:hover::after {
+    width: 100%;
+}
+
+/* Hamburger menu animation */
+.hamburger {
+    transition: all 0.3s;
+}
+
+.hamburger.active {
+    transform: rotate(90deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .nav-link {
+        padding: 0.5rem;
+    }
+    
+    .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+    
+    .mobile-menu.show {
+        max-height: 500px;
+        transition: max-height 0.5s ease-in;
+    }
+}
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
@@ -521,44 +580,83 @@
         </div>
     </div>
     <!-- Navigation -->
-    <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-3xl font-bold">
-                        L<span class="heart-logo">❤</span>L
-                    </h1>
-                </div>
-                <div class="flex items-center space-x-6">
-                    <a href="/feed" class="nav-link">
-                        <i class="fas fa-heart"></i>Feed
-                    </a>
-                    <a href="/dashboard" class="nav-link">
-                        <i class="fas fa-home"></i>Dashboard
-                    </a>
-                    <a href="/create" class="nav-link">
-                        <i class="fas fa-plus"></i>Create with AI
-                    </a>
-                    <a href="/chat" class="nav-link">
-                        <i class="fas fa-comments"></i>Chat
-                    </a>
-                    <a href="/list_connect" class="nav-link">
-                        <i class="fas fa-users"></i>Matches
-                    </a>
-                    <a href="/music-feed" class="nav-link">
-                        <i class="fas fa-headphones"></i>Music Feed
-                    </a>
-                    
-                    <a href="#" class="nav-link" onclick="navigateToProfile(event)">
-                        <i class="fas fa-user"></i>Profile
-                    </a>
-                    <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit;">
-                        <i class="fas fa-sign-out-alt"></i>Logout
-                    </button>
-                </div>
+    <!-- Replace the existing <nav> section with this code -->
+<nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <h1 class="text-3xl font-bold">
+                    L<span class="heart-logo">❤</span>L
+                </h1>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center">
+                <button type="button" class="mobile-menu-button focus:outline-none" aria-label="Toggle menu">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Desktop navigation -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="/feed" class="nav-link">
+                    <i class="fas fa-heart"></i><span>Feed</span>
+                </a>
+                <a href="/dashboard" class="nav-link">
+                    <i class="fas fa-home"></i><span>Dashboard</span>
+                </a>
+                <a href="/create" class="nav-link">
+                    <i class="fas fa-plus"></i><span>Create with AI</span>
+                </a>
+                <a href="/chat" class="nav-link">
+                    <i class="fas fa-comments"></i><span>Chat</span>
+                </a>
+                <a href="/list_connect" class="nav-link">
+                    <i class="fas fa-users"></i><span>Matches</span>
+                </a>
+                <a href="/music-feed" class="nav-link">
+                    <i class="fas fa-headphones"></i><span>Music Feed</span>
+                </a>
+                <a href="#" class="nav-link" onclick="navigateToProfile(event)">
+                    <i class="fas fa-user"></i><span>Profile</span>
+                </a>
+                <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit;">
+                    <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                </button>
             </div>
         </div>
-    </nav>
+    </div>
+    
+    <!-- Mobile menu, show/hide based on menu state -->
+    <div class="mobile-menu hidden md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 bg-gray-800">
+            <a href="/feed" class="mobile-nav-link">
+                <i class="fas fa-heart w-6 text-center"></i>Feed
+            </a>
+            <a href="/dashboard" class="mobile-nav-link">
+                <i class="fas fa-home w-6 text-center"></i>Dashboard
+            </a>
+            <a href="/create" class="mobile-nav-link">
+                <i class="fas fa-plus w-6 text-center"></i>Create with AI
+            </a>
+            <a href="/chat" class="mobile-nav-link">
+                <i class="fas fa-comments w-6 text-center"></i>Chat
+            </a>
+            <a href="/list_connect" class="mobile-nav-link">
+                <i class="fas fa-users w-6 text-center"></i>Matches
+            </a>
+            <a href="/music-feed" class="mobile-nav-link">
+                <i class="fas fa-headphones w-6 text-center"></i>Music Feed
+            </a>
+            <a href="#" class="mobile-nav-link" onclick="navigateToProfile(event)">
+                <i class="fas fa-user w-6 text-center"></i>Profile
+            </a>
+            <button onclick="logout()" class="mobile-nav-link w-full text-left" style="background: none; border: none; cursor: pointer; font-size: inherit;">
+                <i class="fas fa-sign-out-alt w-6 text-center"></i>Logout
+            </button>
+        </div>
+    </div>
+</nav>
 
     <!-- Main Content -->
     <div class="max-w-lg mx-auto p-4 pt-20">
@@ -636,6 +734,62 @@
     </div>
 
     <script>
+    // Add this JavaScript code to your existing <script> tag
+
+// Mobile menu toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('show');
+            
+            // Toggle hamburger icon if it has the class
+            const hamburgerIcon = mobileMenuButton.querySelector('i');
+            if (hamburgerIcon) {
+                hamburgerIcon.classList.toggle('fa-bars');
+                hamburgerIcon.classList.toggle('fa-times');
+                hamburgerIcon.classList.toggle('active');
+            }
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!mobileMenuButton.contains(event.target) && 
+                !mobileMenu.contains(event.target) && 
+                !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('show');
+                
+                const hamburgerIcon = mobileMenuButton.querySelector('i');
+                if (hamburgerIcon && hamburgerIcon.classList.contains('fa-times')) {
+                    hamburgerIcon.classList.add('fa-bars');
+                    hamburgerIcon.classList.remove('fa-times');
+                    hamburgerIcon.classList.remove('active');
+                }
+            }
+        });
+    }
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768 && 
+            mobileMenu && 
+            !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('show');
+            
+            const hamburgerIcon = mobileMenuButton.querySelector('i');
+            if (hamburgerIcon && hamburgerIcon.classList.contains('fa-times')) {
+                hamburgerIcon.classList.add('fa-bars');
+                hamburgerIcon.classList.remove('fa-times');
+                hamburgerIcon.classList.remove('active');
+            }
+        }
+    });
+});
         function toggleMusicFeed(event) {
     const container = document.getElementById('music-feed-container');
     const mainContent = document.querySelector('.max-w-lg');
