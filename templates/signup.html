@@ -13,7 +13,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #FF0000, #FF69B4);
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,13 +23,12 @@
         
         .logo {
             font-size: 5rem;
-            animation: pulse 2s infinite;
+            animation: heartbeat 1.5s infinite;
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
         }
         
         @keyframes fadeOut {
@@ -37,37 +36,42 @@
         }
         
         input, select {
-            color: #FF0000 !important;
+            color: #ec4899 !important;
+            background-color: rgba(30, 41, 59, 0.7) !important;
         }
         
         input::placeholder {
-            color: #FF69B4 !important;
+            color: #ec4899 !important;
             opacity: 0.7;
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #FF0000, #FF69B4);
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
         }
 
         .meme-preference-card {
             cursor: pointer;
             transition: all 0.3s ease;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .meme-preference-card.selected {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-            border: 2px solid #FF0000;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+            border: 2px solid #ec4899;
         }
 
         .drop-zone {
-            border: 2px dashed rgba(255, 255, 255, 0.5);
+            border: 2px dashed rgba(236, 72, 153, 0.5);
             transition: all 0.3s ease;
+            background: rgba(30, 41, 59, 0.7);
         }
 
         .drop-zone.dragover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #FF0000;
+            background: rgba(236, 72, 153, 0.1);
+            border-color: #ec4899;
         }
 
         .preview-image {
@@ -76,10 +80,16 @@
             object-fit: cover;
             border-radius: 8px;
         }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-red-500 to-pink-400 min-h-screen text-white">
-    <!-- Preloader remains the same -->
+<body class="bg-gray-900 text-white">
     <div class="preloader">
         <div class="text-center">
             <div class="logo">♥</div>
@@ -89,102 +99,95 @@
 
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
-            <!-- Header remains the same -->
             <div class="text-center mb-12">
                 <h1 class="text-5xl font-bold mb-4 flex items-center justify-center">
-                    L<span class="mx-2">♥</span>L
+                    L<span class="mx-2 text-pink-500">♥</span>L
                 </h1>
-                <p class="text-xl text-white">Love Over Laughs</p>
+                <p class="text-xl text-pink-500">Love Over Laughs</p>
             </div>
 
-            <div class="bg-white/20 backdrop-blur-md rounded-lg p-8 shadow-xl">
-                <h2 class="text-3xl font-bold mb-6 flex items-center">
+            <div class="glass-card rounded-lg p-8 shadow-xl">
+                <h2 class="text-3xl font-bold mb-6 flex items-center text-pink-500">
                     <i class="fas fa-heart mr-3"></i>
                     Create Your Profile
                 </h2>
 
-                <!-- Google Sign-in Button remains the same -->
-                <button id="google-signin" class="w-full bg-white hover:bg-gray-100 text-gray-800 font-bold py-2 px-4 rounded flex items-center justify-center mb-6 transition duration-300">
+                <button id="google-signin" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center mb-6 transition duration-300 border border-gray-700">
                     <img src="https://cdnjs.cloudflare.com/ajax/libs/simple-icons/6.0.0/google.svg" class="w-5 h-5 mr-2" alt="Google logo">
                     Sign up with Google
                 </button>
                 
                 <div class="relative my-6">
-                    <hr class="border-t border-white/30">
-                    <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-transparent px-4 text-white text-sm">
+                    <hr class="border-t border-gray-700">
+                    <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 px-4 text-gray-400">
                         or
                     </span>
                 </div>
 
                 <form id="signup-form" class="space-y-6" enctype="multipart/form-data">
-                    <!-- Basic fields remain the same -->
                     <div>
-                        <label for="username" class="block text-sm font-medium mb-1">Username</label>
+                        <label for="username" class="block text-sm font-medium mb-1 text-gray-300">Username</label>
                         <input type="text" id="username" name="username" placeholder="Choose a unique username" 
-                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                            class="w-full px-4 py-2 rounded border border-gray-700 focus:border-pink-500 focus:outline-none" required>
                     </div>
 
                     <div>
-                        <label for="email" class="block text-sm font-medium mb-1">Email</label>
+                        <label for="email" class="block text-sm font-medium mb-1 text-gray-300">Email</label>
                         <input type="email" id="email" name="email" placeholder="Enter your email" 
-                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                            class="w-full px-4 py-2 rounded border border-gray-700 focus:border-pink-500 focus:outline-none" required>
                     </div>
 
                     <div>
-                        <label for="password" class="block text-sm font-medium mb-1">Password</label>
+                        <label for="password" class="block text-sm font-medium mb-1 text-gray-300">Password</label>
                         <input type="password" id="password" name="password" placeholder="Create a secure password" 
-                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                            class="w-full px-4 py-2 rounded border border-gray-700 focus:border-pink-500 focus:outline-none" required>
                     </div>
 
                     <div>
-                        <label for="confirm-password" class="block text-sm font-medium mb-1">Confirm Password</label>
+                        <label for="confirm-password" class="block text-sm font-medium mb-1 text-gray-300">Confirm Password</label>
                         <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" 
-                            class="w-full px-4 py-2 rounded bg-white/30 backdrop-blur-sm border border-red-300/50 focus:border-red-500 focus:outline-none" required>
+                            class="w-full px-4 py-2 rounded border border-gray-700 focus:border-pink-500 focus:outline-none" required>
                     </div>
 
-                    <!-- New Meme Preference Cards -->
                     <div>
-                        <label class="block text-sm font-medium mb-3">Meme Preference</label>
+                        <label class="block text-sm font-medium mb-3 text-gray-300">Meme Preference</label>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="DarkHumor">
-                                <i class="fas fa-moon text-2xl mb-2"></i>
+                            <div class="meme-preference-card rounded-lg p-4 text-center" data-value="DarkHumor">
+                                <i class="fas fa-moon text-2xl mb-2 text-pink-500"></i>
                                 <p class="font-medium">Dark Humor</p>
                             </div>
-                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Wholesome">
-                                <i class="fas fa-heart text-2xl mb-2"></i>
+                            <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Wholesome">
+                                <i class="fas fa-heart text-2xl mb-2 text-pink-500"></i>
                                 <p class="font-medium">Wholesome</p>
                             </div>
-                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Sarcasm">
-                                <i class="fas fa-grin-wink text-2xl mb-2"></i>
+                            <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Sarcasm">
+                                <i class="fas fa-grin-wink text-2xl mb-2 text-pink-500"></i>
                                 <p class="font-medium">Sarcasm</p>
                             </div>
-                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Dank">
-                                <i class="fas fa-fire text-2xl mb-2"></i>
+                            <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Dank">
+                                <i class="fas fa-fire text-2xl mb-2 text-pink-500"></i>
                                 <p class="font-medium">Dank</p>
                             </div>
-                            <div class="meme-preference-card bg-white/30 backdrop-blur-sm rounded-lg p-4 text-center" data-value="Surreal">
-                                <i class="fas fa-ghost text-2xl mb-2"></i>
+                            <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Surreal">
+                                <i class="fas fa-ghost text-2xl mb-2 text-pink-500"></i>
                                 <p class="font-medium">Surreal</p>
                             </div>
                         </div>
                         <input type="hidden" name="meme-preference" id="meme-preference">
                     </div>
 
-                    <!-- New Drag and Drop Zone -->
                     <div>
-                        <label class="block text-sm font-medium mb-3">Upload Your Favorite Memes</label>
+                        <label class="block text-sm font-medium mb-3 text-gray-300">Upload Your Favorite Memes</label>
                         <div id="drop-zone" class="drop-zone w-full h-48 rounded-lg flex flex-col items-center justify-center p-4 text-center">
-                            <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
+                            <i class="fas fa-cloud-upload-alt text-3xl mb-2 text-pink-500"></i>
                             <p>Drag and drop your memes here</p>
                             <p class="text-sm opacity-70">or</p>
-                            <button type="button" id="browse-files" class="mt-2 px-4 py-2 bg-white/30 rounded-lg hover:bg-white/40 transition duration-300">
+                            <button type="button" id="browse-files" class="mt-2 px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300">
                                 Browse Files
                             </button>
                             <input type="file" id="file-input" multiple accept="image/*" class="hidden">
                         </div>
-                        <div id="preview-container" class="mt-4 grid grid-cols-4 gap-2">
-                            <!-- Preview images will be inserted here -->
-                        </div>
+                        <div id="preview-container" class="mt-4 grid grid-cols-4 gap-2"></div>
                     </div>
 
                     <button type="submit" class="w-full gradient-bg hover:opacity-90 text-white font-bold py-2 px-4 rounded transition duration-300 mt-6">
@@ -193,13 +196,13 @@
                 </form>
 
                 <div class="mt-6 text-center">
-                    <p>Already have an account? 
-                        <a href="/" class="text-red-200 hover:text-red-100 font-medium">Login here</a>
+                    <p class="text-gray-400">Already have an account? 
+                        <a href="/" class="text-pink-500 hover:text-pink-400 font-medium">Login here</a>
                     </p>
                 </div>
             </div>
 
-            <div class="text-center mt-12 text-white">
+            <div class="text-center mt-12 text-gray-400">
                 <p>Where love and laughter unite</p>
             </div>
         </div>
@@ -322,75 +325,67 @@
         });
     </script>
 
-<script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
 
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyCLblSMwAUztf-ciQqIzLUe9jeYWvvqDrk",
-        authDomain: "lol-mchat.firebaseapp.com",
-        projectId: "lol-mchat",
-        storageBucket: "lol-mchat.firebasestorage.app",
-        messagingSenderId: "764134602597",
-        appId: "1:764134602597:web:ae4a6537626170cb4d938c",
-        measurementId: "G-1TRKSZ3GHP"
-    };
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLblSMwAUztf-ciQqIzLUe9jeYWvvqDrk",
+            authDomain: "lol-mchat.firebaseapp.com",
+            projectId: "lol-mchat",
+            storageBucket: "lol-mchat.firebasestorage.app",
+            messagingSenderId: "764134602597",
+            appId: "1:764134602597:web:ae4a6537626170cb4d938c",
+            measurementId: "G-1TRKSZ3GHP"
+        };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-    // Add Google Sign-in functionality
-    document.getElementById('google-signin').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // The signed-in user info
-                const user = result.user;
-                console.log('Google Sign-in successful:', user);
-                
-                // Prepare the data to send to your backend
-                const userData = {
-                    username: user.displayName,
-                    email: user.email,
-                    googleId: user.uid,
-                    photoURL: user.photoURL,
-                    signupMethod: 'google'
-                };
-
-                // Send the data to your signup endpoint
-                fetch('/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(userData)
+        // Add Google Sign-in handler
+        document.getElementById('google-signin').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    
+                    fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            googleId: user.uid,
+                            email: user.email,
+                            loginMethod: 'google'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            alert(data.message);
+                            window.location.href = '/dashboard';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Login error:', error);
+                        alert('An error occurred during login. Please try again.');
+                    });
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        alert(data.message);
-                        window.location.href = '/dashboard';
-                    }
-                })
-                .catch(error => {
-                    console.error('Signup error:', error);
-                    alert('An error occurred during signup. Please try again.');
+                .catch((error) => {
+                    console.error('Google Sign-in error:', error);
+                    alert('An error occurred during Google sign-in. Please try again.');
                 });
-            })
-            .catch((error) => {
-                console.error('Google Sign-in error:', error);
-                alert('An error occurred during Google sign-in. Please try again.');
-            });
-    });
-</script>
+        });
+    </script>
 </body>
 </html>
