@@ -1,43 +1,27 @@
-from flask import Flask, request, render_template
 import requests
 
-app = Flask(__name__)
-
-BASE_URL = "https://discoveryprovider.audius.co"
-
-@app.route('/music-feed', methods=['GET'])
-def search_songs():
-    query = request.args.get('query', 'trending')
-
-    if query.lower() == "trending":
-        url = f"{BASE_URL}/v1/tracks/trending"
-    else:
-        url = f"{BASE_URL}/v1/tracks/search?query={query}"
-
+def fetch_memes(keywords, number, media_type):
+    api_key = "dce9e0817bc145a8810a1b1d84d2d51b"
+    url = f"https://api.humorapi.com/memes/search?number={number}&keywords={keywords}&media={media_type}&api-key={api_key}"
+    
     response = requests.get(url)
-
+    
     if response.status_code == 200:
         data = response.json()
-        results = []
-
-        for track in data.get("data", []):
-            track_id = track.get("id")
-            stream_url = f"{BASE_URL}/v1/tracks/{track_id}/stream"
-
-            results.append({
-                "id": track_id,
-                "title": track["title"],
-                "album": track.get("album", "N/A"),  # Audius API doesn't have albums
-                "artist": track["user"]["name"],
-                "genre": track.get("genre", "Unknown"),
-                "link": track.get("permalink", "#"),
-                "image": track.get("artwork", {}).get("150x150", ""),  # Fetch artwork
-                "stream_url": stream_url
-            })
-
-        return render_template('music-feed.html', songs=results, query=query)
+        
+        if "memes" in data:
+            filtered_memes = [meme for meme in data["memes"] if meme.get("type") == media_type]
+            return filtered_memes
+        else:
+            return "No memes found."
     else:
-        return render_template('music-feed.html', error="Failed to fetch data", songs=[], query=query)
+        return f"Error: {response.status_code}, {response.text}"
 
+# Example usage
 if __name__ == "__main__":
-    app.run(debug=True)  # Runs the Flask app locally
+    keywords = input("Enter keywords: ")
+    number = input("Enter number of memes: ")
+    media_type = input("Enter media type (e.g., video/mp4): ")
+    
+    memes = fetch_memes(keywords, number, media_type)
+    print(memes)

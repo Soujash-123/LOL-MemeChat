@@ -7,308 +7,770 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+        :root {
+            --primary-color: #60a5fa;
+            --secondary-color: #e2e8f0;
+            --background-color: #0f172a;
+            --navbar-color: rgba(15, 23, 42, 0.95);
+            --font-family: 'Inter';
+        }
+
+        body {
+            font-family: var(--font-family), sans-serif;
+            background: var(--background-color);
+            color: var(--secondary-color);
+        }
+
+        .vertical-nav {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            left: -240px;
+            top: 0;
+            background: var(--navbar-color);
+            backdrop-filter: blur(10px);
+            z-index: 50;
+            transition: left 0.3s ease;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .vertical-nav.open {
+            left: 0;
+        }
+
+        .burger-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 60;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            background: var(--navbar-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .burger-menu span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .burger-menu.open span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+        }
+
+        .burger-menu.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger-menu.open span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--secondary-color);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+            background: rgba(96, 165, 250, 0.1);
+        }
+
+        .main-content {
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+            padding: 2rem;
+            padding-top: 6rem;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+        }
+
+        .theme-button {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button:hover {
+            transform: rotate(30deg);
+        }
+
+        .theme-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-modal.active {
+            display: flex;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .media-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .media-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .media-content {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .media-content img,
+        .media-content video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .vertical-nav {
+                left: 0;
+            }
+
+            .burger-menu {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 240px;
+            }
+        }
+
         @keyframes heartbeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
         }
 
         .heart-logo {
             animation: heartbeat 1.5s infinite;
             display: inline-block;
-            color: #FF1493;
-        }
-
-        .action-button {
-            transition: all 0.2s;
-        }
-
-        .action-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
-        }
-
-        .gradient-bg {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
-        }
-        #color-picker-btn {
-        position: fixed;
-        right: 2rem;
-        z-index: 49;
-    }
-
-    #background-color-picker {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-    }
-    
-    #background-color-picker::-webkit-color-swatch {
-        border-radius: 0.5rem;
-        border: 2px solid #4a5568;
-    }
-    
-    #background-color-picker::-moz-color-swatch {
-        border-radius: 0.5rem;
-        border: 2px solid #4a5568;
-    }
-    @keyframes heartbeat {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.3); }
-    }
-    
-    .heart-logo {
-        animation: heartbeat 1.5s infinite;
-        display: inline-block;
-        color: #ec4899;
-    }
-
-    .glass-card {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-link {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        transition: all 0.2s ease;
-        position: relative;
-    }
-    
-    .nav-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .nav-link i {
-        width: 1.5rem;
-        text-align: center;
-    }
-    
-    .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: linear-gradient(135deg, #ec4899, #f43f5e);
-        transition: width 0.3s ease;
-    }
-    
-    .nav-link:hover::after {
-        width: 100%;
-    }
-
-    @media (max-width: 768px) {
-        .nav-link span {
-            display: none;
+            color: var(--primary-color);
         }
         
-        .nav-link {
-            padding: 0.5rem;
+        /* New styles for statistics */
+        .stats-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-    }
+        
+        .activity-bar {
+            transition: height 0.5s ease;
+        }
+        
+        .activity-bar:hover {
+            filter: brightness(1.2);
+        }
+        
+        /* Define heights for activity bars */
+        .h-30 { height: 30%; }
+        .h-40 { height: 40%; }
+        .h-50 { height: 50%; }
+        .h-60 { height: 60%; }
+        .h-70 { height: 70%; }
+        .h-75 { height: 75%; }
+        .h-80 { height: 80%; }
+        .h-90 { height: 90%; }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
-    <button id="color-picker-btn" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform" style="bottom: 8rem;">
-        <i class="fas fa-palette"></i>
-    </button>
-    
-    <!-- Add this modal for the color picker -->
-    <div id="color-picker-modal" class="fixed inset-0 bg-black bg-opacity-50 upload-overlay hidden z-50 flex items-center justify-center">
-        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
-            <h2 class="text-2xl font-bold mb-4">Choose Background Color</h2>
-            <div class="mb-6">
-                <input type="color" id="background-color-picker" class="w-full h-14 cursor-pointer">
-            </div>
-            <div class="mb-4">
-                <p class="text-sm text-gray-400">Selected color: <span id="selected-color-hex">#000000</span></p>
-            </div>
-            <div class="flex justify-end space-x-4">
-                <button onclick="hideColorPickerModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
-                <button onclick="saveBackgroundColor()" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90">Save</button>
-            </div>
-        </div>
+<body>
+    <div class="burger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
     </div>
-    
-    <!-- Navigation -->
-    <nav class="bg-gray-800 shadow-lg fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-3xl font-bold">
-                        L<span class="heart-logo">❤</span>L
-                    </h1>
-                </div>
-                <div class="flex items-center space-x-6">
-                    <a href="/feed" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-heart mr-2"></i>Feed
-                    </a>
-                    <a href="/dashboard" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-home mr-2"></i>Dashboard
-                    </a>
-                    <a href="/create" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-plus mr-2"></i>Create with AI
-                    </a>
-                    <a href="/chat" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-comments mr-2"></i>Chat
-                    </a>
-                    <a href="/list_connect" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-users mr-2"></i>Matches
-                    </a>
-                    <a href="#" onclick="navigateToProfile(event)" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-user mr-2"></i>Profile
-                    </a>
-                    <button onclick="logout()" class="text-gray-300 hover:text-pink-500">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                    </button>
-                </div>
-            </div>
+
+    <nav class="vertical-nav">
+        <div class="py-6 px-4">
+            <h1 class="text-2xl font-bold text-center">
+                L<span class="heart-logo">❤</span>L
+            </h1>
+        </div>
+        
+        <div class="space-y-2">
+            <a href="/feed" class="nav-link">
+                <i class="fas fa-compass"></i>
+                <span>Explore</span>
+            </a>
+            <a href="/dashboard" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/create" class="nav-link">
+                <i class="fas fa-plus"></i>
+                <span>Create</span>
+            </a>
+            <a href="/chat" class="nav-link">
+                <i class="fas fa-comments"></i>
+                <span>Chat</span>
+            </a>
+            <a href="/list_connect" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Matches</span>
+            </a>
+            <a href="/profile" class="nav-link">
+                <i class="fas fa-headphones"></i>
+                <span>My Music</span>
+            </a>
+            <a href="#" onclick="logout()" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
         </div>
     </nav>
 
+    <!-- Theme Button -->
+    <button class="theme-button">
+        <i class="fas fa-paint-brush"></i>
+    </button>
 
-    <!-- Main Content -->
-    <div class="max-w-4xl mx-auto p-4 pt-20">
-        <!-- Profile Section -->
-        <div class="bg-gray-800 rounded-2xl p-6 mb-8 shadow-lg">
-            <div class="flex items-center space-x-6">
-                <div class="w-24 h-24 bg-pink-500 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user text-4xl text-white"></i>
-                </div>
-                <div class="flex-grow">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 id="viewed-username" class="text-3xl font-bold">{{ user.username }}</h2>
-                        
-                    </div>
-                    <div id="viewed-profile-details" class="space-y-2 text-gray-300">
-                        <p><i class="fas fa-user-tag mr-2"></i>{{ user.role }}</p>
-                        {% if user.instrument %}
-                        <p><i class="fas fa-music mr-2"></i>{{ user.instrument }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="mt-4 grid grid-cols-3 gap-4">
-                        <div class="text-center">
-                            <div id="total-posts" class="text-2xl font-bold text-pink-500">{{ stats.total_posts }}</div>
-                            <div class="text-sm text-gray-400">Posts</div>
-                        </div>
-                        <div class="text-center">
-                            <div id="total-likes" class="text-2xl font-bold text-pink-500">{{ stats.total_likes }}</div>
-                            <div class="text-sm text-gray-400">Likes</div>
-                        </div>
-                        <div class="text-center">
-                            <div id="total-comments" class="text-2xl font-bold text-pink-500">{{ stats.total_comments }}</div>
-                            <div class="text-sm text-gray-400">Comments</div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Theme Modal -->
+    <div class="theme-modal">
+        <div class="theme-content glass-effect">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold">Customize Theme</h3>
+                <button class="close-theme text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-        </div>
-
-        <!-- User Posts Section -->
-        <div id="user-posts-container" class="space-y-6">
-            {% for post in posts %}
-            <div class="bg-gray-800 rounded-2xl p-6 shadow-lg">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-user text-white"></i>
-                        </div>
-                        <div>
-                            <p class="font-bold">{{ post.username }}</p>
-                            <p class="text-sm text-gray-400">{{ post['created_at']|datetime }}</p>
-                        </div>
-                    </div>
-                    <div class="flex space-x-4">
-                        <button class="text-gray-300 hover:text-pink-500">
-                            <i class="fas fa-heart"></i> {{ post.likes }}
-                        </button>
-                        <button class="text-gray-300 hover:text-pink-500">
-                            <i class="fas fa-comment"></i> {{ post.comments }}
-                        </button>
-                    </div>
+            <div class="space-y-6">
+                <div>
+                    <label class="block mb-2">Primary Color</label>
+                    <input type="color" id="primary-color" class="w-full h-10 rounded">
                 </div>
-                {% if post.content %}
-                <p class="mb-4 text-gray-200">{{ post.content }}</p>
-                {% endif %}
-                {% if post.type == 'image' %}
-                <img src="{{ post.file_url }}" alt="Post image" class="rounded-lg max-h-96 w-full object-cover mb-4">
-                {% elif post.type == 'audio' %}
-                <audio src="{{ post.file_url }}" controls class="w-full mb-4"></audio>
-                {% endif %}
+                <div>
+                    <label class="block mb-2">Secondary Color</label>
+                    <input type="color" id="secondary-color" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block mb-2">Background Color</label>
+                    <input type="color" id="background-color" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block mb-2">Navbar Color</label>
+                    <input type="color" id="navbar-color" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block mb-2">Font Family</label>
+                    <select id="font-family" class="w-full p-2 rounded bg-gray-800 text-white">
+                        <optgroup label="Sans Serif">
+                            <option value="Inter">Inter</option>
+                            <option value="Roboto">Roboto</option>
+                            <option value="Poppins">Poppins</option>
+                            <option value="Lato">Lato</option>
+                            <option value="Montserrat">Montserrat</option>
+                        </optgroup>
+                        <optgroup label="Serif">
+                            <option value="Playfair Display">Playfair Display</option>
+                        </optgroup>
+                        <optgroup label="Cursive">
+                            <option value="Dancing Script">Dancing Script</option>
+                            <option value="Pacifico">Pacifico</option>
+                            <option value="Great Vibes">Great Vibes</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <button class="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" id="reset-theme">
+                    Reset to Default
+                </button>
             </div>
-            {% endfor %}
         </div>
     </div>
 
+    <main class="main-content">
+        <!-- Enhanced Profile Section with Statistics -->
+        <div class="glass-card p-6 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center space-y-6 md:space-y-0 md:space-x-6">
+                <!-- User Avatar and Basic Info -->
+                <div class="flex items-center space-x-6">
+                    <div class="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-4xl text-white"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h2 id="viewed-username" class="text-3xl font-bold mb-2">{{ user.username }}</h2>
+                        <div id="viewed-profile-details" class="text-gray-300">
+                            <p><i class="fas fa-user-tag mr-2"></i>{{ user.role }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Statistics -->
+                <div class="flex-grow">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Posts Stat Card -->
+                        <div class="stats-card bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl p-4 transform transition-transform hover:scale-105 hover:rotate-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm uppercase tracking-wider text-blue-100">Posts</h3>
+                                    <p class="text-3xl font-bold text-white">{{ stats.total_posts }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-image text-xl text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Likes Stat Card -->
+                        <div class="stats-card bg-gradient-to-br from-pink-600 to-pink-400 rounded-xl p-4 transform transition-transform hover:scale-105 hover:rotate-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm uppercase tracking-wider text-pink-100">Likes</h3>
+                                    <p class="text-3xl font-bold text-white">{{ stats.total_likes }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-heart text-xl text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Comments Stat Card -->
+                        <div class="stats-card bg-gradient-to-br from-purple-600 to-purple-400 rounded-xl p-4 transform transition-transform hover:scale-105 hover:rotate-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm uppercase tracking-wider text-purple-100">Comments</h3>
+                                    <p class="text-3xl font-bold text-white">{{ stats.total_comments }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-comment text-xl text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Chart -->
+                    <div class="mt-4 h-16 bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden">
+                        <div class="flex items-end h-full w-full px-2">
+                            <!-- Activity bars - would be dynamically generated based on user activity -->
+                            <div class="activity-bar h-30 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-50 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-70 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-40 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-80 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-60 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-90 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-30 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-50 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-40 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-60 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                            <div class="activity-bar h-75 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1 text-center">Activity (last 12 days)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Media Grid -->
+        <div class="media-grid">
+            {% for post in posts %}
+            <div class="media-card">
+                <div class="media-content">
+                    {% if post.type == 'image' %}
+                    <img src="{{ post.file_url }}" alt="Post image" loading="lazy">
+                    {% elif post.type == 'video' %}
+                    <video controls preload="none" poster="{{ post.thumbnail_url }}">
+                        <source src="{{ post.file_url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">{{ post.created_at|datetime }}</span>
+                        <div class="flex space-x-4">
+                            <button class="text-gray-300 hover:text-pink-500">
+                                <i class="fas fa-heart"></i> {{ post.likes }}
+                            </button>
+                            <button class="text-gray-300 hover:text-pink-500">
+                                <i class="fas fa-comment"></i> {{ post.comments }}
+                            </button>
+                        </div>
+                    </div>
+                    {% if post.content %}
+                    <p class="mt-2 text-gray-200">{{ post.content }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
     <script>
-        // Color picker functionality
-    function showColorPickerModal() {
-        document.getElementById('color-picker-modal').classList.remove('hidden');
-    }
+        const themeKeys = {
+            primaryColor: '--primary-color',
+            secondaryColor: '--secondary-color',
+            backgroundColor: '--background-color',
+            navbarColor: '--navbar-color',
+            fontFamily: '--font-family',
+        };
 
-    function hideColorPickerModal() {
-        document.getElementById('color-picker-modal').classList.add('hidden');
-    }
-
-    function saveBackgroundColor() {
-        const color = document.getElementById('background-color-picker').value;
-        localStorage.setItem('backgroundColor', color);
-        document.body.style.backgroundColor = color;
-        hideColorPickerModal();
-    }
-
-    // Update color display when picker changes
-    document.getElementById('background-color-picker').addEventListener('input', (e) => {
-        document.getElementById('selected-color-hex').textContent = e.target.value;
-    });
-
-    // Show color picker modal when button is clicked
-    document.getElementById('color-picker-btn').addEventListener('click', showColorPickerModal);
-
-    // Apply saved background color on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedColor = localStorage.getItem('backgroundColor');
-        if (savedColor) {
-            document.body.style.backgroundColor = savedColor;
-            document.getElementById('background-color-picker').value = savedColor;
-            document.getElementById('selected-color-hex').textContent = savedColor;
+        function initializeTheme() {
+            Object.keys(themeKeys).forEach(key => {
+                const savedValue = localStorage.getItem(key);
+                if (savedValue) {
+                    document.documentElement.style.setProperty(themeKeys[key], savedValue);
+                    const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+                    if (input) {
+                        input.value = savedValue;
+                    }
+                }
+            });
         }
-    });
-        async function navigateToProfile(event) {
-            event.preventDefault();
-            try {
-                const response = await fetch('/user/profile');
-                if (!response.ok) throw new Error('Failed to fetch profile');
-                const data = await response.json();
-                window.location.href = `/${data.username}`;
-            } catch (error) {
-                console.error('Error navigating to profile:', error);
+
+        function setupThemeListeners() {
+            document.querySelector('.theme-button').addEventListener('click', () => {
+                document.querySelector('.theme-modal').classList.add('active');
+            });
+
+            document.querySelector('.close-theme').addEventListener('click', () => {
+                document.querySelector('.theme-modal').classList.remove('active');
+            });
+
+            document.querySelector('.theme-modal').addEventListener('click', (e) => {
+                if (e.target === document.querySelector('.theme-modal')) {
+                    document.querySelector('.theme-modal').classList.remove('active');
+                }
+            });
+
+            Object.keys(themeKeys).forEach(key => {
+                const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+                if (input) {
+                    input.addEventListener('input', (e) => {
+                        document.documentElement.style.setProperty(themeKeys[key], e.target.value);
+                        localStorage.setItem(key, e.target.value);
+                    });
+                }
+            });
+
+            document.getElementById('reset-theme').addEventListener('click', () => {
+                const defaults = {
+                    primaryColor: '#60a5fa',
+                    secondaryColor: '#e2e8f0',
+                    backgroundColor: '#0f172a',
+                    navbarColor: 'rgba(15, 23, 42, 0.95)',
+                    fontFamily: 'Inter'
+                };
+                
+                Object.entries(defaults).forEach(([key, value]) => {
+                    document.documentElement.style.setProperty(themeKeys[key], value);
+                    localStorage.setItem(key, value);
+                    
+                    const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+                    if (input) {
+                        if (input.type === 'color') {
+                            if (value.startsWith('rgba')) {
+                                const rgb = value.match(/\d+/g).slice(0, 3);
+                                const hex = '#' + rgb.map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+                                input.value = hex;
+                            } else {
+                                input.value = value;
+                            }
+                        } else {
+                            input.value = value;
+                        }
+                    }
+                });
+            });
+        }
+
+        // Navigation
+        const burgerMenu = document.querySelector('.burger-menu');
+        const nav = document.querySelector('.vertical-nav');
+
+        burgerMenu.addEventListener('click', () => {
+            burgerMenu.classList.toggle('open');
+            nav.classList.toggle('open');
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                burgerMenu.classList.remove('open');
+                nav.classList.remove('open');
             }
-        }
+        });
 
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', initializeTheme);
+
+        // Logout functionality
         async function logout() {
             try {
                 const response = await fetch('/logout');
                 if (response.ok) {
                     window.location.href = '/';
                 } else {
-                    alert('Failed to logout');
+                    throw new Error('Logout failed');
                 }
             } catch (error) {
-                console.error('Error logging out:', error);
-                alert('Failed to logout');
+                console.error('Error during logout:', error);
+                alert('Failed to logout. Please try again.');
             }
         }
+
+        // Media handling functions
+        function handleMediaLoad() {
+            const mediaCards = document.querySelectorAll('.media-card');
+            
+            mediaCards.forEach(card => {
+                // Handle video poster images
+                const video = card.querySelector('video');
+                if (video) {
+                    video.addEventListener('loadedmetadata', () => {
+                        // Remove loading state once video metadata is loaded
+                        card.classList.remove('loading');
+                    });
+
+                    // Add loading state for videos
+                    video.addEventListener('waiting', () => {
+                        card.classList.add('loading');
+                    });
+
+                    video.addEventListener('playing', () => {
+                        card.classList.remove('loading');
+                    });
+                }
+
+                // Handle images
+                const image = card.querySelector('img');
+                if (image) {
+                    // Show loading state until image is loaded
+                    card.classList.add('loading');
+                    
+                    image.addEventListener('load', () => {
+                        card.classList.remove('loading');
+                    });
+
+                    image.addEventListener('error', () => {
+                        card.classList.remove('loading');
+                        card.classList.add('error');
+                        // Replace broken image with error placeholder
+                        image.src = '/static/images/error-placeholder.png';
+                    });
+                }
+            });
+        }
+
+        // Like and comment functionality
+        function setupInteractions() {
+            const likeButtons = document.querySelectorAll('.media-card button:has(.fa-heart)');
+            const commentButtons = document.querySelectorAll('.media-card button:has(.fa-comment)');
+
+            likeButtons.forEach(button => {
+                button.addEventListener('click', async () => {
+                    try {
+                        const postId = button.closest('.media-card').dataset.postId;
+                        const response = await fetch(`/posts/${postId}/like`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            // Update like count
+                            const likeCount = button.querySelector('span');
+                            likeCount.textContent = data.likes;
+                            // Toggle like button state
+                            button.classList.toggle('liked');
+                        }
+                    } catch (error) {
+                        console.error('Error liking post:', error);
+                    }
+                });
+            });
+
+            commentButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const postId = button.closest('.media-card').dataset.postId;
+                    // Navigate to post detail view for commenting
+                    window.location.href = `/posts/${postId}`;
+                });
+            });
+        }
+
+        // Infinite scroll functionality
+        let page = 1;
+        let loading = false;
+        const loadMoreThreshold = 300; // pixels from bottom
+
+        async function loadMoreMedia() {
+            if (loading) return;
+            
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const documentHeight = document.documentElement.offsetHeight;
+            
+            if (documentHeight - scrollPosition > loadMoreThreshold) return;
+
+            loading = true;
+            try {
+                const response = await fetch(`/api/media?page=${page}`);
+                if (!response.ok) throw new Error('Failed to load more media');
+                
+                const data = await response.json();
+                if (data.media.length === 0) {
+                    // No more media to load
+                    window.removeEventListener('scroll', loadMoreMedia);
+                    return;
+                }
+
+                // Append new media to grid
+                const mediaGrid = document.querySelector('.media-grid');
+                data.media.forEach(item => {
+                    const mediaCard = createMediaCard(item);
+                    mediaGrid.appendChild(mediaCard);
+                });
+
+                page++;
+                handleMediaLoad(); // Initialize new media elements
+                setupInteractions(); // Setup interactions for new elements
+            } catch (error) {
+                console.error('Error loading more media:', error);
+            } finally {
+                loading = false;
+            }
+        }
+
+        // Create media card DOM element
+        function createMediaCard(item) {
+            const card = document.createElement('div');
+            card.className = 'media-card';
+            card.dataset.postId = item.id;
+
+            const mediaContent = document.createElement('div');
+            mediaContent.className = 'media-content';
+
+            if (item.type === 'image') {
+                const img = document.createElement('img');
+                img.src = item.file_url;
+                img.alt = 'Post image';
+                img.loading = 'lazy';
+                mediaContent.appendChild(img);
+            } else if (item.type === 'video') {
+                const video = document.createElement('video');
+                video.controls = true;
+                video.preload = 'none';
+                video.poster = item.thumbnail_url;
+                
+                const source = document.createElement('source');
+                source.src = item.file_url;
+                source.type = 'video/mp4';
+                
+                video.appendChild(source);
+                mediaContent.appendChild(video);
+            }
+
+            // Add card content (timestamp, likes, comments, etc.)
+            card.innerHTML = `
+                ${mediaContent.outerHTML}
+                <div class="p-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-400">${formatDate(item.created_at)}</span>
+                        <div class="flex space-x-4">
+                            <button class="text-gray-300 hover:text-pink-500">
+                                <i class="fas fa-heart"></i> ${item.likes}
+                            </button>
+                            <button class="text-gray-300 hover:text-pink-500">
+                                <i class="fas fa-comment"></i> ${item.comments}
+                            </button>
+                        </div>
+                    </div>
+                    ${item.content ? `<p class="mt-2 text-gray-200">${item.content}</p>` : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Helper function to format dates
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Function to initialize activity bars
+        function initializeActivityBars() {
+            const activityBars = document.querySelectorAll('.activity-bar');
+            
+            // Add slight animation when page loads
+            activityBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.height = bar.className.match(/h-(\d+)/)[1] + '%';
+                }, index * 100);
+            });
+        }
+
+        // Initialize everything on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            handleMediaLoad();
+            setupInteractions();
+            setupThemeListeners();
+            window.addEventListener('scroll', loadMoreMedia);
+            initializeActivityBars();
+        });
     </script>
 </body>
 </html>

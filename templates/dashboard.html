@@ -3,465 +3,1376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L❤L - Your Dashboard</title>
+    <title>L❤L - Feed</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
         
-        .heart-logo {
-            animation: heartbeat 1.5s infinite;
-            display: inline-block;
-            color: #ec4899;
+        :root {
+            --primary-color: #60a5fa;
+            --secondary-color: #e2e8f0;
+            --background-color: #0f172a;
+            --navbar-color: rgba(15, 23, 42, 0.95);
+            --font-family: 'Inter';
         }
 
-        .gradient-bg {
-            background: linear-gradient(135deg, #ec4899, #f43f5e);
+        body {
+            font-family: var(--font-family), sans-serif;
+            background: var(--background-color);
+            color: var(--secondary-color);
         }
 
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .vertical-nav {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--navbar-color);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            z-index: 50;
         }
 
         .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-            position: relative;
+            gap: 0.75rem;
+            color: var(--secondary-color);
         }
-        
+
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+            background: rgba(96, 165, 250, 0.1);
         }
-        
-        .nav-link i {
-            width: 1.5rem;
-            text-align: center;
+
+        .nav-link.active {
+            color: var(--primary-color);
+            background: rgba(96, 165, 250, 0.1);
+            border-right: 3px solid var(--primary-color);
         }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(135deg, #ec4899, #f43f5e);
-            transition: width 0.3s ease;
+
+        .main-content {
+            margin-left: 240px;
+            transition: margin-left 0.3s ease;
         }
-        
-        .nav-link:hover::after {
-            width: 100%;
+
+        /* Grid Layout Styles */
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
         }
 
         .post-card {
-            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 1rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
         .post-card:hover {
             transform: translateY(-5px);
         }
 
-        .floating-button {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 50;
-        }
-
-        .iframe-container {
-            position: fixed;
-            right: 2rem;
-            bottom: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            z-index: 40;
-        }
-
-        .collapsible-iframe {
-            background: rgba(17, 24, 39, 0.95);
-            border-radius: 1rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .iframe-header {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
-            padding: 0.75rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .iframe-content {
-            height: 400px;
-            width: 350px;
-            transition: height 0.3s ease;
-            overflow: hidden;
-        }
-
-        .collapsed .iframe-content {
-            height: 0;
-        }
-
-        .iframe-toggle {
-            transition: transform 0.3s ease;
-        }
-
-        .collapsed .iframe-toggle {
-            transform: rotate(180deg);
-        }
-
-        .left-iframe-container {
-            position: fixed;
-            left: 2rem;
-            top: 5rem;
-            display: flex;
-            flex-direction: column;
-            z-index: 40;
-            height: calc(100vh - 7rem);
-        }
-
-        .left-iframe {
-            background: rgba(17, 24, 39, 0.95);
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(255, 20, 147, 0.2);
-            backdrop-filter: blur(10px);
-            height: 100%;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .left-iframe-header {
-            background: linear-gradient(135deg, #FF69B4, #FF1493);
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .left-iframe-content {
-            height: calc(100% - 3rem);
-            width: 350px;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .left-iframe.collapsed {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .left-iframe.collapsed .left-iframe-content {
+        /* Modal Styles */
+        .modal {
             display: none;
-        }
-
-        .left-iframe.collapsed .left-iframe-header {
-            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
             justify-content: center;
-            padding: 0;
+            align-items: center;
         }
 
-        .left-iframe.collapsed .header-text {
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            background: var(--background-color);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        /* Theme Modal Styles */
+        .theme-modal {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
+        .theme-modal.active {
+            display: flex;
+        }
+
+        .theme-content {
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .theme-button {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button:hover {
+            transform: rotate(30deg);
+        }
+
+        /* Music Feed Styles */
+        .music-feed {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            z-index: 40;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .music-feed.expanded {
+            width: 300px;
+            height: 400px;
+            border-radius: 1rem;
+        }
+
+        /* Chat Window Styles */
+        .chat-window {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 350px;
+            height: 50px;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            z-index: 30;
+            overflow: hidden;
+        }
+
+        .chat-window.expanded {
+            height: 500px;
+            border-radius: 1rem;
+        }
+
+        /* Swipe Animation Styles */
+        .swipe-left {
+            animation: swipeLeft 0.3s ease-out forwards;
+        }
+
+        .swipe-right {
+            animation: swipeRight 0.3s ease-out forwards;
+        }
+
+        @keyframes swipeLeft {
+            to {
+                transform: translateX(-150%) rotate(-30deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes swipeRight {
+            to {
+                transform: translateX(150%) rotate(30deg);
+                opacity: 0;
+            }
+        }
+
+        /* Connection Prompt Styles */
+        .connection-prompt {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: slideDown 0.3s ease-out, fadeOut 0.3s ease-in 2.7s forwards;
+            z-index: 1000;
+        }
+
+        @keyframes slideDown {
+            from { transform: translate(-50%, -100%); }
+            to { transform: translate(-50%, 0); }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+
+        /* Responsive Styles */
         @media (max-width: 768px) {
-            .nav-link span {
-                display: none;
+            .vertical-nav {
+                transform: translateX(-100%);
             }
-            
-            .nav-link {
-                padding: 0.5rem;
+            .vertical-nav.active {
+                transform: translateX(0);
             }
-
-            .iframe-container {
-                right: 1rem;
-                bottom: 1rem;
+            .main-content {
+                margin-left: 0;
             }
-
-            .left-iframe-container {
-                left: 1rem;
-                top: 4rem;
+            .mobile-nav-toggle {
+                display: block !important;
             }
-
-            .iframe-content, .left-iframe-content {
-                width: 300px;
-                height: 300px;
-            }
-
-            .floating-button {
-                bottom: 1rem;
-                right: 1rem;
+            .post-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
         }
-        .left-iframe-container {
+        /* Add these styles to the existing <style> section */
+
+.create-content-button {
     position: fixed;
-    left: 2rem;
-    top: 5rem;
-    display: flex;
-    flex-direction: column;
-    z-index: 40;
-    height: calc(100vh - 7rem);
-}
-
-.left-iframe {
-    background: rgba(17, 24, 39, 0.95);
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(255, 20, 147, 0.2);
-    backdrop-filter: blur(10px);
-    height: 100%;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.left-iframe-header {
-    background: linear-gradient(135deg, #FF69B4, #FF1493);
-    padding: 0.75rem 1rem;
+    right: 20px;
+    bottom: 150px;
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, var(--primary-color), #dd6b20);
+    color: white;
     display: flex;
     align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.left-iframe-content {
-    height: calc(100% - 3rem);
-    width: 350px;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.create-content-button:hover {
+    transform: scale(1.1);
 }
 
-.left-iframe.collapsed {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+.create-content-modal, .post-creation-modal, .short-creation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-content-modal.active, .post-creation-modal.active, .short-creation-modal.active {
+    display: flex;
+}
+
+.create-content, .post-creation-content, .short-creation-content {
+    width: 90%;
+    max-width: 600px;
+    padding: 2rem;
+    border-radius: 1rem;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.create-option {
+    transition: all 0.3s ease;
+}
+
+.create-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+.post-preview-container, .short-preview-container {
+    transition: all 0.3s ease;
     cursor: pointer;
 }
 
-.left-iframe.collapsed .left-iframe-content {
-    display: none;
+.post-preview-container:hover, .short-preview-container:hover {
+    border-color: var(--primary-color);
 }
 
-.left-iframe.collapsed .left-iframe-header {
-    height: 100%;
+.video-post .post-image-container {
+    background-color: #000;
+}
+
+.video-post video.post-image {
     width: 100%;
-    justify-content: center;
-    padding: 0;
+    height: 100%;
+    object-fit: contain;
 }
 
-.left-iframe.collapsed .header-text {
+/* Video play button overlay */
+.video-post .post-image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-post .post-image-container::after {
+    content: '\f144';
+    font-family: 'Font Awesome 5 Free';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.8);
+    z-index: 2;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.video-post .post-image-container:hover::before {
+    opacity: 1;
+}
+
+.video-post .post-image-container:hover::after {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+.stories-container {
+    position: relative;
+    margin-left: 240px; /* Match the width of vertical nav */
+}
+
+.stories-scroll-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.stories-scroll-container::-webkit-scrollbar {
     display: none;
 }
 
-.headphone-icon {
-    transition: transform 0.5s ease;
+.story-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.left-iframe.collapsed .headphone-icon {
-    animation: rotateHeadphones 2s infinite linear;
-    font-size: 1.5rem;
+.story-ring {
+    background: linear-gradient(45deg, #817cc7 0%, #6b7ace 25%, #2f77e4 50%, #0b46e9 75%, #bc1888 100%);
 }
 
-@keyframes rotateHeadphones {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.story-preview {
+    position: relative;
+    overflow: hidden;
 }
- .hamburger {
-            display: none;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
 
-        .nav-menu {
-            display: flex;
-            align-items: center;
-        }
+.story-preview img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+}
 
-        @media (max-width: 768px) {
-            .hamburger {
-                display: block;
-            }
+#story-viewer .story-media-container {
+    aspect-ratio: 9/16;
+    background: #000;
+}
 
-            .nav-menu {
-                display: none;
-                position: fixed;
-                top: 4rem;
-                left: 0;
-                right: 0;
-                background: rgba(30, 41, 59, 0.95);
-                backdrop-filter: blur(10px);
-                padding: 1rem;
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
-
-            .nav-link {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .nav-link span {
-                display: inline-block !important;
-                margin-left: 0.5rem;
-            }
-        }
-
-        /* Updated post styles */
-        .post-user {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .post-user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .post-username {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #f8fafc;
-        }
-
-        .post-timestamp {
-            font-size: 0.875rem;
-            color: #94a3b8;
-        }
+#story-viewer video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+@media (max-width: 768px) {
+    .stories-container {
+        margin-left: 0; /* Remove margin when nav is hidden on mobile */
+    }
+}
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
-    <!-- Navigation -->
-    <nav class="glass-card fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-3xl font-bold">
-                        L<span class="heart-logo">❤</span>L
-                    </h1>
-                </div>
-                <button class="hamburger" onclick="toggleMenu()">
-                    <i class="fas fa-bars text-xl"></i>
+<body>
+    <!-- Theme Button -->
+    <button class="theme-button">
+        <i class="fas fa-paint-brush"></i>
+    </button>
+
+    <!-- Theme Modal -->
+    <div class="theme-modal">
+        <div class="theme-content glass-effect">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold">Customize Theme</h3>
+                <button class="close-theme text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
                 </button>
-                <div class="nav-menu">
-                    <a href="/feed" class="nav-link">
-                        <i class="fas fa-heart"></i><span>Feed</span>
-                    </a>
-                    <a href="/dashboard" class="nav-link">
-                        <i class="fas fa-home"></i><span>Dashboard</span>
-                    </a>
-                    <a href="/create" class="nav-link">
-                        <i class="fas fa-plus"></i><span>Create with AI</span>
-                    </a>
-                    <a href="/chat" class="nav-link">
-                        <i class="fas fa-comments"></i><span>Chat</span>
-                    </a>
-                    <a href="/list_connect" class="nav-link">
-                        <i class="fas fa-users"></i><span>Matches</span>
-                    </a>
-                    <a href="/music-feed" class="nav-link">
-                        <i class="fas fa-headphones"></i><span>Music Feed</span>
-                    </a>
-                    <a href="#" class="nav-link" onclick="navigateToProfile(event)">
-                        <i class="fas fa-user"></i><span>Profile</span>
-                    </a>
-                    <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit;">
-                        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
-                    </button>
-                </div>
             </div>
+            <div class="space-y-6">
+                <div>
+                    <label class="block mb-2">Primary Color</label>
+                    <input type="color" id="primary-color" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block mb-2">Secondary Color</label>
+                    <input type="color" id="secondary-color" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block mb-2">Background Color</label>
+                    <input type="color" id="background-color" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block mb-2">Navbar Color</label>
+                    <input type="color" id="navbar-color" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block mb-2">Font Family</label>
+                    <select id="font-family" class="w-full p-2 rounded bg-gray-800 text-white">
+                        <optgroup label="Sans Serif">
+                            <option value="Inter">Inter</option>
+                            <option value="Roboto">Roboto</option>
+                            <option value="Poppins">Poppins</option>
+                            <option value="Lato">Lato</option>
+                            <option value="Montserrat">Montserrat</option>
+                        </optgroup>
+                        <optgroup label="Serif">
+                            <option value="Playfair Display">Playfair Display</option>
+                        </optgroup>
+                        <optgroup label="Cursive">
+                            <option value="Dancing Script">Dancing Script</option>
+                            <option value="Pacifico">Pacifico</option>
+                            <option value="Great Vibes">Great Vibes</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <button class="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" id="reset-theme">
+                    Reset to Default
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Nav Toggle -->
+    <button class="mobile-nav-toggle fixed top-4 left-4 z-50 bg-blue-500 p-2 rounded-lg hidden">
+        <i class="fas fa-bars text-white"></i>
+    </button>
+
+    <!-- Vertical Navigation -->
+    <nav class="vertical-nav">
+        <div class="py-6 px-4">
+            <h1 class="text-2xl font-bold text-center">
+                L<span class="text-blue-500">❤</span>L
+            </h1>
+        </div>
+        
+        <div class="space-y-2">
+            <a href="/feed" class="nav-link ">
+                <i class="fas fa-compass"></i>
+                <span>Explore</span>
+            </a>
+            <a href="/dashboard" class="nav-link active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="/chat" class="nav-link">
+                <i class="fas fa-comments"></i>
+                <span>Chat</span>
+            </a>
+            <a href="/create" class="nav-link">
+                <i class="fas fa-plus"></i>
+                <span>Create</span>
+            </a>
+            <a href="/list_connect" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Matches</span>
+            </a>
+            <a href="/music-feed" class="nav-link">
+                <i class="fas fa-headphones"></i>
+                <span>My Music</span>
+            </a>
+            <a href="#" class="nav-link" onclick="navigateToProfile(event)">
+                <i class="fas fa-user"></i><span>Profile</span>
+            </a>
+            <a href="#" onclick="logout()" id="logout-button" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+            
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="pt-20 px-4">
-        <div class="max-w-4xl mx-auto">
-            <div id="posts-container" class="grid gap-6">
-                <!-- Posts will be dynamically inserted here -->
+    <!-- Stories Section -->
+    <div class="stories-container glass-effect mx-4 mt-4 p-4 rounded-lg">
+        <div class="stories-scroll-container flex space-x-4 overflow-x-auto pb-2">
+            <!-- Add Story Button -->
+            <div class="story-item flex-shrink-0 cursor-pointer" onclick="openStoryUpload()">
+                <div class="story-ring bg-gradient-to-r from-blue-500 to-pink-500 p-0.5 rounded-full">
+                    <div class="story-preview bg-gray-800 rounded-full p-1">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center bg-gray-700">
+                            <i class="fas fa-plus text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center text-sm mt-1 text-gray-300">Add Story</p>
             </div>
+            
+            <!-- Stories will be dynamically inserted here -->
         </div>
     </div>
 
-    <!-- Music Feed -->
-    <div class="left-iframe-container">
-        <div class="left-iframe collapsed" id="music-feed-container" onclick="toggleMusicFeed(event)">
-            <div class="left-iframe-header">
-                <div class="flex items-center">
-                    <i class="fas fa-headphones mr-2 headphone-icon"></i>
-                    <span class="font-bold header-text">Music Feed</span>
-                </div>
+    <div id="posts-grid" class="post-grid">
+        <!-- Posts will be dynamically inserted here -->
+    </div>
+</main>
+
+<!-- Add Story Modal -->
+<div id="story-upload-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center">
+    <div class="relative w-full max-w-md mx-4 glass-effect rounded-lg p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Add Story</h3>
+            <button onclick="closeStoryUpload()" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div id="story-preview-container" class="border-2 border-dashed border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center h-64 relative overflow-hidden cursor-pointer">
+            <video id="story-preview" class="hidden max-h-full max-w-full absolute" controls></video>
+            <div id="story-upload-instructions" class="text-center">
+                <i class="fas fa-film text-4xl text-gray-500 mb-3"></i>
+                <p class="mb-2">Click to upload a video story</p>
+                <p class="text-sm text-gray-500">15 seconds maximum</p>
             </div>
-            <div class="left-iframe-content">
-                <iframe src="/music-feed" width="100%" height="100%" frameborder="0"></iframe>
+            <input type="file" id="story-video-upload" class="hidden" accept="video/*">
+        </div>
+
+        <button onclick="uploadStory()" class="w-full mt-4 py-3 bg-gradient-to-r from-blue-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-opacity">
+            Share Story
+        </button>
+    </div>
+</div>
+
+<!-- Story Viewer Modal -->
+<div id="story-viewer" class="fixed inset-0 bg-black hidden z-50">
+    <div class="h-full flex items-center justify-center relative">
+        <!-- Story content -->
+        <div class="w-full max-w-sm mx-4">
+            <!-- Story header -->
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 rounded-full bg-gray-600 flex-shrink-0"></div>
+                <div class="ml-3">
+                    <p class="text-white font-semibold story-username">Username</p>
+                    <p class="text-gray-400 text-sm story-time">Just now</p>
+                </div>
+                <!-- Repositioned close button -->
+                <button onclick="closeStoryViewer()" class="ml-auto text-white text-xl bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full w-8 h-8 flex items-center justify-center transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Progress bar -->
+            <div class="story-progress bg-gray-700 h-1 mb-4 rounded">
+                <div class="story-progress-bar bg-white h-full w-0 rounded transition-all duration-100"></div>
+            </div>
+            
+            <!-- Story media -->
+            <div class="story-media-container relative rounded-lg overflow-hidden">
+                <video id="story-video" class="w-full" playsinline></video>
             </div>
         </div>
+    </div>
+</div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="post-grid" id="post-grid">
+            <!-- Posts will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <!-- Post Modal -->
+    <div class="modal" id="post-modal">
+        <div class="modal-content glass-effect">
+            <div class="absolute top-4 right-4 z-10">
+                <button onclick="closeModal()" class="text-white bg-gray-800 rounded-full p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modal-post-content"></div>
+            <div class="flex justify-center gap-8 p-4">
+                <button onclick="swipeLeft()" class="bg-red-500 hover:bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button onclick="swipeRight()" class="bg-green-500 hover:bg-green-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl transition-colors">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+<!-- Create Button -->
+<button class="create-content-button fixed right-20 bottom-150 z-100 w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-orange-500 text-white flex items-center justify-center cursor-pointer transition-all hover:scale-110 shadow-lg">
+    <i class="fas fa-plus"></i>
+</button>
+
+<!-- Create Content Modal -->
+<div class="create-content-modal fixed inset-0 bg-black bg-opacity-50 z-1000 hidden items-center justify-center">
+    <div class="create-content glass-effect w-90 max-w-600 p-8 rounded-lg">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Create New Content</h3>
+            <button class="close-create-modal text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Create Post Option -->
+            <div class="create-option post-option p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-all cursor-pointer">
+                <div class="text-center mb-4">
+                    <i class="fas fa-image text-5xl text-blue-500 mb-4"></i>
+                    <h4 class="text-xl font-semibold">Create a Post</h4>
+                </div>
+                <p class="text-gray-400 text-sm text-center">Share photos with your connections</p>
+            </div>
+            
+            <!-- Create Short Option -->
+            <div class="create-option short-option p-6 rounded-lg border border-gray-700 hover:border-pink-500 transition-all cursor-pointer">
+                <div class="text-center mb-4">
+                    <i class="fas fa-video text-5xl text-pink-500 mb-4"></i>
+                    <h4 class="text-xl font-semibold">Create a Short</h4>
+                </div>
+                <p class="text-gray-400 text-sm text-center">Share short videos with your connections</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Post Creation Modal -->
+<div class="post-creation-modal fixed inset-0 bg-black bg-opacity-50 z-1000 hidden items-center justify-center">
+    <div class="post-creation-content glass-effect w-90 max-w-600 p-8 rounded-lg">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Create a Post</h3>
+            <button class="close-post-modal text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="post-form" class="space-y-6">
+            <div class="post-preview-container border-2 border-dashed border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center h-64 relative overflow-hidden">
+                <img id="post-preview" class="hidden max-h-full max-w-full object-contain absolute" alt="Image preview">
+                <div id="post-upload-instructions" class="text-center">
+                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-500 mb-3"></i>
+                    <p class="mb-2">Drag and drop an image or click to upload</p>
+                    <p class="text-sm text-gray-500">Supported formats: JPG, PNG, GIF</p>
+                </div>
+                <input type="file" id="post-image-upload" class="hidden" accept="image/*">
+            </div>
+            <textarea id="post-caption" placeholder="Write a caption..." class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:outline-none"></textarea>
+            <button type="submit" class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                Post
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Short Creation Modal -->
+<div class="short-creation-modal fixed inset-0 bg-black bg-opacity-50 z-1000 hidden items-center justify-center">
+    <div class="short-creation-content glass-effect w-90 max-w-600 p-8 rounded-lg">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-semibold">Create a Short</h3>
+            <button class="close-short-modal text-gray-400 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="short-form" class="space-y-6">
+            <div class="short-preview-container border-2 border-dashed border-gray-700 rounded-lg p-4 flex flex-col items-center justify-center h-64 relative overflow-hidden">
+                <video id="short-preview" class="hidden max-h-full max-w-full absolute" controls></video>
+                <div id="short-upload-instructions" class="text-center">
+                    <i class="fas fa-film text-4xl text-gray-500 mb-3"></i>
+                    <p class="mb-2">Drag and drop a video or click to upload</p>
+                    <p class="text-sm text-gray-500">Supported formats: MP4, MOV (Max 60 seconds)</p>
+                </div>
+                <input type="file" id="short-video-upload" class="hidden" accept="video/*">
+            </div>
+            <textarea id="short-caption" placeholder="Add a description..." class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg focus:border-blue-500 focus:outline-none"></textarea>
+            <button type="submit" class="w-full py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors">
+                Post Short
+            </button>
+        </form>
+    </div>
+</div>
+
+    <!-- Music Feed -->
+    <div class="music-feed flex items-center justify-center">
+        <i class="fas fa-music text-white text-xl"></i>
+        <iframe src="/music-feed" class="w-full h-full hidden"></iframe>
     </div>
 
     <!-- Chat Window -->
-    <div class="iframe-container">
-        <div class="collapsible-iframe collapsed" id="chat-container">
-            <div class="iframe-header gradient-animate" onclick="toggleIframe('chat-container')">
-                <div class="flex items-center">
-                    <i class="fas fa-comments mr-2"></i>
-                    <span class="font-bold">Chat</span>
-                </div>
-                <i class="fas fa-chevron-up iframe-toggle"></i>
+     <!-- Chat Window -->
+    <div class="chat-window glass-effect">
+        <div class="h-full flex flex-col">
+            <div class="p-3 border-b border-gray-700 cursor-pointer flex justify-between items-center">
+                <h3 class="font-semibold">Chat</h3>
+                <i class="fas fa-chevron-up"></i>
             </div>
-            <div class="iframe-content">
-                <iframe src="/chat" width="100%" height="100%" frameborder="0"></iframe>
-            </div>
+            <iframe src="/chat" class="w-full flex-grow hidden"></iframe>
         </div>
     </div>
-
-    <!-- Floating Post Button -->
-    <button onclick="showUploadModal()" class="floating-button gradient-bg w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-lg hover:scale-110 transition-transform">
-        <i class="fas fa-plus"></i>
-    </button>
-
-    <!-- Upload Modal -->
-    <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4">
-            <h2 class="text-2xl font-bold mb-4">Share Your Moment</h2>
-            <form id="upload-form" enctype="multipart/form-data">
-                <div class="mb-4">
-                    <div class="border-2 border-dashed border-pink-500 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-700 transition-colors" onclick="document.getElementById('post-file').click()">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-pink-500 mb-4"></i>
-                        <p>Drop your content here or click to upload</p>
-                        <input type="file" id="post-file" name="post-file" class="hidden" accept="image/*,video/*,audio/*">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <input type="text" name="content" placeholder="What's on your mind?" class="w-full bg-gray-700 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                </div>
-                <div class="flex justify-end space-x-4">
-                    <button type="button" onclick="hideUploadModal()" class="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
-                    <button type="submit" class="px-4 py-2 gradient-bg rounded-lg hover:opacity-90">Post</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    
 
     <script>
+        async function navigateToProfile(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/user/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const data = await response.json();
+                window.location.href = `/${data.username}`;
+            } catch (error) {
+                console.error('Error navigating to profile:', error);
+            }
+        }
+    // Story Management
+let stories = [];
+let currentStoryIndex = 0;
+
+async function fetchStories() {
+    try {
+        const response = await fetch('/shorts');
+        const data = await response.json();
+        
+        if (data.posts) {
+            stories = data.posts;
+            renderStories();
+        }
+    } catch (error) {
+        console.error('Error fetching stories:', error);
+    }
+}
+
+function renderStories() {
+    const storiesContainer = document.querySelector('.stories-scroll-container');
+    const existingStories = Array.from(storiesContainer.children);
+    const addStoryButton = existingStories[0]; // Keep the "Add Story" button
     
+    // Remove old stories but keep the "Add Story" button
+    storiesContainer.innerHTML = '';
+    storiesContainer.appendChild(addStoryButton);
+    
+    stories.forEach((story, index) => {
+        const storyElement = document.createElement('div');
+        storyElement.className = 'story-item flex-shrink-0 cursor-pointer';
+        storyElement.onclick = () => openStoryViewer(index);
+        
+        storyElement.innerHTML = `
+            <div class="story-ring p-0.5 rounded-full">
+                <div class="story-preview bg-gray-800 rounded-full p-1">
+                    <div class="w-14 h-14 rounded-full overflow-hidden">
+                        <video src="${story.file_url}" class="w-full h-full object-cover"></video>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-sm mt-1 text-gray-300">${story.username}</p>
+        `;
+        
+        storiesContainer.appendChild(storyElement);
+    });
+}
+
+// Story Upload
+function openStoryUpload() {
+    document.getElementById('story-upload-modal').classList.remove('hidden');
+}
+
+function closeStoryUpload() {
+    document.getElementById('story-upload-modal').classList.add('hidden');
+    resetStoryUpload();
+}
+
+function resetStoryUpload() {
+    const preview = document.getElementById('story-preview');
+    const instructions = document.getElementById('story-upload-instructions');
+    const input = document.getElementById('story-video-upload');
+    
+    preview.classList.add('hidden');
+    preview.src = '';
+    instructions.classList.remove('hidden');
+    input.value = '';
+}
+
+// Story preview container click handler
+document.getElementById('story-preview-container').addEventListener('click', () => {
+    document.getElementById('story-video-upload').click();
+});
+
+// Story video upload handler
+document.getElementById('story-video-upload').addEventListener('change', async (e) => {
+    if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        try {
+            const video = document.getElementById('story-preview');
+            video.src = URL.createObjectURL(file);
+            
+            video.onloadedmetadata = function() {
+                if (video.duration > 15) {
+                    alert('Video must be 15 seconds or shorter');
+                    resetStoryUpload();
+                    return;
+                }
+                
+                video.classList.remove('hidden');
+                document.getElementById('story-upload-instructions').classList.add('hidden');
+            };
+        } catch (error) {
+            alert('Error uploading video');
+            resetStoryUpload();
+        }
+    }
+});
+
+async function uploadStory() {
+    const file = document.getElementById('story-video-upload').files[0];
+    if (!file) {
+        alert('Please select a video');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('type', 'video');
+    formData.append('post-file', file);
+    formData.append('content', 'Story');
+    
+    try {
+        const response = await fetch('/posts', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            closeStoryUpload();
+            fetchStories();
+            alert('Story uploaded successfully!');
+        } else {
+            alert('Failed to upload story');
+        }
+    } catch (error) {
+        console.error('Error uploading story:', error);
+        alert('Failed to upload story');
+    }
+}
+
+// Story Viewer
+let storyProgress;
+let currentStoryVideo;
+
+// Update the existing openStoryViewer function
+function openStoryViewer(index) {
+    currentStoryIndex = index;
+    const story = stories[currentStoryIndex];
+    
+    document.getElementById('story-viewer').classList.remove('hidden');
+    document.querySelector('.story-username').textContent = story.username;
+    document.querySelector('.story-time').textContent = new Date(story.created_at).toLocaleDateString();
+    
+    const video = document.getElementById('story-video');
+    video.src = story.file_url;
+    video.play();
+    
+    updateNavigationButtons();
+    startStoryProgress();
+}
+
+function closeStoryViewer() {
+    document.getElementById('story-viewer').classList.add('hidden');
+    const video = document.getElementById('story-video');
+    video.pause();
+    video.src = '';
+    stopStoryProgress();
+}
+
+function startStoryProgress() {
+    const progressBar = document.querySelector('.story-progress-bar');
+    progressBar.style.width = '0%';
+    
+    const video = document.getElementById('story-video');
+    video.onloadedmetadata = () => {
+        const duration = video.duration * 1000; // Convert to milliseconds
+        
+        progressBar.style.transition = `width ${duration}ms linear`;
+        progressBar.style.width = '100%';
+        
+        storyProgress = setTimeout(() => {
+            if (currentStoryIndex < stories.length - 1) {
+                openStoryViewer(currentStoryIndex + 1);
+            } else {
+                closeStoryViewer();
+            }
+        }, duration);
+    };
+}
+
+function stopStoryProgress() {
+    if (storyProgress) {
+        clearTimeout(storyProgress);
+    }
+}
+
+// Add story navigation with arrow keys
+document.addEventListener('keydown', (e) => {
+    if (document.getElementById('story-viewer').classList.contains('hidden')) return;
+    
+    if (e.key === 'ArrowLeft' && currentStoryIndex > 0) {
+        openStoryViewer(currentStoryIndex - 1);
+    } else if (e.key === 'ArrowRight' && currentStoryIndex < stories.length - 1) {
+        openStoryViewer(currentStoryIndex + 1);
+    } else if (e.key === 'Escape') {
+        closeStoryViewer();
+    }
+});
+
+
+    
+    
+    
+    // Function to check video duration
+        function checkVideoDuration(file) {
+            return new Promise((resolve, reject) => {
+                const video = document.createElement('video');
+                video.preload = 'metadata';
+        
+                video.onloadedmetadata = function() {
+                    window.URL.revokeObjectURL(video.src);
+                    if (video.duration > 60) {
+                        reject('Video must be 60 seconds or shorter');
+                    } else {
+                        resolve(true);
+                    }
+                };
+        
+                video.src = URL.createObjectURL(file);
+            });
+        }
+            const createContentButton = document.querySelector('.create-content-button');
+        const createContentModal = document.querySelector('.create-content-modal');
+        const closeCreateModal = document.querySelector('.close-create-modal');
+        const createOptions = document.querySelectorAll('.create-option');
+        
+        // Post Form Elements
+        const postCreationModal = document.querySelector('.post-creation-modal');
+        const closePostModal = document.querySelector('.close-post-modal');
+        const postPreviewContainer = document.querySelector('.post-preview-container');
+        const postPreview = document.getElementById('post-preview');
+        const postUploadInstructions = document.getElementById('post-upload-instructions');
+        const postImageUpload = document.getElementById('post-image-upload');
+        const postForm = document.getElementById('post-form');
+        
+        // Short Form Elements
+        const shortCreationModal = document.querySelector('.short-creation-modal');
+        const closeShortModal = document.querySelector('.close-short-modal');
+        const shortPreviewContainer = document.querySelector('.short-preview-container');
+        const shortPreview = document.getElementById('short-preview');
+        const shortUploadInstructions = document.getElementById('short-upload-instructions');
+        const shortVideoUpload = document.getElementById('short-video-upload');
+        const shortForm = document.getElementById('short-form');
+        
+        // Open Create Content Modal
+        createContentButton.addEventListener('click', () => {
+            createContentModal.classList.add('active');
+        });
+        
+        // Close Create Content Modal
+        closeCreateModal.addEventListener('click', () => {
+            createContentModal.classList.remove('active');
+        });
+        
+        // Handle Create Option Selection
+        createOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                createContentModal.classList.remove('active');
+                
+                if (option.classList.contains('post-option')) {
+                    postCreationModal.classList.add('active');
+                } else if (option.classList.contains('short-option')) {
+                    shortCreationModal.classList.add('active');
+                }
+            });
+        });
+        
+        // Close modals when clicking outside
+        [createContentModal, postCreationModal, shortCreationModal].forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+        
+        // Close Post Modal
+        closePostModal.addEventListener('click', () => {
+            postCreationModal.classList.remove('active');
+            resetPostForm();
+        });
+        
+        // Close Short Modal
+        closeShortModal.addEventListener('click', () => {
+            shortCreationModal.classList.remove('active');
+            resetShortForm();
+        });
+        
+        // Handle Post Image Upload (click)
+        postPreviewContainer.addEventListener('click', () => {
+            postImageUpload.click();
+        });
+        
+        // Handle Post Image Upload (change)
+        postImageUpload.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    postPreview.src = event.target.result;
+                    postPreview.classList.remove('hidden');
+                    postUploadInstructions.classList.add('hidden');
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Handle Short Video Upload (click)
+        shortPreviewContainer.addEventListener('click', () => {
+            shortVideoUpload.click();
+        });
+        
+        // Handle Short Video Upload (change)
+        
+        // Update the short video upload handler
+        shortVideoUpload.addEventListener('change', async (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                try {
+                    await checkVideoDuration(file);
+                    const videoURL = URL.createObjectURL(file);
+                    shortPreview.src = videoURL;
+                    shortPreview.classList.remove('hidden');
+                    shortUploadInstructions.classList.add('hidden');
+                } catch (error) {
+                    alert(error);
+                    resetShortForm();
+                }
+            }
+        });
+        
+        postForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const formData = new FormData();
+                    const imageFile = postImageUpload.files[0];
+                    const caption = document.getElementById('post-caption').value;
+                    
+                    if (!imageFile) {
+                        alert('Please select an image to upload.');
+                        return;
+                    }
+                    
+                    formData.append('type', 'image');
+                    formData.append('content', caption);
+                    formData.append('post-file', imageFile);
+                    
+                    try {
+                        const response = await fetch('/posts', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            alert('Post created successfully!');
+                            postCreationModal.classList.remove('active');
+                            resetPostForm();
+                            fetchPosts(); // Refresh the posts grid
+                        } else {
+                            const error = await response.json();
+                            alert(`Failed to create post: ${error.error}`);
+                        }
+                    } catch (error) {
+                        console.error('Error creating post:', error);
+                        alert('Connection error. Please try again.');
+                    }
+                });
+        
+                // Short Form Submit - Updated to use /posts
+                shortForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const videoFile = shortVideoUpload.files[0];
+            const caption = document.getElementById('short-caption').value;
+            
+            if (!videoFile) {
+                alert('Please select a video to upload.');
+                return;
+            }
+            
+            try {
+                await checkVideoDuration(videoFile);
+                
+                formData.append('type', 'video');
+                formData.append('content', caption);
+                formData.append('post-file', videoFile);
+                
+                const response = await fetch('/posts', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Short created successfully!');
+                    shortCreationModal.classList.remove('active');
+                    resetShortForm();
+                    fetchPosts();
+                } else {
+                    const error = await response.json();
+                    alert(`Failed to create short: ${error.error}`);
+                }
+            } catch (error) {
+                alert(error);
+            }
+        });
+        
+        // Reset Post Form
+        function resetPostForm() {
+            postForm.reset();
+            postPreview.classList.add('hidden');
+            postPreview.src = '';
+            postUploadInstructions.classList.remove('hidden');
+        }
+        
+        // Reset Short Form
+        function resetShortForm() {
+            shortForm.reset();
+            shortPreview.classList.add('hidden');
+            shortPreview.src = '';
+            shortUploadInstructions.classList.remove('hidden');
+        }
+        
+        // Handle Drag and Drop for Post Image
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            postPreviewContainer.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            postPreviewContainer.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            postPreviewContainer.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            postPreviewContainer.classList.add('border-blue-500');
+        }
+        
+        function unhighlight() {
+            postPreviewContainer.classList.remove('border-blue-500');
+        }
+        
+        postPreviewContainer.addEventListener('drop', handlePostDrop, false);
+        
+        function handlePostDrop(e) {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    postPreview.src = event.target.result;
+                    postPreview.classList.remove('hidden');
+                    postUploadInstructions.classList.add('hidden');
+                    postImageUpload.files = dt.files;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Handle Drag and Drop for Short Video
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            shortPreviewContainer.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            shortPreviewContainer.addEventListener(eventName, highlightVideo, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            shortPreviewContainer.addEventListener(eventName, unhighlightVideo, false);
+        });
+        
+        function highlightVideo() {
+            shortPreviewContainer.classList.add('border-pink-500');
+        }
+        
+        function unhighlightVideo() {
+            shortPreviewContainer.classList.remove('border-pink-500');
+        }
+        
+        shortPreviewContainer.addEventListener('drop', handleShortDrop, false);
+        
+        // Update the short drop handler
+        async function handleShortDrop(e) {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            
+            if (file && file.type.startsWith('video/')) {
+                try {
+                    await checkVideoDuration(file);
+                    const videoURL = URL.createObjectURL(file);
+                    shortPreview.src = videoURL;
+                    shortPreview.classList.remove('hidden');
+                    shortUploadInstructions.classList.add('hidden');
+                    shortVideoUpload.files = dt.files;
+                } catch (error) {
+                    alert(error);
+                    resetShortForm();
+                }
+            }
+        }
+        
+        // Theme management
+        const themeKeys = {
+            primaryColor: '--primary-color',
+            secondaryColor: '--secondary-color',
+            backgroundColor: '--background-color',
+            navbarColor: '--navbar-color',
+            fontFamily: '--font-family',
+        };
+
+        function initializeTheme() {
+            Object.keys(themeKeys).forEach(key => {
+                const savedValue = localStorage.getItem(key);
+                if (savedValue) {
+                    document.documentElement.style.setProperty(themeKeys[key], savedValue);
+                    const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+                    if (input) {
+                        input.value = savedValue;
+                    }
+                }
+            });
+        }
+
+        function setupThemeListeners() {
+            document.querySelector('.theme-button').addEventListener('click', () => {
+                document.querySelector('.theme-modal').classList.add('active');
+            });
+
+            document.querySelector('.close-theme').addEventListener('click', () => {
+                document.querySelector('.theme-modal').classList.remove('active');
+            });
+
+            document.querySelector('.theme-modal').addEventListener('click', (e) => {
+                if (e.target === document.querySelector('.theme-modal')) {
+                    document.querySelector('.theme-modal').classList.remove('active');
+                }
+            });
+
+            Object.keys(themeKeys).forEach(key => {
+                const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+                if (input) {
+                    input.addEventListener('input', (e) => {
+                        document.documentElement.style.setProperty(themeKeys[key], e.target.value);
+                        localStorage.setItem(key, e.target.value);
+                    });
+                }
+            });
+
+            document.getElementById('reset-theme').addEventListener('click', () => {
+                const defaults = {
+                    primaryColor: '#60a5fa',
+                    secondaryColor: '#e2e8f0',
+                    backgroundColor: '#0f172a',
+                    navbarColor: 'rgba(15, 23, 42, 0.95)',
+                    fontFamily: 'Inter'
+                };
+                
+                Object.entries(defaults).forEach(([key, value]) => {
+                    document.documentElement.style.setProperty(themeKeys[key], value);
+                    localStorage.setItem(key, value);
+                    
+                    const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+                    if (input) {
+                        if (input.type === 'color') {
+                            if (value.startsWith('rgba')) {
+                                const rgb = value.match(/\d+/g).slice(0, 3);
+                                const hex = '#' + rgb.map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+                                input.value = hex;
+                            } else {
+                                input.value = value;
+                            }
+                        } else {
+                            input.value = value;
+                        }
+                    }
+                });
+            });
+        }
+
+        // Post Management
         let posts = [];
         let lastUpdate = null;
+        let currentPost = null;
 
-        // Fetch posts from the backend
         async function fetchPosts() {
             try {
                 const url = lastUpdate ? `/posts?last_update=${lastUpdate}` : '/posts';
@@ -477,133 +1388,167 @@
                 console.error('Error fetching posts:', error);
             }
         }
- function toggleMenu() {
-            const menu = document.querySelector('.nav-menu');
-            menu.classList.toggle('active');
-        }
 
-        // Update the renderPosts function
         function renderPosts() {
-            const postsContainer = document.getElementById('posts-container');
-            postsContainer.innerHTML = posts.map(post => `
-                <div class="post-card glass-card rounded-xl overflow-hidden">
+            const grid = document.getElementById('post-grid');
+            grid.innerHTML = posts.map((post, index) => `
+                <div class="post-card bg-gray-800 shadow-xl" onclick="openModal(${index})">
+                    <img src="${post.file_url}" alt="Post image" class="w-full h-48 object-cover">
                     <div class="p-4">
-                        <div class="flex flex-col mb-4">
-                            <span class="font-semibold text-lg text-white mb-1">@${post.username}</span>
-                            <span class="text-sm text-gray-400">${new Date(post.created_at).toLocaleString()}</span>
-                        </div>
-                        ${post.content ? `<p class="mb-4 text-gray-200">${post.content}</p>` : ''}
-                        ${post.file_url ? `
-                            <div class="relative rounded-lg overflow-hidden mb-4">
-                                <img src="${post.file_url}" 
-                                     alt="Post content" 
-                                     class="w-full h-64 object-cover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold">${post.username}</h3>
+                                <p class="text-sm text-gray-400">${post.content || 'Content Creator'}</p>
                             </div>
-                        ` : ''}
-                        <div class="flex justify-between items-center">
-                            <div class="flex space-x-4">
-                                <button onclick="handleLike(${post.id})" 
-                                        class="flex items-center space-x-2 text-pink-500 hover:text-pink-400 transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                    <span>${post.likes || 0}</span>
-                                </button>
-                                <button onclick="handleDislike(${post.id})" 
-                                        class="flex items-center space-x-2 text-blue-500 hover:text-blue-400 transition-colors">
-                                    <i class="fas fa-thumbs-down"></i>
-                                    <span>${post.dislikes || 0}</span>
-                                </button>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-400">
+                                    <i class="fas fa-heart mr-1"></i>${post.likes || Math.floor(Math.random() * 500)}
+                                </div>
                             </div>
-                            <button class="flex items-center space-x-2 text-gray-400 hover:text-gray-300 transition-colors">
-                                <i class="fas fa-comment"></i>
-                                <span>${post.comments || 0}</span>
-                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Handle like
-        async function handleLike(postId) {
-            try {
-                const response = await fetch(`/posts/${postId}/like`, { method: 'POST' });
-                if (response.ok) {
-                    const updatedPost = await response.json();
-                    posts = posts.map(post => post.id === postId ? updatedPost : post);
-                    renderPosts();
-                }
-            } catch (error) {
-                console.error('Error liking post:', error);
+        function showConnectionPrompt(username) {
+            const existingPrompt = document.querySelector('.connection-prompt');
+            if (existingPrompt) {
+                existingPrompt.remove();
             }
-        }
 
-        // Handle dislike
-        async function handleDislike(postId) {
-            try {
-                const response = await fetch(`/posts/${postId}/dislike`, { method: 'POST' });
-                if (response.ok) {
-                    const updatedPost = await response.json();
-                    posts = posts.map(post => post.id === postId ? updatedPost : post);
-                    renderPosts();
+            const prompt = document.createElement('div');
+            prompt.className = 'connection-prompt';
+            prompt.innerHTML = `
+                <i class="fas fa-heart text-2xl mb-2"></i>
+                <p>Connection request sent to ${username}!</p>
+            `;
+            
+            document.body.appendChild(prompt);
+
+            setTimeout(() => {
+                if (prompt.parentNode) {
+                    prompt.remove();
                 }
-            } catch (error) {
-                console.error('Error disliking post:', error);
-            }
+            }, 3000);
         }
 
-        // Show upload modal
-        function showUploadModal() {
-            document.getElementById('upload-modal').classList.remove('hidden');
+        // Modal Functions
+        function openModal(index) {
+            currentPost = posts[index];
+            const modal = document.getElementById('post-modal');
+            const content = document.getElementById('modal-post-content');
+            
+            content.innerHTML = `
+                <img src="${currentPost.file_url}" alt="Post image" class="w-full h-[400px] object-cover">
+                <div class="absolute top-4 right-4 bg-pink-500 rounded-full px-3 py-1 text-sm">
+                    <i class="fas fa-fire mr-1"></i>Trending
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <h3 class="text-xl font-bold">${currentPost.username}</h3>
+                            <p class="text-sm text-gray-400">${currentPost.content || 'Content Creator'}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm text-gray-400">
+                                <i class="fas fa-heart mr-1"></i>${currentPost.likes || Math.floor(Math.random() * 500)} Likes
+                            </div>
+                            <div class="text-sm text-gray-400">
+                                <i class="fas fa-comment mr-1"></i>${currentPost.comments || Math.floor(Math.random() * 50)} Comments
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
         }
 
-        // Hide upload modal
-        function hideUploadModal() {
-            document.getElementById('upload-modal').classList.add('hidden');
-            document.getElementById('upload-form').reset();
+        function closeModal() {
+            const modal = document.getElementById('post-modal');
+            modal.classList.remove('active');
+            currentPost = null;
         }
 
-        // Handle file upload
-        document.getElementById('upload-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
+        async function swipeLeft() {
+            const content = document.getElementById('modal-post-content');
+            content.firstElementChild.classList.add('swipe-left');
+            setTimeout(() => {
+                closeModal();
+                content.firstElementChild.classList.remove('swipe-left');
+            }, 300);
+        }
 
+        async function swipeRight() {
+            const content = document.getElementById('modal-post-content');
+            content.firstElementChild.classList.add('swipe-right');
+            
             try {
-                const response = await fetch('/posts', {
+                const destUserId = currentPost.user_id;
+                const username = currentPost.username;
+
+                const response = await fetch('/connect', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ dest_user_id: destUserId })
                 });
 
                 if (response.ok) {
-                    const newPost = await response.json();
-                    posts.unshift(newPost);
-                    renderPosts();
-                    hideUploadModal();
-                } else {
-                    const error = await response.json();
-                    alert(error.error || 'Failed to upload post');
+                    showConnectionPrompt(username);
                 }
             } catch (error) {
-                console.error('Error uploading post:', error);
-                alert('Failed to upload post');
+                console.error('Error sending connection request:', error);
+            }
+
+            setTimeout(() => {
+                closeModal();
+                content.firstElementChild.classList.remove('swipe-right');
+            }, 300);
+        }
+
+        // Music Feed Functions
+        const musicFeed = document.querySelector('.music-feed');
+        const musicIframe = musicFeed.querySelector('iframe');
+        const musicIcon = musicFeed.querySelector('.fa-music');
+
+        function collapseMusicFeed() {
+            musicFeed.classList.remove('expanded');
+            musicIframe.classList.add('hidden');
+            musicIcon.style.display = 'block';
+        }
+
+        function expandMusicFeed() {
+            musicFeed.classList.add('expanded');
+            musicIframe.classList.remove('hidden');
+            musicIcon.style.display = 'none';
+        }
+
+        musicFeed.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!musicFeed.classList.contains('expanded')) {
+                expandMusicFeed();
             }
         });
 
-        // Toggle iframe
-        function toggleIframe(containerId) {
-            const container = document.getElementById(containerId);
-            container.classList.toggle('collapsed');
-        }
-
-        // Toggle music feed
-        function toggleMusicFeed(event) {
-            const container = document.getElementById('music-feed-container');
-            if (container.classList.contains('collapsed') || 
-                event.target.closest('.left-iframe-header')) {
-                container.classList.toggle('collapsed');
+        document.addEventListener('click', (e) => {
+            if (musicFeed.classList.contains('expanded') && !musicFeed.contains(e.target)) {
+                collapseMusicFeed();
             }
-        }
+        });
 
-        // Logout function
+        // Chat Window Functions
+        const chatWindow = document.querySelector('.chat-window');
+        const chatIframe = chatWindow.querySelector('iframe');
+
+        chatWindow.querySelector('.p-3').addEventListener('click', () => {
+            chatWindow.classList.toggle('expanded');
+            chatIframe.classList.toggle('hidden');
+        });
+
+        // Logout Function
         async function logout() {
             try {
                 const response = await fetch('/logout');
@@ -618,22 +1563,36 @@
             }
         }
 
-        // Navigate to profile
-        async function navigateToProfile(event) {
-            event.preventDefault();
-            try {
-                const response = await fetch('/user/profile');
-                if (!response.ok) throw new Error('Failed to fetch profile');
-                const data = await response.json();
-                window.location.href = `/${data.username}`;
-            } catch (error) {
-                console.error('Error navigating to profile:', error);
-            }
-        }
-
-        // Initialize
+        // Initialize everything when the document is ready
         document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+            setupThemeListeners();
             fetchPosts();
+            fetchStories();
+
+            // Mobile navigation
+            document.querySelector('.mobile-nav-toggle').addEventListener('click', () => {
+                document.querySelector('.vertical-nav').classList.toggle('active');
+            });
+
+            // Close navigation on mobile when clicking outside
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    const nav = document.querySelector('.vertical-nav');
+                    const toggle = document.querySelector('.mobile-nav-toggle');
+                    if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+                        nav.classList.remove('active');
+                    }
+                }
+            });
+
+            // Keyboard controls for modal
+            document.addEventListener('keydown', (e) => {
+                if (!document.getElementById('post-modal').classList.contains('active')) return;
+                if (e.key === 'ArrowLeft') swipeLeft();
+                if (e.key === 'ArrowRight') swipeRight();
+                if (e.key === 'Escape') closeModal();
+            });
         });
     </script>
 </body>

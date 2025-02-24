@@ -24,11 +24,12 @@
         .logo {
             font-size: 5rem;
             animation: heartbeat 1.5s infinite;
+            color: #ffffff;
         }
         
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+            50% { transform: scale(1.2); }
         }
         
         @keyframes fadeOut {
@@ -36,12 +37,12 @@
         }
         
         input, select {
-            color: #ec4899 !important;
-            background-color: rgba(30, 41, 59, 0.7) !important;
+            color: #ffffff !important;
+            background-color: rgba(31, 41, 55, 0.5) !important;
         }
         
         input::placeholder {
-            color: #ec4899 !important;
+            color: #9ca3af !important;
             opacity: 0.7;
         }
         
@@ -49,28 +50,34 @@
             background: linear-gradient(135deg, #ec4899, #f43f5e);
         }
 
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
         .meme-preference-card {
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(31, 41, 55, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .meme-preference-card.selected {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
             border: 2px solid #ec4899;
         }
 
         .drop-zone {
-            border: 2px dashed rgba(236, 72, 153, 0.5);
+            border: 2px dashed rgba(255, 255, 255, 0.5);
             transition: all 0.3s ease;
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(31, 41, 55, 0.5);
         }
 
         .drop-zone.dragover {
-            background: rgba(236, 72, 153, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-color: #ec4899;
         }
 
@@ -79,13 +86,6 @@
             height: 100px;
             object-fit: cover;
             border-radius: 8px;
-        }
-
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -101,14 +101,14 @@
         <div class="max-w-2xl mx-auto">
             <div class="text-center mb-12">
                 <h1 class="text-5xl font-bold mb-4 flex items-center justify-center">
-                    L<span class="mx-2 text-pink-500">♥</span>L
+                    L<span class="mx-2 heart-logo">♥</span>L
                 </h1>
-                <p class="text-xl text-pink-500">Love Over Laughs</p>
+                <p class="text-xl text-gray-300">Love Over Laughs</p>
             </div>
 
             <div class="glass-card rounded-lg p-8 shadow-xl">
-                <h2 class="text-3xl font-bold mb-6 flex items-center text-pink-500">
-                    <i class="fas fa-heart mr-3"></i>
+                <h2 class="text-3xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-heart mr-3 text-pink-500"></i>
                     Create Your Profile
                 </h2>
 
@@ -119,7 +119,7 @@
                 
                 <div class="relative my-6">
                     <hr class="border-t border-gray-700">
-                    <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 px-4 text-gray-400">
+                    <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 px-4 text-gray-400 text-sm">
                         or
                     </span>
                 </div>
@@ -153,23 +153,23 @@
                         <label class="block text-sm font-medium mb-3 text-gray-300">Meme Preference</label>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <div class="meme-preference-card rounded-lg p-4 text-center" data-value="DarkHumor">
-                                <i class="fas fa-moon text-2xl mb-2 text-pink-500"></i>
+                                <i class="fas fa-moon text-2xl mb-2"></i>
                                 <p class="font-medium">Dark Humor</p>
                             </div>
                             <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Wholesome">
-                                <i class="fas fa-heart text-2xl mb-2 text-pink-500"></i>
+                                <i class="fas fa-heart text-2xl mb-2"></i>
                                 <p class="font-medium">Wholesome</p>
                             </div>
                             <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Sarcasm">
-                                <i class="fas fa-grin-wink text-2xl mb-2 text-pink-500"></i>
+                                <i class="fas fa-grin-wink text-2xl mb-2"></i>
                                 <p class="font-medium">Sarcasm</p>
                             </div>
                             <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Dank">
-                                <i class="fas fa-fire text-2xl mb-2 text-pink-500"></i>
+                                <i class="fas fa-fire text-2xl mb-2"></i>
                                 <p class="font-medium">Dank</p>
                             </div>
                             <div class="meme-preference-card rounded-lg p-4 text-center" data-value="Surreal">
-                                <i class="fas fa-ghost text-2xl mb-2 text-pink-500"></i>
+                                <i class="fas fa-ghost text-2xl mb-2"></i>
                                 <p class="font-medium">Surreal</p>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                     <div>
                         <label class="block text-sm font-medium mb-3 text-gray-300">Upload Your Favorite Memes</label>
                         <div id="drop-zone" class="drop-zone w-full h-48 rounded-lg flex flex-col items-center justify-center p-4 text-center">
-                            <i class="fas fa-cloud-upload-alt text-3xl mb-2 text-pink-500"></i>
+                            <i class="fas fa-cloud-upload-alt text-3xl mb-2"></i>
                             <p>Drag and drop your memes here</p>
                             <p class="text-sm opacity-70">or</p>
                             <button type="button" id="browse-files" class="mt-2 px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300">
@@ -187,7 +187,8 @@
                             </button>
                             <input type="file" id="file-input" multiple accept="image/*" class="hidden">
                         </div>
-                        <div id="preview-container" class="mt-4 grid grid-cols-4 gap-2"></div>
+                        <div id="preview-container" class="mt-4 grid grid-cols-4 gap-2">
+                        </div>
                     </div>
 
                     <button type="submit" class="w-full gradient-bg hover:opacity-90 text-white font-bold py-2 px-4 rounded transition duration-300 mt-6">
@@ -207,7 +208,7 @@
             </div>
         </div>
     </div>
-
+    
     <script>
         // Meme Preference Card Selection
         document.querySelectorAll('.meme-preference-card').forEach(card => {
@@ -325,67 +326,75 @@
         });
     </script>
 
-    <script type="module">
-        // Import Firebase SDKs
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCLblSMwAUztf-ciQqIzLUe9jeYWvvqDrk",
-            authDomain: "lol-mchat.firebaseapp.com",
-            projectId: "lol-mchat",
-            storageBucket: "lol-mchat.firebasestorage.app",
-            messagingSenderId: "764134602597",
-            appId: "1:764134602597:web:ae4a6537626170cb4d938c",
-            measurementId: "G-1TRKSZ3GHP"
-        };
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLblSMwAUztf-ciQqIzLUe9jeYWvvqDrk",
+        authDomain: "lol-mchat.firebaseapp.com",
+        projectId: "lol-mchat",
+        storageBucket: "lol-mchat.firebasestorage.app",
+        messagingSenderId: "764134602597",
+        appId: "1:764134602597:web:ae4a6537626170cb4d938c",
+        measurementId: "G-1TRKSZ3GHP"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-        // Add Google Sign-in handler
-        document.getElementById('google-signin').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    
-                    fetch('/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            googleId: user.uid,
-                            email: user.email,
-                            loginMethod: 'google'
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert(data.error);
-                        } else {
-                            alert(data.message);
-                            window.location.href = '/dashboard';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Login error:', error);
-                        alert('An error occurred during login. Please try again.');
-                    });
+    // Add Google Sign-in functionality
+    document.getElementById('google-signin').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                // The signed-in user info
+                const user = result.user;
+                console.log('Google Sign-in successful:', user);
+                
+                // Prepare the data to send to your backend
+                const userData = {
+                    username: user.displayName,
+                    email: user.email,
+                    googleId: user.uid,
+                    photoURL: user.photoURL,
+                    signupMethod: 'google'
+                };
+
+                // Send the data to your signup endpoint
+                fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
                 })
-                .catch((error) => {
-                    console.error('Google Sign-in error:', error);
-                    alert('An error occurred during Google sign-in. Please try again.');
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(data.message);
+                        window.location.href = '/dashboard';
+                    }
+                })
+                .catch(error => {
+                    console.error('Signup error:', error);
+                    alert('An error occurred during signup. Please try again.');
                 });
-        });
-    </script>
+            })
+            .catch((error) => {
+                console.error('Google Sign-in error:', error);
+                alert('An error occurred during Google sign-in. Please try again.');
+            });
+    });
+</script>
 </body>
 </html>

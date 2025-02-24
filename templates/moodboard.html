@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L❤L - Create Your Meme</title>
+    <title>L❤L - Moodboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -120,7 +120,7 @@
             background: radial-gradient(circle at center, rgba(96, 165, 250, 0.1), transparent);
         }
 
-        .meme-card {
+        .moodboard-card {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -129,7 +129,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .meme-card:hover {
+        .moodboard-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
         }
@@ -247,7 +247,7 @@
                 <i class="fas fa-comments"></i>
                 <span>Chat</span>
             </a>
-            <a href="/create" class="nav-link active">
+            <a href="/create" class="nav-link">
                 <i class="fas fa-plus"></i>
                 <span>Create</span>
             </a>
@@ -271,51 +271,30 @@
 
     <main class="main-content">
         <div class="max-w-2xl mx-auto">
-            <div class="meme-card p-8">
-                <h2 class="text-3xl font-bold mb-8" style="color: var(--primary-color)">Create Your Meme</h2>
+            <div class="moodboard-card p-8">
+                <h2 class="text-3xl font-bold mb-8" style="color: var(--primary-color)">Moodboard</h2>
                 
-                <form method="POST" action="{{ url_for('create') }}" class="space-y-6">
-                    <div class="space-y-4">
-                        <textarea 
-                            name="input_text" 
-                            placeholder="Enter your meme text here..."
-                            class="w-full rounded-lg p-4 focus:outline-none h-32 text-white"
-                            required>{{ input_text if input_text else '' }}</textarea>
-                        
-                        <p class="text-sm opacity-75 flex items-center">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Your text will be automatically split into top and bottom text
-                        </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="moodboard-item">
+                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
                     </div>
-
-                    <button type="submit" class="w-full gradient-button text-white py-4 rounded-lg shadow-lg flex items-center justify-center gap-2 text-lg font-semibold">
-                        <i class="fas fa-magic"></i>
-                        Generate Meme
-                    </button>
-                </form>
-
-                {% if meme_url %}
-                <div class="mt-12 space-y-6">
-                    <h3 class="text-2xl font-bold" style="color: var(--primary-color)">Your Generated Meme</h3>
-                    <div class="bg-gray-800 rounded-xl p-6 space-y-6">
-                        <img src="{{ meme_url }}" alt="Generated Meme" class="w-full rounded-lg shadow-lg">
-                        
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="{{ meme_url }}" download target="_blank" 
-                               class="flex-1 gradient-button py-3 rounded-lg shadow-lg text-center flex items-center justify-center gap-2">
-                                <i class="fas fa-download"></i>
-                                Download
-                            </a>
-                            
-                            <button onclick="shareToFeed()" 
-                                    class="flex-1 gradient-button py-3 rounded-lg shadow-lg flex items-center justify-center gap-2">
-                                <i class="fas fa-share"></i>
-                                Share to Feed
-                            </button>
-                        </div>
+                    <div class="moodboard-item">
+                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
+                    </div>
+                    <div class="moodboard-item">
+                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
+                    </div>
+                    <div class="moodboard-item">
+                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
                     </div>
                 </div>
-                {% endif %}
+
+                <div class="mt-8">
+                    <button class="w-full gradient-button text-white py-4 rounded-lg shadow-lg flex items-center justify-center gap-2 text-lg font-semibold">
+                        <i class="fas fa-plus"></i>
+                        Add Image
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -389,6 +368,7 @@
                 console.error('Error navigating to profile:', error);
             }
         }
+
         const themeKeys = {
             primaryColor: '--primary-color',
             secondaryColor: '--secondary-color',
@@ -483,31 +463,6 @@
             }
         });
 
-        async function shareToFeed() {
-            const formData = new FormData();
-            formData.append('type', 'image');
-            formData.append('file_url', '{{ meme_url }}');
-            formData.append('content', '{{ input_text if input_text else "" }}');
-
-            try {
-                const response = await fetch('/posts', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    alert('Meme shared to feed successfully!');
-                    window.location.href = '/dashboard';
-                } else {
-                    const error = await response.json();
-                    alert(error.error || 'Failed to share meme');
-                }
-            } catch (error) {
-                console.error('Error sharing meme:', error);
-                alert('Failed to share meme');
-            }
-        }
-
         async function logout() {
             try {
                 const response = await fetch('/logout');
@@ -527,54 +482,6 @@
             initializeTheme();
             setupThemeListeners();
         });
-        async function shareToFeed() {
-    const button = document.getElementById('shareButton');
-    const icon = button.querySelector('i');
-    const memeUrl = '{{ meme_url }}';
-    const inputText = '{{ input_text }}';
-    
-    // Disable button and show loading state
-    button.disabled = true;
-    icon.className = '';
-    icon.innerHTML = '<span class="loading-spinner"></span>';
-    
-    try {
-        // Create form data
-        const formData = new FormData();
-        
-        // Fetch the image from the meme URL
-        const response = await fetch(memeUrl);
-        const blob = await response.blob();
-        
-        // Add the file to form data
-        formData.append('post-file', blob, 'meme.png');
-        formData.append('type', 'image');
-        formData.append('content', inputText || '');
-
-        // Send the request
-        const postResponse = await fetch('/posts', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (postResponse.ok) {
-            // Success notification
-            alert('Meme shared to feed successfully!');
-            window.location.href = '/dashboard';
-        } else {
-            const error = await postResponse.json();
-            throw new Error(error.error || 'Failed to share meme');
-        }
-    } catch (error) {
-        console.error('Error sharing meme:', error);
-        alert(error.message || 'Failed to share meme');
-        
-        // Reset button state
-        button.disabled = false;
-        icon.className = 'fas fa-share';
-        icon.innerHTML = '';
-    }
-}
     </script>
 </body>
 </html>
