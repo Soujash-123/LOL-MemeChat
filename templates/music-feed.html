@@ -665,9 +665,7 @@
             <a href="/list_connect" class="nav-link">
                 <i class="fas fa-users"></i>Matches
             </a>
-            <a href="#" class="nav-link" onclick="navigateToProfile(event)">
-                <i class="fas fa-user"></i>Profile
-            </a>
+            
             <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit; text-align: left; width: 100%;">
                 <i class="fas fa-sign-out-alt"></i>Logout
             </button>
@@ -784,6 +782,17 @@
     </div>
     
     <script>
+        async function navigateToProfile(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/user/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const data = await response.json();
+                window.location.href = `/${data.username}`;
+            } catch (error) {
+                console.error('Error navigating to profile:', error);
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             // Audio player functionality
             const audioElement = document.getElementById('audio-player');

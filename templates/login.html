@@ -56,6 +56,109 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
+        
+        /* Transition Modal Styles */
+        .transition-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        
+        .transition-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .love-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        
+        .emoji-particle {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0;
+            animation: floatUp 2s ease-in-out forwards;
+        }
+        
+        .bouncing-heart {
+            font-size: 5rem;
+            display: inline-block;
+            animation: bounceHeart 1s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ec4899, #f43f5e);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 2.5s ease;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes bounceHeart {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .loading-messages {
+            margin-top: 10px;
+            min-height: 24px;
+            font-style: italic;
+            color: #ec4899;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white">
@@ -63,6 +166,20 @@
         <div class="text-center">
             <div class="logo">♥</div>
             <p class="text-2xl mt-4 font-bold">Welcome to LOL</p>
+        </div>
+    </div>
+
+    <!-- Transition Modal -->
+    <div id="transition-modal" class="transition-modal">
+        <div class="modal-content">
+            <div class="love-container" id="love-container">
+                <div class="bouncing-heart">♥</div>
+            </div>
+            <div class="loading-text">Finding your perfect matches...</div>
+            <div id="loading-messages" class="loading-messages"></div>
+            <div class="progress-bar">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
         </div>
     </div>
 
@@ -141,29 +258,171 @@
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
 
-            fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    username, 
-                    password,
-                    loginMethod: 'email'
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert(data.message);
-                    window.location.href = '/dashboard';
-                }
-            })
-            .catch(error => {
-                alert('An error occurred during login. Please try again.');
-            });
+            // Show transition modal
+            showTransitionModal();
+
+            // Continue with login process in the background
+            setTimeout(() => {
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        username, 
+                        password,
+                        loginMethod: 'email'
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        hideTransitionModal();
+                        alert(data.error);
+                    } else {
+                        // Redirect will happen after animation completes
+                        setTimeout(() => {
+                            window.location.href = '/dashboard';
+                        }, 1000);
+                    }
+                })
+                .catch(error => {
+                    hideTransitionModal();
+                    alert('An error occurred during login. Please try again.');
+                });
+            }, 1000); // Small delay to ensure animation starts first
+        });
+
+        // Function to show transition modal with animations
+        function showTransitionModal() {
+            const modal = document.getElementById('transition-modal');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            const loadingMessages = document.getElementById('loading-messages');
+            const loveContainer = document.getElementById('love-container');
+            
+            // Messages to display during loading
+            const messages = [
+                "Scanning for compatible memes...",
+                "Matching your humor with potential loves...",
+                "Preparing your personalized feed...",
+                "Finding your perfect match...",
+                "Almost there! Getting things ready for you..."
+            ];
+            
+            // Show modal
+            modal.classList.add('active');
+            
+            // Start progress bar animation
+            setTimeout(() => {
+                progressBarFill.style.width = '100%';
+            }, 100);
+            
+            // Create emoji particles
+            const emojis = ['😂', '🤣', '😍', '❤️', '🔥', '✨', '💕', '👌', '👀', '🙌'];
+            
+            // Function to create a random emoji particle
+            function createEmojiParticle() {
+                if (!modal.classList.contains('active')) return;
+                
+                const emoji = document.createElement('div');
+                emoji.className = 'emoji-particle';
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = Math.random() * 300 + 'px';
+                emoji.style.top = Math.random() * 300 + 'px';
+                emoji.style.animationDuration = (1 + Math.random() * 2) + 's';
+                loveContainer.appendChild(emoji);
+                
+                // Remove emoji after animation completes
+                setTimeout(() => {
+                    if (emoji.parentNode === loveContainer) {
+                        loveContainer.removeChild(emoji);
+                    }
+                }, 2000);
+            }
+            
+            // Create emojis periodically
+            let emojiInterval = setInterval(createEmojiParticle, 300);
+            
+            // Cycle through messages
+            let messageIndex = 0;
+            loadingMessages.textContent = messages[messageIndex];
+            
+            let messageInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % messages.length;
+                loadingMessages.style.opacity = 0;
+                
+                setTimeout(() => {
+                    loadingMessages.textContent = messages[messageIndex];
+                    loadingMessages.style.opacity = 1;
+                }, 300);
+            }, 2000);
+            
+            // Store intervals to clear later
+            modal.emojiInterval = emojiInterval;
+            modal.messageInterval = messageInterval;
+        }
+        
+        // Function to hide transition modal
+        function hideTransitionModal() {
+            const modal = document.getElementById('transition-modal');
+            
+            // Clear animation intervals
+            clearInterval(modal.emojiInterval);
+            clearInterval(modal.messageInterval);
+            
+            // Hide modal
+            modal.classList.remove('active');
+        }
+
+        // Google Sign-in handling
+        document.getElementById('google-signin').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show transition modal first
+            showTransitionModal();
+            
+            // Small delay to ensure animation starts first
+            setTimeout(() => {
+                // Rest of the Google sign-in code
+                signInWithPopup(auth, provider)
+                    .then((result) => {
+                        const user = result.user;
+                        
+                        fetch('/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                googleId: user.uid,
+                                email: user.email,
+                                loginMethod: 'google'
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                hideTransitionModal();
+                                alert(data.error);
+                            } else {
+                                // Redirect will happen after animation completes
+                                setTimeout(() => {
+                                    window.location.href = '/dashboard';
+                                }, 1000);
+                            }
+                        })
+                        .catch(error => {
+                            hideTransitionModal();
+                            console.error('Login error:', error);
+                            alert('An error occurred during login. Please try again.');
+                        });
+                    })
+                    .catch((error) => {
+                        hideTransitionModal();
+                        console.error('Google Sign-in error:', error);
+                        alert('An error occurred during Google sign-in. Please try again.');
+                    });
+            }, 500);
         });
     </script>
 
@@ -190,44 +449,10 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Add Google Sign-in handler
-        document.getElementById('google-signin').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    
-                    fetch('/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            googleId: user.uid,
-                            email: user.email,
-                            loginMethod: 'google'
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert(data.error);
-                        } else {
-                            alert(data.message);
-                            window.location.href = '/dashboard';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Login error:', error);
-                        alert('An error occurred during login. Please try again.');
-                    });
-                })
-                .catch((error) => {
-                    console.error('Google Sign-in error:', error);
-                    alert('An error occurred during Google sign-in. Please try again.');
-                });
-        });
+        // Make auth and provider available to the button click handler
+        window.auth = auth;
+        window.provider = provider;
+        window.signInWithPopup = signInWithPopup;
     </script>
 </body>
 </html>

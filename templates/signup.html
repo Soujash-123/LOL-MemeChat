@@ -87,6 +87,165 @@
             object-fit: cover;
             border-radius: 8px;
         }
+        
+        /* Transition Modal Styles */
+        .transition-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        
+        .transition-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .animation-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        
+        .emoji-particle {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0;
+            animation: floatUp 2s ease-in-out forwards;
+        }
+        
+        .profile-creation-animation {
+            position: relative;
+            margin: 0 auto;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .profile-circle {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ec4899;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulseProfile 1.5s infinite ease-in-out;
+        }
+        
+        .profile-icon {
+            position: absolute;
+            font-size: 40px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 2;
+        }
+        
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px dashed rgba(236, 72, 153, 0.5);
+        }
+        
+        .orbit-1 {
+            width: 150px;
+            height: 150px;
+            animation: rotate 8s linear infinite;
+        }
+        
+        .orbit-2 {
+            width: 200px;
+            height: 200px;
+            animation: rotate 12s linear infinite reverse;
+        }
+        
+        .orbiting-icon {
+            position: absolute;
+            font-size: 20px;
+            color: white;
+            animation: fadeInOut 2s infinite alternate;
+        }
+        
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        @keyframes fadeInOut {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulseProfile {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ec4899, #f43f5e);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 3.5s ease;
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .loading-messages {
+            margin-top: 10px;
+            min-height: 24px;
+            font-style: italic;
+            color: #ec4899;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white">
@@ -94,6 +253,34 @@
         <div class="text-center">
             <div class="logo">♥</div>
             <p class="text-2xl mt-4 font-bold">Welcome to LOL</p>
+        </div>
+    </div>
+
+    <!-- Transition Modal -->
+    <div id="transition-modal" class="transition-modal">
+        <div class="modal-content">
+            <div class="animation-container" id="animation-container">
+                <div class="profile-creation-animation">
+                    <div class="profile-circle"></div>
+                    <i class="fas fa-user-plus profile-icon"></i>
+                    
+                    <div class="orbit orbit-1">
+                        <i class="fas fa-heart orbiting-icon" style="top: -10px; left: 50%;"></i>
+                        <i class="fas fa-laugh-squint orbiting-icon" style="bottom: -10px; left: 50%;"></i>
+                    </div>
+                    
+                    <div class="orbit orbit-2">
+                        <i class="fas fa-image orbiting-icon" style="top: 50%; right: -10px;"></i>
+                        <i class="fas fa-comment-dots orbiting-icon" style="top: 50%; left: -10px;"></i>
+                        <i class="fas fa-fire orbiting-icon" style="top: -10px; right: 30%;"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="loading-text">Creating your LOL profile...</div>
+            <div id="loading-messages" class="loading-messages"></div>
+            <div class="progress-bar">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
         </div>
     </div>
 
@@ -288,7 +475,7 @@
             }
         });
 
-        // Form Submission
+        // Form Submission with Transition Modal
         document.getElementById('signup-form').addEventListener('submit', function(event) {
             event.preventDefault();
             
@@ -300,29 +487,179 @@
                 return;
             }
 
-            const formData = new FormData(this);
+            // Show transition modal
+            showTransitionModal();
+
+            // Continue with signup process in the background
+            setTimeout(() => {
+                const formData = new FormData(this);
+                
+                // Add files to form data
+                files.forEach((file, index) => {
+                    formData.append(`meme${index + 1}`, file);
+                });
+                
+                fetch('/signup', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        hideTransitionModal();
+                        alert(data.error);
+                    } else {
+                        // Redirect will happen after animation completes
+                        setTimeout(() => {
+                            window.location.href = '/dashboard';
+                        }, 1000);
+                    }
+                })
+                .catch(error => {
+                    hideTransitionModal();
+                    alert('An error occurred during signup. Please try again.');
+                });
+            }, 1000); // Small delay to ensure animation starts first
+        });
+
+        // Function to show transition modal with animations
+        function showTransitionModal() {
+            const modal = document.getElementById('transition-modal');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            const loadingMessages = document.getElementById('loading-messages');
+            const animationContainer = document.getElementById('animation-container');
             
-            // Add files to form data
-            files.forEach((file, index) => {
-                formData.append(`meme${index + 1}`, file);
-            });
+            // Messages to display during loading
+            const messages = [
+                "Analyzing your meme preferences...",
+                "Building your humor profile...",
+                "Finding your perfect matches...",
+                "Preparing your personalized feed...",
+                "Setting up your LOL experience..."
+            ];
             
-            fetch('/signup', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert(data.message);
-                    window.location.href = '/dashboard';
-                }
-            })
-            .catch(error => {
-                alert('An error occurred during signup. Please try again.');
-            });
+            // Show modal
+            modal.classList.add('active');
+            
+            // Start progress bar animation
+            setTimeout(() => {
+                progressBarFill.style.width = '100%';
+            }, 100);
+            
+            // Create emoji particles
+            const emojis = ['😂', '🤣', '😍', '❤️', '🔥', '✨', '💕', '👌', '👀', '🙌'];
+            
+            // Function to create a random emoji particle
+            function createEmojiParticle() {
+                if (!modal.classList.contains('active')) return;
+                
+                const emoji = document.createElement('div');
+                emoji.className = 'emoji-particle';
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = Math.random() * 300 + 'px';
+                emoji.style.top = Math.random() * 300 + 'px';
+                emoji.style.animationDuration = (1 + Math.random() * 2) + 's';
+                animationContainer.appendChild(emoji);
+                
+                // Remove emoji after animation completes
+                setTimeout(() => {
+                    if (emoji.parentNode === animationContainer) {
+                        animationContainer.removeChild(emoji);
+                    }
+                }, 2000);
+            }
+            
+            // Create emojis periodically
+            let emojiInterval = setInterval(createEmojiParticle, 300);
+            
+            // Cycle through messages
+            let messageIndex = 0;
+            loadingMessages.textContent = messages[messageIndex];
+            
+            let messageInterval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % messages.length;
+                loadingMessages.style.opacity = 0;
+                
+                setTimeout(() => {
+                    loadingMessages.textContent = messages[messageIndex];
+                    loadingMessages.style.opacity = 1;
+                }, 300);
+            }, 2000);
+            
+            // Store intervals to clear later
+            modal.emojiInterval = emojiInterval;
+            modal.messageInterval = messageInterval;
+        }
+        
+        // Function to hide transition modal
+        function hideTransitionModal() {
+            const modal = document.getElementById('transition-modal');
+            
+            // Clear animation intervals
+            clearInterval(modal.emojiInterval);
+            clearInterval(modal.messageInterval);
+            
+            // Hide modal
+            modal.classList.remove('active');
+        }
+
+        // Google Sign-in with Transition Modal
+        document.getElementById('google-signin').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show transition modal first
+            showTransitionModal();
+            
+            // Small delay to ensure animation starts first
+            setTimeout(() => {
+                // Google Sign-in functionality
+                signInWithPopup(auth, provider)
+                    .then((result) => {
+                        // The signed-in user info
+                        const user = result.user;
+                        console.log('Google Sign-in successful:', user);
+                        
+                        // Prepare the data to send to your backend
+                        const userData = {
+                            username: user.displayName,
+                            email: user.email,
+                            googleId: user.uid,
+                            photoURL: user.photoURL,
+                            signupMethod: 'google'
+                        };
+
+                        // Send the data to your signup endpoint
+                        fetch('/signup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(userData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                hideTransitionModal();
+                                alert(data.error);
+                            } else {
+                                // Redirect will happen after animation completes
+                                setTimeout(() => {
+                                    window.location.href = '/dashboard';
+                                }, 1000);
+                            }
+                        })
+                        .catch(error => {
+                            hideTransitionModal();
+                            console.error('Signup error:', error);
+                            alert('An error occurred during signup. Please try again.');
+                        });
+                    })
+                    .catch((error) => {
+                        hideTransitionModal();
+                        console.error('Google Sign-in error:', error);
+                        alert('An error occurred during Google sign-in. Please try again.');
+                    });
+            }, 500);
         });
     </script>
 
@@ -349,52 +686,10 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // Add Google Sign-in functionality
-    document.getElementById('google-signin').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // The signed-in user info
-                const user = result.user;
-                console.log('Google Sign-in successful:', user);
-                
-                // Prepare the data to send to your backend
-                const userData = {
-                    username: user.displayName,
-                    email: user.email,
-                    googleId: user.uid,
-                    photoURL: user.photoURL,
-                    signupMethod: 'google'
-                };
-
-                // Send the data to your signup endpoint
-                fetch('/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(userData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        alert(data.message);
-                        window.location.href = '/dashboard';
-                    }
-                })
-                .catch(error => {
-                    console.error('Signup error:', error);
-                    alert('An error occurred during signup. Please try again.');
-                });
-            })
-            .catch((error) => {
-                console.error('Google Sign-in error:', error);
-                alert('An error occurred during Google sign-in. Please try again.');
-            });
-    });
+    // Make auth and provider available globally
+    window.auth = auth;
+    window.provider = provider;
+    window.signInWithPopup = signInWithPopup;
 </script>
 </body>
 </html>
