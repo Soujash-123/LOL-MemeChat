@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L❤L - Moodboard</title>
+    <title>Image Text Editor</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -120,20 +120,6 @@
             background: radial-gradient(circle at center, rgba(96, 165, 250, 0.1), transparent);
         }
 
-        .moodboard-card {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .moodboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
-        }
-
         .theme-button {
             position: fixed;
             right: 20px;
@@ -218,6 +204,101 @@
             box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
             background: rgba(30, 41, 59, 0.95);
         }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: rgba(15, 23, 42, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background-color: rgba(30, 41, 59, 0.8);
+            border-radius: 6px;
+        }
+
+        .control-group {
+            margin-right: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #3367d6;
+        }
+
+        .editor-area {
+            position: relative;
+            border: 2px dashed var(--primary-color);
+            min-height: 400px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        #imageCanvas {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .text-box {
+            position: absolute;
+            min-width: 50px;
+            min-height: 20px;
+            padding: 5px;
+            border: 1px dashed var(--primary-color);
+            cursor: move;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .text-box:focus {
+            outline: none;
+            border: 1px solid var(--primary-color);
+        }
+
+        .instructions {
+            background-color: rgba(232, 245, 233, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .instructions ul {
+            margin-bottom: 0;
+            color: var(--secondary-color);
+        }
     </style>
 </head>
 <body>
@@ -247,7 +328,7 @@
                 <i class="fas fa-comments"></i>
                 <span>Chat</span>
             </a>
-            <a href="/create" class="nav-link">
+            <a href="/create" class="nav-link active">
                 <i class="fas fa-plus"></i>
                 <span>Create</span>
             </a>
@@ -270,31 +351,70 @@
     </nav>
 
     <main class="main-content">
-        <div class="max-w-2xl mx-auto">
-            <div class="moodboard-card p-8">
-                <h2 class="text-3xl font-bold mb-8" style="color: var(--primary-color)">Moodboard</h2>
+        <div class="container">
+            <h1>Image Text Editor</h1>
+            
+            <div class="instructions">
+                <h3>How to Use:</h3>
+                <ul>
+                    <li>Upload an image using the button below</li>
+                    <li>Add text boxes and customize them using the controls</li>
+                    <li>Drag text boxes to position them anywhere on the image</li>
+                    <li>When finished, download your creation</li>
+                </ul>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="imageUpload">Upload Image:</label>
+                    <input type="file" id="imageUpload" accept="image/*">
+                </div>
                 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="moodboard-item">
-                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
-                    </div>
-                    <div class="moodboard-item">
-                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
-                    </div>
-                    <div class="moodboard-item">
-                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
-                    </div>
-                    <div class="moodboard-item">
-                        <img src="https://via.placeholder.com/300" alt="Moodboard Item" class="w-full rounded-lg">
-                    </div>
+                <div class="control-group">
+                    <label for="addTextBtn">Add Text:</label>
+                    <button id="addTextBtn">Add Text Box</button>
                 </div>
-
-                <div class="mt-8">
-                    <button class="w-full gradient-button text-white py-4 rounded-lg shadow-lg flex items-center justify-center gap-2 text-lg font-semibold">
-                        <i class="fas fa-plus"></i>
-                        Add Image
-                    </button>
+                
+                <div class="control-group">
+                    <label for="fontFamily">Font Family:</label>
+                    <select id="fontFamily">
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="Georgia, serif">Georgia</option>
+                        <option value="Verdana, sans-serif">Verdana</option>
+                        <option value="'Courier New', monospace">Courier New</option>
+                        <option value="Impact, fantasy">Impact</option>
+                    </select>
                 </div>
+                
+                <div class="control-group">
+                    <label for="fontSize">Font Size:</label>
+                    <input type="number" id="fontSize" min="8" max="72" value="16">
+                </div>
+                
+                <div class="control-group">
+                    <label for="fontColor">Font Color:</label>
+                    <input type="color" id="fontColor" value="#000000">
+                </div>
+                
+                <div class="control-group">
+                    <label for="fontBold">Bold:</label>
+                    <input type="checkbox" id="fontBold">
+                </div>
+                
+                <div class="control-group">
+                    <label for="fontItalic">Italic:</label>
+                    <input type="checkbox" id="fontItalic">
+                </div>
+                
+                <div class="control-group">
+                    <label for="downloadBtn">Save:</label>
+                    <button id="downloadBtn">Download Image</button>
+                </div>
+            </div>
+            
+            <div id="editorArea" class="editor-area">
+                <canvas id="imageCanvas"></canvas>
             </div>
         </div>
     </main>
@@ -481,6 +601,198 @@
         document.addEventListener('DOMContentLoaded', () => {
             initializeTheme();
             setupThemeListeners();
+        });
+
+        // Image Text Editor Script
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageUpload = document.getElementById('imageUpload');
+            const imageCanvas = document.getElementById('imageCanvas');
+            const editorArea = document.getElementById('editorArea');
+            const addTextBtn = document.getElementById('addTextBtn');
+            const fontFamily = document.getElementById('fontFamily');
+            const fontSize = document.getElementById('fontSize');
+            const fontColor = document.getElementById('fontColor');
+            const fontBold = document.getElementById('fontBold');
+            const fontItalic = document.getElementById('fontItalic');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            let selectedTextBox = null;
+            let uploadedImage = null;
+            
+            // Handle image upload
+            imageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImage = new Image();
+                        uploadedImage.onload = function() {
+                            // Clear existing text boxes
+                            document.querySelectorAll('.text-box').forEach(box => box.remove());
+                            
+                            // Set canvas dimensions
+                            const maxWidth = editorArea.clientWidth;
+                            let width = uploadedImage.width;
+                            let height = uploadedImage.height;
+                            
+                            if (width > maxWidth) {
+                                const ratio = maxWidth / width;
+                                width = maxWidth;
+                                height = height * ratio;
+                            }
+                            
+                            imageCanvas.width = width;
+                            imageCanvas.height = height;
+                            
+                            const ctx = imageCanvas.getContext('2d');
+                            ctx.drawImage(uploadedImage, 0, 0, width, height);
+                        };
+                        uploadedImage.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Add text box
+            addTextBtn.addEventListener('click', function() {
+                if (!uploadedImage) {
+                    alert('Please upload an image first');
+                    return;
+                }
+                
+                const textBox = document.createElement('div');
+                textBox.className = 'text-box';
+                textBox.contentEditable = true;
+                textBox.innerHTML = 'Enter text here';
+                textBox.style.left = '50px';
+                textBox.style.top = '50px';
+                
+                // Apply current font settings
+                applyFontSettings(textBox);
+                
+                editorArea.appendChild(textBox);
+                
+                // Make the text box draggable
+                makeElementDraggable(textBox);
+                
+                // Select this text box
+                textBox.addEventListener('click', function() {
+                    selectTextBox(textBox);
+                });
+                
+                // Auto-select the newly created text box
+                selectTextBox(textBox);
+            });
+            
+            // Apply font settings to selected text box
+            function applyFontSettings(textBox) {
+                if (!textBox) return;
+                
+                textBox.style.fontFamily = fontFamily.value;
+                textBox.style.fontSize = fontSize.value + 'px';
+                textBox.style.color = fontColor.value;
+                textBox.style.fontWeight = fontBold.checked ? 'bold' : 'normal';
+                textBox.style.fontStyle = fontItalic.checked ? 'italic' : 'normal';
+            }
+            
+            // Select text box and update controls
+            function selectTextBox(textBox) {
+                // Deselect any previously selected text box
+                if (selectedTextBox) {
+                    selectedTextBox.style.border = '1px dashed var(--primary-color)';
+                }
+                
+                selectedTextBox = textBox;
+                selectedTextBox.style.border = '2px solid var(--primary-color)';
+                
+                // Focus on the text box
+                selectedTextBox.focus();
+            }
+            
+            // Make element draggable
+            function makeElementDraggable(element) {
+                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                
+                element.onmousedown = dragMouseDown;
+                
+                function dragMouseDown(e) {
+                    e.preventDefault();
+                    // Get the mouse cursor position at startup
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    // Call a function whenever the cursor moves
+                    document.onmousemove = elementDrag;
+                    
+                    // Select this text box
+                    selectTextBox(element);
+                }
+                
+                function elementDrag(e) {
+                    e.preventDefault();
+                    // Calculate the new cursor position
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    // Set the element's new position
+                    element.style.top = (element.offsetTop - pos2) + "px";
+                    element.style.left = (element.offsetLeft - pos1) + "px";
+                }
+                
+                function closeDragElement() {
+                    // Stop moving when mouse button is released
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
+            }
+            
+            // Update font settings when controls change
+            fontFamily.addEventListener('change', () => applyFontSettings(selectedTextBox));
+            fontSize.addEventListener('change', () => applyFontSettings(selectedTextBox));
+            fontColor.addEventListener('input', () => applyFontSettings(selectedTextBox));
+            fontBold.addEventListener('change', () => applyFontSettings(selectedTextBox));
+            fontItalic.addEventListener('change', () => applyFontSettings(selectedTextBox));
+            
+            // Download the composite image
+            downloadBtn.addEventListener('click', function() {
+                if (!uploadedImage) {
+                    alert('Please upload an image first');
+                    return;
+                }
+                
+                // Create a temporary canvas to draw everything
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = imageCanvas.width;
+                tempCanvas.height = imageCanvas.height;
+                const ctx = tempCanvas.getContext('2d');
+                
+                // Draw the image
+                ctx.drawImage(imageCanvas, 0, 0);
+                
+                // Draw all text boxes
+                document.querySelectorAll('.text-box').forEach(box => {
+                    const boxRect = box.getBoundingClientRect();
+                    const canvasRect = imageCanvas.getBoundingClientRect();
+                    
+                    // Calculate position relative to canvas
+                    const x = boxRect.left - canvasRect.left;
+                    const y = boxRect.top - canvasRect.top;
+                    
+                    // Apply text styles
+                    ctx.font = `${box.style.fontStyle} ${box.style.fontWeight} ${box.style.fontSize} ${box.style.fontFamily}`;
+                    ctx.fillStyle = box.style.color;
+                    
+                    // Draw text
+                    ctx.fillText(box.innerText, x, y + parseInt(box.style.fontSize));
+                });
+                
+                // Create download link
+                const downloadLink = document.createElement('a');
+                downloadLink.download = 'edited-image.png';
+                downloadLink.href = tempCanvas.toDataURL('image/png');
+                downloadLink.click();
+            });
         });
     </script>
 </body>

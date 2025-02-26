@@ -893,6 +893,8 @@ def handle_feed():
         except Exception as e:
             return jsonify({"error": "An error occurred creating post"}), 500
         
+
+        
 @app.route('/stories', methods=['GET', 'POST'])
 @login_required
 def handle_stories():
