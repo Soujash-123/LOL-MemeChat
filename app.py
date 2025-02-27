@@ -893,7 +893,10 @@ def handle_feed():
         except Exception as e:
             return jsonify({"error": "An error occurred creating post"}), 500
         
-
+@app.route('/moodboard')
+@login_required
+def moodboard():
+    return render_template('moodboard.html')
         
 @app.route('/stories', methods=['GET', 'POST'])
 @login_required

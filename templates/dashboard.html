@@ -439,6 +439,49 @@
         margin-left: 0; /* Remove margin when nav is hidden on mobile */
     }
 }
+/* Update the story-item class */
+.story-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px; /* Fixed width for each story item */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Update the story username text */
+.story-item p {
+    text-align: center;
+    font-size: 0.75rem; /* Smaller font size for usernames */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    max-width: 100%; /* Ensure text doesn't exceed the container width */
+    margin-top: 0.25rem; /* Add some spacing */
+}
+
+/* Ensure the story preview container doesn't overflow */
+.story-preview {
+    position: relative;
+    overflow: hidden;
+    width: 56px; /* Fixed width for the story preview */
+    height: 56px; /* Fixed height for the story preview */
+    border-radius: 50%; /* Keep it circular */
+}
+
+/* Ensure the image inside the story preview fits well */
+.story-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the container */
+}
+/* Add this to your existing CSS */
+.modal-image {
+    width: 300px !important; /* Force width */
+    height: 300px !important; /* Force height */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+    border-radius: 0.5rem; /* Optional: Add some rounded corners */
+    margin: 0 auto; /* Center the image horizontally */
+}
     </style>
 </head>
 <body>
@@ -526,6 +569,10 @@
                 <i class="fas fa-comments"></i>
                 <span>Chat</span>
             </a>
+            <a href="/moodboard" class="nav-link">
+                <i class="fas fa-plus"></i>
+                <span>Moodboard</span>
+            </a>
             <a href="/create" class="nav-link">
                 <i class="fas fa-plus"></i>
                 <span>Create</span>
@@ -565,6 +612,16 @@
             </div>
             
             <!-- Stories will be dynamically inserted here -->
+            <div class="story-item">
+                <div class="story-ring p-0.5 rounded-full">
+                    <div class="story-preview bg-gray-800 rounded-full p-1">
+                        <div class="w-14 h-14 rounded-full overflow-hidden">
+                            <video src="story-url.mp4" class="w-full h-full object-cover"></video>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center text-sm mt-1 text-gray-300">LongUsernameExample</p>
+            </div>
         </div>
     </div>
 
@@ -1435,36 +1492,37 @@ document.addEventListener('keydown', (e) => {
 
         // Modal Functions
         function openModal(index) {
-            currentPost = posts[index];
-            const modal = document.getElementById('post-modal');
-            const content = document.getElementById('modal-post-content');
-            
-            content.innerHTML = `
-                <img src="${currentPost.file_url}" alt="Post image" class="w-full h-[400px] object-cover">
-                <div class="absolute top-4 right-4 bg-pink-500 rounded-full px-3 py-1 text-sm">
-                    <i class="fas fa-fire mr-1"></i>Trending
-                </div>
-                <div class="p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <div>
-                            <h3 class="text-xl font-bold">${currentPost.username}</h3>
-                            <p class="text-sm text-gray-400">${currentPost.content || 'Content Creator'}</p>
+    currentPost = posts[index];
+    const modal = document.getElementById('post-modal');
+    const content = document.getElementById('modal-post-content');
+    
+    content.innerHTML = `
+        <div class="flex flex-col items-center">
+            <img src="${currentPost.file_url}" alt="Post image" class="modal-image">
+            <div class="absolute top-4 right-4 bg-pink-500 rounded-full px-3 py-1 text-sm">
+                <i class="fas fa-fire mr-1"></i>Trending
+            </div>
+            <div class="p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div>
+                        <h3 class="text-xl font-bold">${currentPost.username}</h3>
+                        <p class="text-sm text-gray-400">${currentPost.content || 'Content Creator'}</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-400">
+                            <i class="fas fa-heart mr-1"></i>${currentPost.likes || Math.floor(Math.random() * 500)} Likes
                         </div>
-                        <div class="text-right">
-                            <div class="text-sm text-gray-400">
-                                <i class="fas fa-heart mr-1"></i>${currentPost.likes || Math.floor(Math.random() * 500)} Likes
-                            </div>
-                            <div class="text-sm text-gray-400">
-                                <i class="fas fa-comment mr-1"></i>${currentPost.comments || Math.floor(Math.random() * 50)} Comments
-                            </div>
+                        <div class="text-sm text-gray-400">
+                            <i class="fas fa-comment mr-1"></i>${currentPost.comments || Math.floor(Math.random() * 50)} Comments
                         </div>
                     </div>
                 </div>
-            `;
-            
-            modal.classList.add('active');
-        }
-
+            </div>
+        </div>
+    `;
+    
+    modal.classList.add('active');
+}
         function closeModal() {
             const modal = document.getElementById('post-modal');
             modal.classList.remove('active');

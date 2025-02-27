@@ -382,6 +382,10 @@
                 <i class="fas fa-plus"></i>
                 <span>Create</span>
             </a>
+            <a href="/moodboard" class="nav-link">
+                <i class="fas fa-plus"></i>
+                <span>Moodboard</span>
+            </a>
             <a href="/list_connect" class="nav-link">
                 <i class="fas fa-users"></i>
                 <span>Matches</span>
@@ -413,7 +417,25 @@
                     </div>
                 </div>
                 <div id="chat-list" class="overflow-y-auto h-full">
-                    <!-- Chat list items will be populated from chat_users -->
+                    <!-- MemerAI Chat -->
+                    <div class="chat-item p-4 border-b border-gray-800 hover:bg-gray-800 cursor-pointer" 
+                         onclick="loadMemerAIChat()"
+                         data-chat-id="memerai"
+                         data-user-id="memerai"
+                         data-dest-user-id="{{ session.user_id }}">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-bold">MemerAI</h3>
+                                    <span class="text-sm text-gray-400">Online</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Existing chat list items -->
                     {% for chat in chat_users %}
                     <div class="chat-item p-4 border-b border-gray-800 hover:bg-gray-800 cursor-pointer" 
                          onclick="loadChat('{{ chat._id }}')"
@@ -535,6 +557,88 @@
     </div>
 
     <script>
+        let memerAIChatId = "memerai";
+
+async function loadMemerAIChat() {
+    currentChatId = memerAIChatId;
+    updateChatUI({ messages: [] }); // Clear previous messages
+
+    document.getElementById('chat-input').disabled = false;
+    document.getElementById('send-message').disabled = false;
+
+    document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active-chat');
+    });
+    document.querySelector(`[data-chat-id="${memerAIChatId}"]`)?.classList.add('active-chat');
+
+    if (window.innerWidth <= 768) {
+        hideChatList();
+    }
+}
+
+async function sendMessageToMemerAI(content) {
+    if (!content.trim()) return;
+
+    try {
+        // Simulate sending a message to MemerAI
+        const userMessage = {
+            content: content.trim(),
+            user_id: currentUserId,
+            timestamp: new Date().toISOString()
+        };
+
+        // Add user message to the chat
+        const messagesContainer = document.getElementById('messages-container');
+        messagesContainer.appendChild(createMessageElement(userMessage));
+
+        // Get response from Gemini
+        const response = await fetchGeminiResponse(content.trim());
+        const memerAIMessage = {
+            content: response,
+            user_id: memerAIChatId,
+            timestamp: new Date().toISOString()
+        };
+
+        // Add MemerAI response to the chat
+        messagesContainer.appendChild(createMessageElement(memerAIMessage));
+
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    } catch (error) {
+        console.error('Error sending message to MemerAI:', error);
+    }
+}
+
+async function fetchGeminiResponse(message) {
+    const apiKey = 'AIzaSyBFFMPRr2y3woemAzEvmTPLWEaHgPaNoD0'; // Your Gemini API key
+    const modelName = 'gemini-1.5-flash'; // Specify the model name
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: message
+                    }]
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch response from Gemini');
+        }
+
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text; // Extract the response text
+    } catch (error) {
+        console.error('Error fetching response from Gemini:', error);
+        return 'Sorry, I am unable to process your request at the moment.';
+    }
+}
          // Navigate to profile
          async function navigateToProfile(event) {
             event.preventDefault();
@@ -679,26 +783,28 @@
 
         // Send a message
         async function sendMessage(content) {
-            if (!currentChatId || !content.trim()) return;
-            
-            try {
-                const response = await fetch(`/chat/${currentChatId}/messages`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ content: content.trim() })
-                });
-                
-                if (!response.ok) throw new Error('Failed to send message');
-                
-                // Reload chat to show new message
-                await loadChat(currentChatId);
-            } catch (error) {
-                console.error('Error sending message:', error);
-            }
-        }
+    if (!currentChatId || !content.trim()) return;
 
+    if (currentChatId === memerAIChatId) {
+        await sendMessageToMemerAI(content);
+    } else {
+        try {
+            const response = await fetch(`/chat/${currentChatId}/messages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: content.trim() })
+            });
+
+            if (!response.ok) throw new Error('Failed to send message');
+
+            await loadChat(currentChatId);
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+}
         // Update the chat UI with messages
         function updateChatUI(chat) {
             const messagesContainer = document.getElementById('messages-container');
@@ -754,45 +860,41 @@
 
         // Initialize mobile navigation and event listeners
         document.addEventListener('DOMContentLoaded', () => {
-            const mobileMenuButton = document.querySelector('.burger-menu');
-            const mobileNav = document.querySelector('.vertical-nav');
-            const chatInput = document.getElementById('chat-input');
-            const sendButton = document.getElementById('send-message');
-            
-            // Toggle mobile navigation
-            mobileMenuButton.addEventListener('click', () => {
-                mobileNav.classList.toggle('open');
-            });
-            
-            // Handle message input
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && chatInput.value.trim()) {
-                    sendMessage(chatInput.value);
-                    chatInput.value = '';
-                }
-            });
-            
-            sendButton.addEventListener('click', () => {
-                if (chatInput.value.trim()) {
-                    sendMessage(chatInput.value);
-                    chatInput.value = '';
-                }
-            });
+    const mobileMenuButton = document.querySelector('.burger-menu');
+    const mobileNav = document.querySelector('.vertical-nav');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-message');
 
-            // Search functionality
-            const searchInput = document.getElementById('chat-search');
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                document.querySelectorAll('.chat-item').forEach(item => {
-                    const username = item.querySelector('h3').textContent.toLowerCase();
-                    item.style.display = username.includes(searchTerm) ? 'block' : 'none';
-                });
-            });
+    mobileMenuButton.addEventListener('click', () => {
+        mobileNav.classList.toggle('open');
+    });
 
-            // Initialize theme
-            initializeTheme();
-            setupThemeListeners();
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && chatInput.value.trim()) {
+            sendMessage(chatInput.value);
+            chatInput.value = '';
+        }
+    });
+
+    sendButton.addEventListener('click', () => {
+        if (chatInput.value.trim()) {
+            sendMessage(chatInput.value);
+            chatInput.value = '';
+        }
+    });
+
+    const searchInput = document.getElementById('chat-search');
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        document.querySelectorAll('.chat-item').forEach(item => {
+            const username = item.querySelector('h3').textContent.toLowerCase();
+            item.style.display = username.includes(searchTerm) ? 'block' : 'none';
         });
+    });
+
+    initializeTheme();
+    setupThemeListeners();
+});
     </script>
 </body>
 </html>

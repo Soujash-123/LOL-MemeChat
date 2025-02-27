@@ -299,6 +299,138 @@
             margin-bottom: 0;
             color: var(--secondary-color);
         }
+
+        /* Template gallery styles */
+        .template-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .template-item {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            height: 120px;
+        }
+
+        .template-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .template-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .template-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .template-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .tab-controls {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sticker-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .sticker-item {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .sticker-item:hover {
+            transform: scale(1.1);
+        }
+
+        .sticker {
+            position: absolute;
+            cursor: move;
+            width: 80px;
+            height: 80px;
+        }
+
+        .sticker img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .sticker:hover .delete-button {
+            display: flex;
+        }
+
+        .text-box:hover .delete-button {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -328,9 +460,13 @@
                 <i class="fas fa-comments"></i>
                 <span>Chat</span>
             </a>
-            <a href="/create" class="nav-link active">
+            <a href="/create" class="nav-link">
                 <i class="fas fa-plus"></i>
                 <span>Create</span>
+            </a>
+            <a href="/moodboard" class="nav-link active">
+                <i class="fas fa-plus"></i>
+                <span>Moodboard</span>
             </a>
             <a href="/list_connect" class="nav-link">
                 <i class="fas fa-users"></i>
@@ -352,69 +488,161 @@
 
     <main class="main-content">
         <div class="container">
-            <h1>Image Text Editor</h1>
+            <h1>Moodboard Creator</h1>
             
             <div class="instructions">
                 <h3>How to Use:</h3>
                 <ul>
-                    <li>Upload an image using the button below</li>
-                    <li>Add text boxes and customize them using the controls</li>
-                    <li>Drag text boxes to position them anywhere on the image</li>
+                    <li>Select a template or upload your own image</li>
+                    <li>Add text boxes and stickers to customize your moodboard</li>
+                    <li>Drag elements to position them anywhere on the image</li>
                     <li>When finished, download your creation</li>
                 </ul>
             </div>
+
+            <div class="tab-controls">
+                <button class="tab-button active" data-tab="templates">Templates</button>
+                <button class="tab-button" data-tab="upload">Upload Image</button>
+                <button class="tab-button" data-tab="customize">Customize</button>
+            </div>
             
-            <div class="controls">
-                <div class="control-group">
-                    <label for="imageUpload">Upload Image:</label>
-                    <input type="file" id="imageUpload" accept="image/*">
-                </div>
-                
-                <div class="control-group">
-                    <label for="addTextBtn">Add Text:</label>
-                    <button id="addTextBtn">Add Text Box</button>
-                </div>
-                
-                <div class="control-group">
-                    <label for="fontFamily">Font Family:</label>
-                    <select id="fontFamily">
-                        <option value="Arial, sans-serif">Arial</option>
-                        <option value="'Times New Roman', serif">Times New Roman</option>
-                        <option value="Georgia, serif">Georgia</option>
-                        <option value="Verdana, sans-serif">Verdana</option>
-                        <option value="'Courier New', monospace">Courier New</option>
-                        <option value="Impact, fantasy">Impact</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <label for="fontSize">Font Size:</label>
-                    <input type="number" id="fontSize" min="8" max="72" value="16">
-                </div>
-                
-                <div class="control-group">
-                    <label for="fontColor">Font Color:</label>
-                    <input type="color" id="fontColor" value="#000000">
-                </div>
-                
-                <div class="control-group">
-                    <label for="fontBold">Bold:</label>
-                    <input type="checkbox" id="fontBold">
-                </div>
-                
-                <div class="control-group">
-                    <label for="fontItalic">Italic:</label>
-                    <input type="checkbox" id="fontItalic">
-                </div>
-                
-                <div class="control-group">
-                    <label for="downloadBtn">Save:</label>
-                    <button id="downloadBtn">Download Image</button>
+            <div id="templates-tab" class="tab-content active">
+                <h3 class="mb-4">Choose a Template</h3>
+                <div class="template-gallery">
+                    <div class="template-item" data-template="template-nature">
+                        <img src="/api/placeholder/200/120" alt="Nature Template">
+                        <div class="overlay">Nature</div>
+                    </div>
+                    <div class="template-item" data-template="template-love">
+                        <img src="/api/placeholder/200/120" alt="Love Template">
+                        <div class="overlay">Love</div>
+                    </div>
+                    <div class="template-item" data-template="template-urban">
+                        <img src="/api/placeholder/200/120" alt="Urban Template">
+                        <div class="overlay">Urban</div>
+                    </div>
+                    <div class="template-item" data-template="template-adventure">
+                        <img src="/api/placeholder/200/120" alt="Adventure Template">
+                        <div class="overlay">Adventure</div>
+                    </div>
+                    <div class="template-item" data-template="template-music">
+                        <img src="/api/placeholder/200/120" alt="Music Template">
+                        <div class="overlay">Music</div>
+                    </div>
+                    <div class="template-item" data-template="template-food">
+                        <img src="/api/placeholder/200/120" alt="Food Template">
+                        <div class="overlay">Food</div>
+                    </div>
+                    <div class="template-item" data-template="template-travel">
+                        <img src="/api/placeholder/200/120" alt="Travel Template">
+                        <div class="overlay">Travel</div>
+                    </div>
+                    <div class="template-item" data-template="template-minimal">
+                        <img src="/api/placeholder/200/120" alt="Minimal Template">
+                        <div class="overlay">Minimal</div>
+                    </div>
                 </div>
             </div>
             
-            <div id="editorArea" class="editor-area">
+            <div id="upload-tab" class="tab-content">
+                <div class="control-group">
+                    <label for="imageUpload">Upload Your Own Image:</label>
+                    <input type="file" id="imageUpload" accept="image/*">
+                </div>
+            </div>
+
+            <div id="customize-tab" class="tab-content">
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="addTextBtn">Text:</label>
+                        <button id="addTextBtn">Add Text Box</button>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="fontFamily">Font Family:</label>
+                        <select id="fontFamily">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Courier New', monospace">Courier New</option>
+                            <option value="Impact, fantasy">Impact</option>
+                            <option value="'Dancing Script', cursive">Dancing Script</option>
+                            <option value="'Pacifico', cursive">Pacifico</option>
+                            <option value="'Playfair Display', serif">Playfair Display</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="'Great Vibes', cursive">Great Vibes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="fontSize">Font Size:</label>
+                        <input type="number" id="fontSize" min="8" max="72" value="16">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="fontColor">Font Color:</label>
+                        <input type="color" id="fontColor" value="#000000">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="fontBold">Bold:</label>
+                        <input type="checkbox" id="fontBold">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="fontItalic">Italic:</label>
+                        <input type="checkbox" id="fontItalic">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="backgroundColor">Background:</label>
+                        <input type="color" id="backgroundColor" value="#ffffff">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="backgroundOpacity">Opacity:</label>
+                        <input type="range" id="backgroundOpacity" min="0" max="1" step="0.1" value="0.7">
+                    </div>
+                </div>
+
+                <h3 class="mb-4">Stickers</h3>
+                <div class="sticker-gallery">
+                    <div class="sticker-item" data-sticker="emoji-heart">
+                        <img src="/api/placeholder/60/60" alt="Heart Emoji">
+                    </div>
+                    <div class="sticker-item" data-sticker="emoji-star">
+                        <img src="/api/placeholder/60/60" alt="Star Emoji">
+                    </div>
+                    <div class="sticker-item" data-sticker="emoji-smile">
+                        <img src="/api/placeholder/60/60" alt="Smile Emoji">
+                    </div>
+                    <div class="sticker-item" data-sticker="emoji-fire">
+                        <img src="/api/placeholder/60/60" alt="Fire Emoji">
+                    </div>
+                    <div class="sticker-item" data-sticker="emoji-music">
+                        <img src="/api/placeholder/60/60" alt="Music Emoji">
+                    </div>
+                    <div class="sticker-item" data-sticker="emoji-travel">
+                        <img src="/api/placeholder/60/60" alt="Travel Emoji">
+                    </div>
+                    <div class="sticker-item" data-sticker="emoji-food">
+                        <img src="/api/placeholder/60/60" alt="Food Emoji">
+                    </div>
+                    <div class="sticker-item" data-sticker="emoji-love">
+                        <img src="/api/placeholder/60/60" alt="Love Emoji">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="editor-area" id="editorArea">
                 <canvas id="imageCanvas"></canvas>
+            </div>
+            
+            <div class="text-center mb-4">
+                <button id="downloadBtn" class="gradient-button">
+                    <i class="fas fa-download mr-2"></i> Download Moodboard
+                </button>
             </div>
         </div>
     </main>
@@ -601,199 +829,355 @@
         document.addEventListener('DOMContentLoaded', () => {
             initializeTheme();
             setupThemeListeners();
+            initMoodboardEditor();
         });
 
-        // Image Text Editor Script
-        document.addEventListener('DOMContentLoaded', function() {
-            const imageUpload = document.getElementById('imageUpload');
-            const imageCanvas = document.getElementById('imageCanvas');
-            const editorArea = document.getElementById('editorArea');
-            const addTextBtn = document.getElementById('addTextBtn');
-            const fontFamily = document.getElementById('fontFamily');
-            const fontSize = document.getElementById('fontSize');
-            const fontColor = document.getElementById('fontColor');
-            const fontBold = document.getElementById('fontBold');
-            const fontItalic = document.getElementById('fontItalic');
-            const downloadBtn = document.getElementById('downloadBtn');
+        // Moodboard Editor Script
+        // Moodboard Editor Script
+function initMoodboardEditor() {
+    const imageUpload = document.getElementById('imageUpload');
+    const imageCanvas = document.getElementById('imageCanvas');
+    const editorArea = document.getElementById('editorArea');
+    const addTextBtn = document.getElementById('addTextBtn');
+    const fontFamily = document.getElementById('fontFamily');
+    const fontSize = document.getElementById('fontSize');
+    const fontColor = document.getElementById('fontColor');
+    const fontBold = document.getElementById('fontBold');
+    const fontItalic = document.getElementById('fontItalic');
+    const backgroundColor = document.getElementById('backgroundColor');
+    const backgroundOpacity = document.getElementById('backgroundOpacity');
+    const downloadBtn = document.getElementById('downloadBtn');
+    
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const templateItems = document.querySelectorAll('.template-item');
+    const stickerItems = document.querySelectorAll('.sticker-item');
+    
+    let activeElement = null;
+    let currentImage = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    
+    // Tab functionality
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
             
-            let selectedTextBox = null;
-            let uploadedImage = null;
-            
-            // Handle image upload
-            imageUpload.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        uploadedImage = new Image();
-                        uploadedImage.onload = function() {
-                            // Clear existing text boxes
-                            document.querySelectorAll('.text-box').forEach(box => box.remove());
-                            
-                            // Set canvas dimensions
-                            const maxWidth = editorArea.clientWidth;
-                            let width = uploadedImage.width;
-                            let height = uploadedImage.height;
-                            
-                            if (width > maxWidth) {
-                                const ratio = maxWidth / width;
-                                width = maxWidth;
-                                height = height * ratio;
-                            }
-                            
-                            imageCanvas.width = width;
-                            imageCanvas.height = height;
-                            
-                            const ctx = imageCanvas.getContext('2d');
-                            ctx.drawImage(uploadedImage, 0, 0, width, height);
-                        };
-                        uploadedImage.src = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-            
-            // Add text box
-            addTextBtn.addEventListener('click', function() {
-                if (!uploadedImage) {
-                    alert('Please upload an image first');
-                    return;
-                }
-                
-                const textBox = document.createElement('div');
-                textBox.className = 'text-box';
-                textBox.contentEditable = true;
-                textBox.innerHTML = 'Enter text here';
-                textBox.style.left = '50px';
-                textBox.style.top = '50px';
-                
-                // Apply current font settings
-                applyFontSettings(textBox);
-                
-                editorArea.appendChild(textBox);
-                
-                // Make the text box draggable
-                makeElementDraggable(textBox);
-                
-                // Select this text box
-                textBox.addEventListener('click', function() {
-                    selectTextBox(textBox);
-                });
-                
-                // Auto-select the newly created text box
-                selectTextBox(textBox);
-            });
-            
-            // Apply font settings to selected text box
-            function applyFontSettings(textBox) {
-                if (!textBox) return;
-                
-                textBox.style.fontFamily = fontFamily.value;
-                textBox.style.fontSize = fontSize.value + 'px';
-                textBox.style.color = fontColor.value;
-                textBox.style.fontWeight = fontBold.checked ? 'bold' : 'normal';
-                textBox.style.fontStyle = fontItalic.checked ? 'italic' : 'normal';
-            }
-            
-            // Select text box and update controls
-            function selectTextBox(textBox) {
-                // Deselect any previously selected text box
-                if (selectedTextBox) {
-                    selectedTextBox.style.border = '1px dashed var(--primary-color)';
-                }
-                
-                selectedTextBox = textBox;
-                selectedTextBox.style.border = '2px solid var(--primary-color)';
-                
-                // Focus on the text box
-                selectedTextBox.focus();
-            }
-            
-            // Make element draggable
-            function makeElementDraggable(element) {
-                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                
-                element.onmousedown = dragMouseDown;
-                
-                function dragMouseDown(e) {
-                    e.preventDefault();
-                    // Get the mouse cursor position at startup
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    // Call a function whenever the cursor moves
-                    document.onmousemove = elementDrag;
-                    
-                    // Select this text box
-                    selectTextBox(element);
-                }
-                
-                function elementDrag(e) {
-                    e.preventDefault();
-                    // Calculate the new cursor position
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    // Set the element's new position
-                    element.style.top = (element.offsetTop - pos2) + "px";
-                    element.style.left = (element.offsetLeft - pos1) + "px";
-                }
-                
-                function closeDragElement() {
-                    // Stop moving when mouse button is released
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                }
-            }
-            
-            // Update font settings when controls change
-            fontFamily.addEventListener('change', () => applyFontSettings(selectedTextBox));
-            fontSize.addEventListener('change', () => applyFontSettings(selectedTextBox));
-            fontColor.addEventListener('input', () => applyFontSettings(selectedTextBox));
-            fontBold.addEventListener('change', () => applyFontSettings(selectedTextBox));
-            fontItalic.addEventListener('change', () => applyFontSettings(selectedTextBox));
-            
-            // Download the composite image
-            downloadBtn.addEventListener('click', function() {
-                if (!uploadedImage) {
-                    alert('Please upload an image first');
-                    return;
-                }
-                
-                // Create a temporary canvas to draw everything
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = imageCanvas.width;
-                tempCanvas.height = imageCanvas.height;
-                const ctx = tempCanvas.getContext('2d');
-                
-                // Draw the image
-                ctx.drawImage(imageCanvas, 0, 0);
-                
-                // Draw all text boxes
-                document.querySelectorAll('.text-box').forEach(box => {
-                    const boxRect = box.getBoundingClientRect();
-                    const canvasRect = imageCanvas.getBoundingClientRect();
-                    
-                    // Calculate position relative to canvas
-                    const x = boxRect.left - canvasRect.left;
-                    const y = boxRect.top - canvasRect.top;
-                    
-                    // Apply text styles
-                    ctx.font = `${box.style.fontStyle} ${box.style.fontWeight} ${box.style.fontSize} ${box.style.fontFamily}`;
-                    ctx.fillStyle = box.style.color;
-                    
-                    // Draw text
-                    ctx.fillText(box.innerText, x, y + parseInt(box.style.fontSize));
-                });
-                
-                // Create download link
-                const downloadLink = document.createElement('a');
-                downloadLink.download = 'edited-image.png';
-                downloadLink.href = tempCanvas.toDataURL('image/png');
-                downloadLink.click();
-            });
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
         });
-    </script>
+    });
+    
+    // Image upload handler
+    imageUpload.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                loadImageToCanvas(event.target.result);
+            }
+            
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+    
+    // Template selection handler
+    templateItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // In a real app, these would be actual image paths
+            // For this example, we'll use placeholder
+            const templateName = item.getAttribute('data-template');
+            // This would load the actual template image
+            loadImageToCanvas(`/api/placeholder/800/600?text=${templateName}`);
+            
+            // Switch to customize tab after selecting a template
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            document.querySelector('[data-tab="customize"]').classList.add('active');
+            document.getElementById('customize-tab').classList.add('active');
+        });
+    });
+    
+    // Load image to canvas
+    function loadImageToCanvas(src) {
+        const img = new Image();
+        img.onload = function() {
+            // Set canvas dimensions to match image
+            const maxWidth = editorArea.clientWidth;
+            let width = img.width;
+            let height = img.height;
+            
+            // Scale image if it's too large
+            if (width > maxWidth) {
+                const ratio = maxWidth / width;
+                width = maxWidth;
+                height = height * ratio;
+            }
+            
+            imageCanvas.width = width;
+            imageCanvas.height = height;
+            
+            const ctx = imageCanvas.getContext('2d');
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            currentImage = img;
+        };
+        img.src = src;
+    }
+    
+    // Add text box functionality
+    addTextBtn.addEventListener('click', () => {
+        const textBox = document.createElement('div');
+        textBox.className = 'text-box';
+        textBox.contentEditable = true;
+        textBox.innerHTML = 'Add your text here';
+        
+        // Apply current text styles
+        applyCurrentTextStyles(textBox);
+        
+        // Add delete button
+        const deleteBtn = document.createElement('div');
+        deleteBtn.className = 'delete-button';
+        deleteBtn.innerHTML = 'x';
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            textBox.remove();
+        });
+        textBox.appendChild(deleteBtn);
+        
+        // Position in the center of the editor area
+        textBox.style.left = (editorArea.clientWidth / 2 - 100) + 'px';
+        textBox.style.top = (editorArea.clientHeight / 2 - 20) + 'px';
+        
+        editorArea.appendChild(textBox);
+        makeElementDraggable(textBox);
+        textBox.focus();
+    });
+    
+    // Apply text styles to a text box
+    function applyCurrentTextStyles(element) {
+        element.style.fontFamily = fontFamily.value;
+        element.style.fontSize = fontSize.value + 'px';
+        element.style.color = fontColor.value;
+        element.style.fontWeight = fontBold.checked ? 'bold' : 'normal';
+        element.style.fontStyle = fontItalic.checked ? 'italic' : 'normal';
+        
+        // Convert hex to rgba for background
+        const hex = backgroundColor.value;
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        const a = backgroundOpacity.value;
+        
+        element.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
+    
+    // Update text styles on change
+    [fontFamily, fontSize, fontColor, fontBold, fontItalic, backgroundColor, backgroundOpacity].forEach(control => {
+        control.addEventListener('input', () => {
+            if (activeElement && activeElement.classList.contains('text-box')) {
+                applyCurrentTextStyles(activeElement);
+            }
+        });
+    });
+    
+    // Handle sticker clicks
+    stickerItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const stickerName = item.getAttribute('data-sticker');
+            addSticker(stickerName);
+        });
+    });
+    
+    // Add a sticker to the editor
+    function addSticker(stickerName) {
+        const sticker = document.createElement('div');
+        sticker.className = 'sticker';
+        
+        // Create image element
+        const img = document.createElement('img');
+        img.src = `/api/placeholder/80/80?text=${stickerName}`;
+        img.alt = stickerName;
+        
+        // Add delete button
+        const deleteBtn = document.createElement('div');
+        deleteBtn.className = 'delete-button';
+        deleteBtn.innerHTML = 'x';
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sticker.remove();
+        });
+        
+        sticker.appendChild(img);
+        sticker.appendChild(deleteBtn);
+        
+        // Position in the center of the editor area
+        sticker.style.left = (editorArea.clientWidth / 2 - 40) + 'px';
+        sticker.style.top = (editorArea.clientHeight / 2 - 40) + 'px';
+        
+        editorArea.appendChild(sticker);
+        makeElementDraggable(sticker);
+    }
+    
+    // Make an element draggable
+    function makeElementDraggable(element) {
+        element.addEventListener('mousedown', startDrag);
+        element.addEventListener('touchstart', startDrag, { passive: false });
+        
+        // Mark this element as active when clicked
+        element.addEventListener('click', () => {
+            if (activeElement) {
+                activeElement.classList.remove('active-element');
+            }
+            activeElement = element;
+            element.classList.add('active-element');
+        });
+    }
+    
+    function startDrag(e) {
+        e.preventDefault();
+        
+        // Set the current element as active
+        if (activeElement) {
+            activeElement.classList.remove('active-element');
+        }
+        activeElement = this;
+        this.classList.add('active-element');
+        
+        // Get initial position
+        const rect = this.getBoundingClientRect();
+        
+        // Calculate offset for drag
+        if (e.type === 'touchstart') {
+            dragOffsetX = e.touches[0].clientX - rect.left;
+            dragOffsetY = e.touches[0].clientY - rect.top;
+        } else {
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+        }
+        
+        // Add move and end event listeners
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+    }
+    
+    function drag(e) {
+        e.preventDefault();
+        if (!activeElement) return;
+        
+        let clientX, clientY;
+        
+        if (e.type === 'touchmove') {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        
+        // Calculate new position
+        const editorRect = editorArea.getBoundingClientRect();
+        let left = clientX - editorRect.left - dragOffsetX;
+        let top = clientY - editorRect.top - dragOffsetY;
+        
+        // Constrain to editor area
+        const elementWidth = activeElement.offsetWidth;
+        const elementHeight = activeElement.offsetHeight;
+        
+        if (left < 0) left = 0;
+        if (top < 0) top = 0;
+        if (left + elementWidth > editorRect.width) left = editorRect.width - elementWidth;
+        if (top + elementHeight > editorRect.height) top = editorRect.height - elementHeight;
+        
+        // Set new position
+        activeElement.style.left = left + 'px';
+        activeElement.style.top = top + 'px';
+    }
+    
+    function endDrag() {
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('mouseup', endDrag);
+        document.removeEventListener('touchend', endDrag);
+    }
+    
+    // Download functionality
+    downloadBtn.addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas dimensions to match editor
+        canvas.width = imageCanvas.width;
+        canvas.height = imageCanvas.height;
+        
+        // Draw background image
+        if (currentImage) {
+            ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+        } else {
+            // Fill with white if no image
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        // Draw text boxes and stickers
+        const elements = Array.from(editorArea.querySelectorAll('.text-box, .sticker'));
+        
+        elements.forEach(el => {
+            if (el.classList.contains('text-box')) {
+                // Draw text
+                const styles = window.getComputedStyle(el);
+                
+                ctx.font = `${styles.fontStyle} ${styles.fontWeight} ${styles.fontSize} ${styles.fontFamily}`;
+                ctx.fillStyle = styles.backgroundColor;
+                
+                const x = parseFloat(el.style.left);
+                const y = parseFloat(el.style.top);
+                const width = el.offsetWidth;
+                const height = el.offsetHeight;
+                
+                // Draw background
+                ctx.fillRect(x, y, width, height);
+                
+                // Draw text
+                ctx.fillStyle = styles.color;
+                ctx.textBaseline = 'top';
+                const padding = 5; // Same as CSS padding
+                const lines = el.innerText.split('\n');
+                
+                let lineHeight = parseInt(styles.fontSize) * 1.2;
+                lines.forEach((line, i) => {
+                    ctx.fillText(line, x + padding, y + padding + i * lineHeight);
+                });
+            } else if (el.classList.contains('sticker')) {
+                // Draw sticker
+                const img = el.querySelector('img');
+                const x = parseFloat(el.style.left);
+                const y = parseFloat(el.style.top);
+                const width = el.offsetWidth;
+                const height = el.offsetHeight;
+                
+                ctx.drawImage(img, x, y, width, height);
+            }
+        });
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.download = 'moodboard.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+    
+    // Initialize with a default template
+    loadImageToCanvas('/api/placeholder/800/600?text=Choose-a-template-or-upload-image');
+}
+</script>
 </body>
 </html>
