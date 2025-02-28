@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L❤L - Create Your Meme</title>
+    <title>L❤L - Games</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -36,6 +36,51 @@
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-modal.active {
+            display: flex;
+        }
+
+        .theme-content {
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .theme-button {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button:hover {
+            transform: rotate(30deg);
         }
 
         .vertical-nav {
@@ -114,69 +159,120 @@
         .main-content {
             margin-left: 0;
             min-height: 100vh;
-            transition: margin-left 0.3s ease;
-            padding: 2rem;
-            padding-top: 6rem;
-            background: radial-gradient(circle at center, rgba(96, 165, 250, 0.1), transparent);
-        }
-
-        .meme-card {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .meme-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.6);
-        }
-
-        .theme-button {
-            position: fixed;
-            right: 20px;
-            top: 20px;
-            z-index: 100;
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            background: var(--primary-color);
-            color: white;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+            background: radial-gradient(circle at center, rgba(96, 165, 250, 0.1), transparent);
+            padding: 2rem;
         }
 
-        .theme-button:hover {
-            transform: rotate(30deg);
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .theme-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .gameList-container {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .Interface-container {
+            flex: 3;
+            height: 70vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-iframe {
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            border: none;
+        }
+
+        .game-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .game-card:hover {
+            background: rgba(96, 165, 250, 0.1);
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-card.active {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .game-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
             align-items: center;
             justify-content: center;
+            background: rgba(96, 165, 250, 0.1);
+            border-radius: 12px;
+            font-size: 1.5rem;
+            color: var(--primary-color);
         }
 
-        .theme-modal.active {
+        .game-info {
+            flex: 1;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .search-box {
             display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .theme-content {
-            width: 90%;
-            max-width: 400px;
-            padding: 2rem;
-            border-radius: 1rem;
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--secondary-color);
+            padding: 0.5rem;
+            flex: 1;
+            outline: none;
+        }
+
+        .search-box i {
+            color: var(--secondary-color);
+            opacity: 0.7;
         }
 
         @media (min-width: 768px) {
@@ -192,31 +288,27 @@
                 margin-left: 240px;
             }
 
-            .theme-button {
-                right: 40px;
+            .game-container {
+                flex-direction: row;
+            }
+
+            .gameList-container {
+                width: 30%;
+            }
+
+            .Interface-container {
+                width: 70%;
             }
         }
 
-        .gradient-button {
-            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
-            transition: all 0.3s ease;
-        }
+        @media (max-width: 767px) {
+            .game-container {
+                flex-direction: column;
+            }
 
-        .gradient-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(96, 165, 250, 0.3);
-        }
-
-        textarea {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-            background: rgba(30, 41, 59, 0.95);
+            .Interface-container {
+                height: 50vh;
+            }
         }
     </style>
 </head>
@@ -227,10 +319,12 @@
         <span></span>
     </div>
 
+    <div class="nav-overlay"></div>
+
     <nav class="vertical-nav">
         <div class="py-6 px-4">
             <h1 class="text-2xl font-bold text-center">
-                L<span style="color: var(--primary-color)">❤</span>L
+                L<span class="text-blue-500">❤</span>L
             </h1>
         </div>
         
@@ -247,7 +341,7 @@
                 <i class="fas fa-comments"></i>
                 <span>Chat</span>
             </a>
-            <a href="/create" class="nav-link active">
+            <a href="/create" class="nav-link">
                 <i class="fas fa-plus"></i>
                 <span>Create</span>
             </a>
@@ -259,7 +353,7 @@
                 <i class="fas fa-users"></i>
                 <span>Matches</span>
             </a>
-            <a href="/game" class="nav-link ">
+            <a href="/game" class="nav-link active">
                 <i class="fas fa-gamepad"></i>
                 <span>Chill Zone</span>
             </a>
@@ -278,52 +372,74 @@
     </nav>
 
     <main class="main-content">
-        <div class="max-w-2xl mx-auto">
-            <div class="meme-card p-8">
-                <h2 class="text-3xl font-bold mb-8" style="color: var(--primary-color)">Create Your Meme</h2>
+        <h1 class="text-3xl font-bold mb-6 text-center">Game Center</h1>
+        
+        <div class="game-container">
+            <!-- Game List Container -->
+            <div class="gameList-container">
+                <h2 class="section-title">Available Games</h2>
                 
-                <form method="POST" action="{{ url_for('create') }}" class="space-y-6">
-                    <div class="space-y-4">
-                        <textarea 
-                            name="input_text" 
-                            placeholder="Enter your meme text here..."
-                            class="w-full rounded-lg p-4 focus:outline-none h-32 text-white"
-                            required>{{ input_text if input_text else '' }}</textarea>
-                        
-                        <p class="text-sm opacity-75 flex items-center">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Your text will be automatically split into top and bottom text
-                        </p>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search games..." id="game-search">
+                </div>
+                
+                <div class="games-list">
+                    <div class="game-card active" data-game="MedievalDefense">
+                        <div class="game-icon">
+                            <i class="fas fa-chess-rook"></i>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="font-semibold">Medieval Defense</h3>
+                            <p class="text-sm opacity-70">Tower defense game</p>
+                        </div>
                     </div>
-
-                    <button type="submit" class="w-full gradient-button text-white py-4 rounded-lg shadow-lg flex items-center justify-center gap-2 text-lg font-semibold">
-                        <i class="fas fa-magic"></i>
-                        Generate Meme
-                    </button>
-                </form>
-
-                {% if meme_url %}
-                <div class="mt-12 space-y-6">
-                    <h3 class="text-2xl font-bold" style="color: var(--primary-color)">Your Generated Meme</h3>
-                    <div class="bg-gray-800 rounded-xl p-6 space-y-6">
-                        <img src="{{ meme_url }}" alt="Generated Meme" class="w-full rounded-lg shadow-lg">
-                        
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="{{ meme_url }}" download target="_blank" 
-                               class="flex-1 gradient-button py-3 rounded-lg shadow-lg text-center flex items-center justify-center gap-2">
-                                <i class="fas fa-download"></i>
-                                Download
-                            </a>
-                            
-                            <button onclick="shareToFeed()" 
-                                    class="flex-1 gradient-button py-3 rounded-lg shadow-lg flex items-center justify-center gap-2">
-                                <i class="fas fa-share"></i>
-                                Share to Feed
-                            </button>
+                    
+                    <div class="game-card" data-game="ClockSolitaire">
+                        <div class="game-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="font-semibold">Clock Solitaire</h3>
+                            <p class="text-sm opacity-70">Card game</p>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card" data-game="WildWestKlondike">
+                        <div class="game-icon">
+                            <i class="fas fa-hat-cowboy"></i>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="font-semibold">Wild West Klondike</h3>
+                            <p class="text-sm opacity-70">Western themed card game</p>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card" data-game="WordSearch">
+                        <div class="game-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="font-semibold">Word Search</h3>
+                            <p class="text-sm opacity-70">Find hidden words</p>
+                        </div>
+                    </div>
+                    
+                    <div class="game-card" data-game="Minesweeper">
+                        <div class="game-icon">
+                            <i class="fas fa-bomb"></i>
+                        </div>
+                        <div class="game-info">
+                            <h3 class="font-semibold">Minesweeper</h3>
+                            <p class="text-sm opacity-70">Classic puzzle game</p>
                         </div>
                     </div>
                 </div>
-                {% endif %}
+            </div>
+            
+            <!-- Game Interface Container -->
+            <div class="Interface-container">
+                <iframe id="game-iframe" class="game-iframe" src="https://cdn.htmlgames.com/MedievalDefense"></iframe>
             </div>
         </div>
     </main>
@@ -378,7 +494,7 @@
                         </optgroup>
                     </select>
                 </div>
-                <button class="w-full py-2 px-4 gradient-button text-white rounded" id="reset-theme">
+                <button class="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" id="reset-theme">
                     Reset to Default
                 </button>
             </div>
@@ -386,17 +502,68 @@
     </div>
 
     <script>
-        async function navigateToProfile(event) {
-            event.preventDefault();
-            try {
-                const response = await fetch('/user/profile');
-                if (!response.ok) throw new Error('Failed to fetch profile');
-                const data = await response.json();
-                window.location.href = `/${data.username}`;
-            } catch (error) {
-                console.error('Error navigating to profile:', error);
-            }
+        // Navigation functionality
+        const burgerMenu = document.querySelector('.burger-menu');
+        const nav = document.querySelector('.vertical-nav');
+        const overlay = document.querySelector('.nav-overlay');
+
+        burgerMenu.addEventListener('click', toggleNav);
+        overlay.addEventListener('click', closeNav);
+
+        function toggleNav() {
+            burgerMenu.classList.toggle('open');
+            nav.classList.toggle('open');
+            overlay.classList.toggle('visible');
         }
+
+        function closeNav() {
+            burgerMenu.classList.remove('open');
+            nav.classList.remove('open');
+            overlay.classList.remove('visible');
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                closeNav();
+            }
+        });
+
+        // Game selection functionality
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('.game-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Load the selected game
+                const gameName = this.getAttribute('data-game');
+                loadGame(gameName);
+            });
+        });
+
+        // Load game function
+        function loadGame(gameName) {
+            const iframe = document.getElementById('game-iframe');
+            iframe.src = `https://cdn.htmlgames.com/${gameName}`;
+        }
+
+        // Search functionality
+        document.getElementById('game-search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.game-card').forEach(card => {
+                const gameName = card.querySelector('h3').textContent.toLowerCase();
+                const gameDescription = card.querySelector('p').textContent.toLowerCase();
+                
+                if (gameName.includes(searchTerm) || gameDescription.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize theme
         const themeKeys = {
             primaryColor: '--primary-color',
             secondaryColor: '--secondary-color',
@@ -474,115 +641,16 @@
             });
         }
 
-        // Navigation functionality 
-        const burgerMenu = document.querySelector('.burger-menu');
-        const nav = document.querySelector('.vertical-nav');
-
-        burgerMenu.addEventListener('click', () => {
-            burgerMenu.classList.toggle('open');
-            nav.classList.toggle('open');
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) {
-                burgerMenu.classList.remove('open');
-                nav.classList.remove('open');
-            }
-        });
-
-        async function shareToFeed() {
-            const formData = new FormData();
-            formData.append('type', 'image');
-            formData.append('file_url', '{{ meme_url }}');
-            formData.append('content', '{{ input_text if input_text else "" }}');
-
-            try {
-                const response = await fetch('/posts', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    alert('Meme shared to feed successfully!');
-                    window.location.href = '/dashboard';
-                } else {
-                    const error = await response.json();
-                    alert(error.error || 'Failed to share meme');
-                }
-            } catch (error) {
-                console.error('Error sharing meme:', error);
-                alert('Failed to share meme');
-            }
-        }
-
-        async function logout() {
-            try {
-                const response = await fetch('/logout');
-                if (response.ok) {
-                    window.location.href = '/';
-                } else {
-                    alert('Failed to logout');
-                }
-            } catch (error) {
-                console.error('Error logging out:', error);
-                alert('Failed to logout');
-            }
-        }
-
-        // Initialize theme on page load
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             initializeTheme();
             setupThemeListeners();
         });
-        async function shareToFeed() {
-    const button = document.getElementById('shareButton');
-    const icon = button.querySelector('i');
-    const memeUrl = '{{ meme_url }}';
-    const inputText = '{{ input_text }}';
-    
-    // Disable button and show loading state
-    button.disabled = true;
-    icon.className = '';
-    icon.innerHTML = '<span class="loading-spinner"></span>';
-    
-    try {
-        // Create form data
-        const formData = new FormData();
-        
-        // Fetch the image from the meme URL
-        const response = await fetch(memeUrl);
-        const blob = await response.blob();
-        
-        // Add the file to form data
-        formData.append('post-file', blob, 'meme.png');
-        formData.append('type', 'image');
-        formData.append('content', inputText || '');
 
-        // Send the request
-        const postResponse = await fetch('/posts', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (postResponse.ok) {
-            // Success notification
-            alert('Meme shared to feed successfully!');
-            window.location.href = '/dashboard';
-        } else {
-            const error = await postResponse.json();
-            throw new Error(error.error || 'Failed to share meme');
+        // Logout function
+        function logout() {
+            window.location.href = '/logout';
         }
-    } catch (error) {
-        console.error('Error sharing meme:', error);
-        alert(error.message || 'Failed to share meme');
-        
-        // Reset button state
-        button.disabled = false;
-        icon.className = 'fas fa-share';
-        icon.innerHTML = '';
-    }
-}
     </script>
 </body>
 </html>

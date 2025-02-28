@@ -1593,6 +1593,14 @@ def user_profile(username):
 def not_found_error(error):
     return jsonify({"error": "Resource not found"}), 404
 
+@app.route('/game')
+def chill_zone():
+    """
+    Route to render the chill zone/games page.
+    This serves the HTML template for the gaming section.
+    """
+    return render_template('game.html')
+
 @app.errorhandler(500)
 def internal_error(error):
     return jsonify({"error": "Internal server error"}), 500
