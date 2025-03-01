@@ -513,8 +513,14 @@ def choose_template(text):
             return template
     return random.choice(list(template_mapping.values()))
 
+def choose_random():
+    return random.choice(list(template_mapping.values()))
+
 def generate_meme(top_text, bottom_text):
-    template_id = choose_template(top_text + " " + bottom_text)
+    if not top_text and not bottom_text:
+        template_id = choose_random()
+    else:
+        template_id = choose_template(top_text + " " + bottom_text)
     top_text = top_text.replace(" ", "_")
     bottom_text = bottom_text.replace(" ", "_")
     return f"https://api.memegen.link/images/{template_id}/{top_text}/{bottom_text}.png"

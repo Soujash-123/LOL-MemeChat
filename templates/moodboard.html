@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Text Editor</title>
+    <title>Moodboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -30,12 +30,58 @@
             font-family: var(--font-family), sans-serif;
             background: var(--background-color);
             color: var(--secondary-color);
+            overflow-x: hidden;
         }
 
         .glass-effect {
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-modal.active {
+            display: flex;
+        }
+
+        .theme-content {
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .theme-button {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-button:hover {
+            transform: rotate(30deg);
         }
 
         .vertical-nav {
@@ -114,152 +160,77 @@
         .main-content {
             margin-left: 0;
             min-height: 100vh;
+            display: flex;
             transition: margin-left 0.3s ease;
-            padding: 2rem;
-            padding-top: 6rem;
             background: radial-gradient(circle at center, rgba(96, 165, 250, 0.1), transparent);
         }
 
-        .theme-button {
-            position: fixed;
-            right: 20px;
-            top: 20px;
-            z-index: 100;
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            background: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .editor-panel {
+            width: 300px;
+            background-color: rgba(15, 23, 42, 0.9);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            padding: 20px;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+
+        .template-item {
+            position: relative;
+            margin-bottom: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s;
         }
 
-        .theme-button:hover {
-            transform: rotate(30deg);
+        .template-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .theme-modal {
-            display: none;
-            position: fixed;
+        .template-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .template-item .overlay {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
 
-        .theme-modal.active {
-            display: flex;
+        .template-item:hover .overlay {
+            opacity: 1;
         }
 
-        .theme-content {
-            width: 90%;
-            max-width: 400px;
-            padding: 2rem;
-            border-radius: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .vertical-nav {
-                left: 0;
-            }
-
-            .burger-menu {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 240px;
-            }
-
-            .theme-button {
-                right: 40px;
-            }
-        }
-
-        .gradient-button {
-            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
-            transition: all 0.3s ease;
-        }
-
-        .gradient-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(96, 165, 250, 0.3);
-        }
-
-        textarea {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-            background: rgba(30, 41, 59, 0.95);
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: rgba(15, 23, 42, 0.8);
+        .playground {
+            flex: 1;
+            height: 100vh;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-        }
-
-        .controls {
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 15px;
-            background-color: rgba(30, 41, 59, 0.8);
-            border-radius: 6px;
-        }
-
-        .control-group {
-            margin-right: 15px;
-        }
-
-        .control-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: var(--secondary-color);
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        button:hover {
-            background-color: #3367d6;
+            position: relative;
+            overflow: auto;
         }
 
         .editor-area {
             position: relative;
-            border: 2px dashed var(--primary-color);
-            min-height: 400px;
-            margin-bottom: 20px;
+            min-height: 70vh;
+            margin: 0 auto;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
             overflow: hidden;
+            background-color: rgba(15, 23, 42, 0.3);
         }
 
         #imageCanvas {
@@ -276,6 +247,8 @@
             border: 1px dashed var(--primary-color);
             cursor: move;
             background-color: rgba(255, 255, 255, 0.7);
+            color: #000;
+            border-radius: 4px;
         }
 
         .text-box:focus {
@@ -283,153 +256,170 @@
             border: 1px solid var(--primary-color);
         }
 
-        .instructions {
-            background-color: rgba(232, 245, 233, 0.1);
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .instructions h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-        }
-
-        .instructions ul {
-            margin-bottom: 0;
-            color: var(--secondary-color);
-        }
-
-        /* Template gallery styles */
-        .template-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .template-item {
-            position: relative;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            height: 120px;
-        }
-
-        .template-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .template-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .template-item .overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px;
-            font-size: 12px;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .template-item:hover .overlay {
-            opacity: 1;
-        }
-
-        .tab-controls {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tab-button {
-            padding: 10px 20px;
-            background: none;
-            border: none;
-            border-bottom: 3px solid transparent;
-            color: var(--secondary-color);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tab-button.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .sticker-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .sticker-item {
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .sticker-item:hover {
-            transform: scale(1.1);
-        }
-
-        .sticker {
+        .shape {
             position: absolute;
             cursor: move;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .rectangle {
+            width: 100px;
+            height: 60px;
+        }
+
+        .circle {
             width: 80px;
             height: 80px;
-        }
-
-        .sticker img {
-            width: 100%;
-            height: 100%;
-        }
-
-        .delete-button {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            width: 20px;
-            height: 20px;
-            background: red;
-            color: white;
             border-radius: 50%;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 86px solid rgba(255, 255, 255, 0.7);
+            background-color: transparent;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .component-section {
+            margin-bottom: 20px;
+        }
+
+        .component-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .component-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .component-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .component-item i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .editor-controls {
+            margin-top: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--secondary-color);
+        }
+
+        .control-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            outline: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            cursor: pointer;
-            display: none;
+            gap: 8px;
         }
 
-        .sticker:hover .delete-button {
-            display: flex;
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
         }
 
-        .text-box:hover .delete-button {
-            display: flex;
+        .btn-primary:hover {
+            background-color: #4a86db;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        @media (min-width: 768px) {
+            .vertical-nav {
+                left: 0;
+            }
+
+            .burger-menu {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 240px;
+            }
         }
     </style>
 </head>
@@ -440,10 +430,12 @@
         <span></span>
     </div>
 
+    <div class="nav-overlay"></div>
+
     <nav class="vertical-nav">
         <div class="py-6 px-4">
             <h1 class="text-2xl font-bold text-center">
-                L<span style="color: var(--primary-color)">❤</span>L
+                L<span class="text-blue-500">❤</span>L
             </h1>
         </div>
         
@@ -465,14 +457,14 @@
                 <span>Create</span>
             </a>
             <a href="/moodboard" class="nav-link active">
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-palette"></i>
                 <span>Moodboard</span>
             </a>
             <a href="/list_connect" class="nav-link">
                 <i class="fas fa-users"></i>
                 <span>Matches</span>
             </a>
-            <a href="/game" class="nav-link ">
+            <a href="/game" class="nav-link">
                 <i class="fas fa-gamepad"></i>
                 <span>Chill Zone</span>
             </a>
@@ -491,77 +483,65 @@
     </nav>
 
     <main class="main-content">
-        <div class="container">
-            <h1>Moodboard Creator</h1>
+        <!-- Editor Panel (Left Side) -->
+        <div class="editor-panel">
+            <h2 class="section-title">Editor Tools</h2>
             
-            <div class="instructions">
-                <h3>How to Use:</h3>
-                <ul>
-                    <li>Select a template or upload your own image</li>
-                    <li>Add text boxes and stickers to customize your moodboard</li>
-                    <li>Drag elements to position them anywhere on the image</li>
-                    <li>When finished, download your creation</li>
-                </ul>
-            </div>
-
-            <div class="tab-controls">
-                <button class="tab-button active" data-tab="templates">Templates</button>
-                <button class="tab-button" data-tab="upload">Upload Image</button>
-                <button class="tab-button" data-tab="customize">Customize</button>
-            </div>
-            
-            <div id="templates-tab" class="tab-content active">
-                <h3 class="mb-4">Choose a Template</h3>
-                <div class="template-gallery">
-                    <div class="template-item" data-template="template-nature">
-                        <img src="/api/placeholder/200/120" alt="Nature Template">
-                        <div class="overlay">Nature</div>
-                    </div>
-                    <div class="template-item" data-template="template-love">
-                        <img src="/api/placeholder/200/120" alt="Love Template">
-                        <div class="overlay">Love</div>
-                    </div>
-                    <div class="template-item" data-template="template-urban">
-                        <img src="/api/placeholder/200/120" alt="Urban Template">
-                        <div class="overlay">Urban</div>
-                    </div>
-                    <div class="template-item" data-template="template-adventure">
-                        <img src="/api/placeholder/200/120" alt="Adventure Template">
-                        <div class="overlay">Adventure</div>
-                    </div>
-                    <div class="template-item" data-template="template-music">
-                        <img src="/api/placeholder/200/120" alt="Music Template">
-                        <div class="overlay">Music</div>
-                    </div>
-                    <div class="template-item" data-template="template-food">
-                        <img src="/api/placeholder/200/120" alt="Food Template">
-                        <div class="overlay">Food</div>
-                    </div>
-                    <div class="template-item" data-template="template-travel">
-                        <img src="/api/placeholder/200/120" alt="Travel Template">
-                        <div class="overlay">Travel</div>
-                    </div>
-                    <div class="template-item" data-template="template-minimal">
-                        <img src="/api/placeholder/200/120" alt="Minimal Template">
-                        <div class="overlay">Minimal</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="upload-tab" class="tab-content">
+            <!-- Upload Section -->
+            <div class="component-section">
+                <div class="component-title">Upload</div>
                 <div class="control-group">
-                    <label for="imageUpload">Upload Your Own Image:</label>
-                    <input type="file" id="imageUpload" accept="image/*">
+                    <label for="imageUpload">Upload Image:</label>
+                    <input type="file" id="imageUpload" accept="image/*" class="btn btn-secondary w-full">
                 </div>
             </div>
-
-            <div id="customize-tab" class="tab-content">
-                <div class="controls">
-                    <div class="control-group">
-                        <label for="addTextBtn">Text:</label>
-                        <button id="addTextBtn">Add Text Box</button>
+            
+            <!-- Templates Section -->
+            <div class="component-section">
+                <div class="component-title">My Templates</div>
+                <div id="templates-container" class="templates-grid">
+                    <!-- Templates will be loaded here from localStorage -->
+                    <div class="empty-templates text-center py-4 text-gray-400 italic">
+                        No templates yet. Upload an image to get started.
                     </div>
-                    
+                </div>
+            </div>
+            
+            <!-- Components Section -->
+            <div class="component-section">
+                <div class="component-title">Components</div>
+                <div class="components-grid">
+                    <div class="component-item" onclick="addShape('rectangle')">
+                        <i class="fas fa-square"></i>
+                        <span>Rectangle</span>
+                    </div>
+                    <div class="component-item" onclick="addShape('circle')">
+                        <i class="fas fa-circle"></i>
+                        <span>Circle</span>
+                    </div>
+                    <div class="component-item" onclick="addShape('triangle')">
+                        <i class="fas fa-play"></i>
+                        <span>Triangle</span>
+                    </div>
+                    <div class="component-item" onclick="addTextBox()">
+                        <i class="fas fa-font"></i>
+                        <span>Text</span>
+                    </div>
+                    <div class="component-item" onclick="addImage()">
+                        <i class="fas fa-image"></i>
+                        <span>Image</span>
+                    </div>
+                    <div class="component-item" onclick="addSticker()">
+                        <i class="fas fa-smile"></i>
+                        <span>Sticker</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Text Formatting -->
+            <div class="component-section">
+                <div class="component-title">Text Formatting</div>
+                <div class="editor-controls">
                     <div class="control-group">
                         <label for="fontFamily">Font Family:</label>
                         <select id="fontFamily">
@@ -575,78 +555,84 @@
                             <option value="'Pacifico', cursive">Pacifico</option>
                             <option value="'Playfair Display', serif">Playfair Display</option>
                             <option value="'Montserrat', sans-serif">Montserrat</option>
-                            <option value="'Great Vibes', cursive">Great Vibes</option>
                         </select>
                     </div>
-                    
                     <div class="control-group">
                         <label for="fontSize">Font Size:</label>
                         <input type="number" id="fontSize" min="8" max="72" value="16">
                     </div>
-                    
                     <div class="control-group">
                         <label for="fontColor">Font Color:</label>
                         <input type="color" id="fontColor" value="#000000">
                     </div>
-                    
                     <div class="control-group">
-                        <label for="fontBold">Bold:</label>
-                        <input type="checkbox" id="fontBold">
-                    </div>
-                    
-                    <div class="control-group">
-                        <label for="fontItalic">Italic:</label>
-                        <input type="checkbox" id="fontItalic">
-                    </div>
-                    
-                    <div class="control-group">
-                        <label for="backgroundColor">Background:</label>
-                        <input type="color" id="backgroundColor" value="#ffffff">
-                    </div>
-                    
-                    <div class="control-group">
-                        <label for="backgroundOpacity">Opacity:</label>
-                        <input type="range" id="backgroundOpacity" min="0" max="1" step="0.1" value="0.7">
-                    </div>
-                </div>
-
-                <h3 class="mb-4">Stickers</h3>
-                <div class="sticker-gallery">
-                    <div class="sticker-item" data-sticker="emoji-heart">
-                        <img src="/api/placeholder/60/60" alt="Heart Emoji">
-                    </div>
-                    <div class="sticker-item" data-sticker="emoji-star">
-                        <img src="/api/placeholder/60/60" alt="Star Emoji">
-                    </div>
-                    <div class="sticker-item" data-sticker="emoji-smile">
-                        <img src="/api/placeholder/60/60" alt="Smile Emoji">
-                    </div>
-                    <div class="sticker-item" data-sticker="emoji-fire">
-                        <img src="/api/placeholder/60/60" alt="Fire Emoji">
-                    </div>
-                    <div class="sticker-item" data-sticker="emoji-music">
-                        <img src="/api/placeholder/60/60" alt="Music Emoji">
-                    </div>
-                    <div class="sticker-item" data-sticker="emoji-travel">
-                        <img src="/api/placeholder/60/60" alt="Travel Emoji">
-                    </div>
-                    <div class="sticker-item" data-sticker="emoji-food">
-                        <img src="/api/placeholder/60/60" alt="Food Emoji">
-                    </div>
-                    <div class="sticker-item" data-sticker="emoji-love">
-                        <img src="/api/placeholder/60/60" alt="Love Emoji">
+                        <div class="control-options">
+                            <label>
+                                <input type="checkbox" id="fontBold">
+                                <span class="ml-2">Bold</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="fontItalic">
+                                <span class="ml-2">Italic</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="editor-area" id="editorArea">
+            <!-- Shape Formatting -->
+            <div class="component-section">
+                <div class="component-title">Shape Formatting</div>
+                <div class="editor-controls">
+                    <div class="control-group">
+                        <label for="shapeColor">Color:</label>
+                        <input type="color" id="shapeColor" value="#ffffff">
+                    </div>
+                    <div class="control-group">
+                        <label for="shapeOpacity">Opacity:</label>
+                        <input type="range" id="shapeOpacity" min="0" max="100" value="70">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Playground (Right Side) -->
+        <div class="playground">
+            <h1 class="text-2xl font-bold mb-6">Moodboard Creator</h1>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <div>
+                    <button id="clearBtn" class="btn btn-secondary">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+                <div class="flex gap-3">
+                    <button id="saveBtn" class="btn btn-primary" onclick="saveMoodboard()">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button id="downloadBtn" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button id="shareBtn" class="btn btn-primary" onclick="shareToFeed()">
+                        <i class="fas fa-share-alt"></i> Share to Feed
+                    </button>
+                    <button id="aiGenBtn" class="btn btn-primary" onclick="goToCreate()">
+                        <i class="fas fa-magic"></i> Generate with AI
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Editor Area -->
+            <div id="editorArea" class="editor-area">
                 <canvas id="imageCanvas"></canvas>
+                <div id="layersContainer"></div>
             </div>
             
-            <div class="text-center mb-4">
-                <button id="downloadBtn" class="gradient-button">
-                    <i class="fas fa-download mr-2"></i> Download Moodboard
-                </button>
+            <!-- Chill Zone Game Frame -->
+            <div class="mt-8">
+                <h2 class="section-title">Take a Break in Chill Zone</h2>
+                <iframe src="/game" class="game-frame" title="Chill Zone"></iframe>
             </div>
         </div>
     </main>
@@ -701,7 +687,7 @@
                         </optgroup>
                     </select>
                 </div>
-                <button class="w-full py-2 px-4 gradient-button text-white rounded" id="reset-theme">
+                <button class="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" id="reset-theme">
                     Reset to Default
                 </button>
             </div>
@@ -709,479 +695,761 @@
     </div>
 
     <script>
-        async function navigateToProfile(event) {
-            event.preventDefault();
-            try {
-                const response = await fetch('/user/profile');
-                if (!response.ok) throw new Error('Failed to fetch profile');
-                const data = await response.json();
-                window.location.href = `/${data.username}`;
-            } catch (error) {
-                console.error('Error navigating to profile:', error);
+        // Navigation functionality
+const burgerMenu = document.querySelector('.burger-menu');
+const nav = document.querySelector('.vertical-nav');
+const overlay = document.querySelector('.nav-overlay');
+
+burgerMenu.addEventListener('click', toggleNav);
+overlay?.addEventListener('click', closeNav);
+
+function toggleNav() {
+    burgerMenu.classList.toggle('open');
+    nav.classList.toggle('open');
+    overlay?.classList.toggle('visible');
+}
+
+function closeNav() {
+    burgerMenu.classList.remove('open');
+    nav.classList.remove('open');
+    overlay?.classList.remove('visible');
+}
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+        closeNav();
+    }
+});
+
+// Initialize theme
+const themeKeys = {
+    primaryColor: '--primary-color',
+    secondaryColor: '--secondary-color',
+    backgroundColor: '--background-color',
+    navbarColor: '--navbar-color',
+    fontFamily: '--font-family',
+};
+
+function initializeTheme() {
+    Object.keys(themeKeys).forEach(key => {
+        const savedValue = localStorage.getItem(key);
+        if (savedValue) {
+            document.documentElement.style.setProperty(themeKeys[key], savedValue);
+            const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+            if (input) {
+                input.value = savedValue;
             }
         }
+    });
+}
 
-        const themeKeys = {
-            primaryColor: '--primary-color',
-            secondaryColor: '--secondary-color',
-            backgroundColor: '--background-color',
-            navbarColor: '--navbar-color',
-            fontFamily: '--font-family',
+function setupThemeListeners() {
+    document.querySelector('.theme-button').addEventListener('click', () => {
+        document.querySelector('.theme-modal').classList.add('active');
+    });
+
+    document.querySelector('.close-theme').addEventListener('click', () => {
+        document.querySelector('.theme-modal').classList.remove('active');
+    });
+
+    document.querySelector('.theme-modal').addEventListener('click', (e) => {
+        if (e.target === document.querySelector('.theme-modal')) {
+            document.querySelector('.theme-modal').classList.remove('active');
+        }
+    });
+
+    Object.keys(themeKeys).forEach(key => {
+        const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+        if (input) {
+            input.addEventListener('input', (e) => {
+                document.documentElement.style.setProperty(themeKeys[key], e.target.value);
+                localStorage.setItem(key, e.target.value);
+            });
+        }
+    });
+
+    document.getElementById('reset-theme').addEventListener('click', () => {
+        const defaults = {
+            primaryColor: '#60a5fa',
+            secondaryColor: '#e2e8f0',
+            backgroundColor: '#0f172a',
+            navbarColor: 'rgba(15, 23, 42, 0.95)',
+            fontFamily: 'Inter'
         };
-
-        function initializeTheme() {
-            Object.keys(themeKeys).forEach(key => {
-                const savedValue = localStorage.getItem(key);
-                if (savedValue) {
-                    document.documentElement.style.setProperty(themeKeys[key], savedValue);
-                    const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
-                    if (input) {
-                        input.value = savedValue;
+        
+        Object.entries(defaults).forEach(([key, value]) => {
+            document.documentElement.style.setProperty(themeKeys[key], value);
+            localStorage.setItem(key, value);
+            
+            const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+            if (input) {
+                if (input.type === 'color') {
+                    if (value.startsWith('rgba')) {
+                        const rgb = value.match(/\d+/g).slice(0, 3);
+                        const hex = '#' + rgb.map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
+                        input.value = hex;
+                    } else {
+                        input.value = value;
                     }
-                }
-            });
-        }
-
-        function setupThemeListeners() {
-            document.querySelector('.theme-button').addEventListener('click', () => {
-                document.querySelector('.theme-modal').classList.add('active');
-            });
-
-            document.querySelector('.close-theme').addEventListener('click', () => {
-                document.querySelector('.theme-modal').classList.remove('active');
-            });
-
-            document.querySelector('.theme-modal').addEventListener('click', (e) => {
-                if (e.target === document.querySelector('.theme-modal')) {
-                    document.querySelector('.theme-modal').classList.remove('active');
-                }
-            });
-
-            Object.keys(themeKeys).forEach(key => {
-                const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
-                if (input) {
-                    input.addEventListener('input', (e) => {
-                        document.documentElement.style.setProperty(themeKeys[key], e.target.value);
-                        localStorage.setItem(key, e.target.value);
-                    });
-                }
-            });
-
-            document.getElementById('reset-theme').addEventListener('click', () => {
-                const defaults = {
-                    primaryColor: '#60a5fa',
-                    secondaryColor: '#e2e8f0',
-                    backgroundColor: '#0f172a',
-                    navbarColor: 'rgba(15, 23, 42, 0.95)',
-                    fontFamily: 'Inter'
-                };
-                
-                Object.entries(defaults).forEach(([key, value]) => {
-                    document.documentElement.style.setProperty(themeKeys[key], value);
-                    localStorage.setItem(key, value);
-                    
-                    const input = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
-                    if (input) {
-                        if (input.type === 'color') {
-                            if (value.startsWith('rgba')) {
-                                const rgb = value.match(/\d+/g).slice(0, 3);
-                                const hex = '#' + rgb.map(x => parseInt(x).toString(16).padStart(2, '0')).join('');
-                                input.value = hex;
-                            } else {
-                                input.value = value;
-                            }
-                        } else {
-                            input.value = value;
-                        }
-                    }
-                });
-            });
-        }
-
-        // Navigation functionality 
-        const burgerMenu = document.querySelector('.burger-menu');
-        const nav = document.querySelector('.vertical-nav');
-
-        burgerMenu.addEventListener('click', () => {
-            burgerMenu.classList.toggle('open');
-            nav.classList.toggle('open');
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) {
-                burgerMenu.classList.remove('open');
-                nav.classList.remove('open');
-            }
-        });
-
-        async function logout() {
-            try {
-                const response = await fetch('/logout');
-                if (response.ok) {
-                    window.location.href = '/';
                 } else {
-                    alert('Failed to logout');
+                    input.value = value;
                 }
-            } catch (error) {
-                console.error('Error logging out:', error);
-                alert('Failed to logout');
             }
-        }
-
-        // Initialize theme on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeTheme();
-            setupThemeListeners();
-            initMoodboardEditor();
         });
+    });
+}
 
-        // Moodboard Editor Script
-        // Moodboard Editor Script
-function initMoodboardEditor() {
+// Template Storage Management
+function saveImageToTemplates(imageDataUrl, id) {
+    let templates = getTemplates();
+    const newTemplate = {
+        id: id || Date.now(),
+        imageUrl: imageDataUrl,
+        created: new Date().toISOString()
+    };
+    
+    templates.push(newTemplate);
+    localStorage.setItem('moodboardTemplates', JSON.stringify(templates));
+    renderTemplates();
+}
+
+function getTemplates() {
+    const templates = localStorage.getItem('moodboardTemplates');
+    return templates ? JSON.parse(templates) : [];
+}
+
+function renderTemplates() {
+    const templates = getTemplates();
+    const container = document.getElementById('templates-container');
+    
+    if (templates.length === 0) {
+        container.innerHTML = `
+            <div class="empty-templates text-center py-4 text-gray-400 italic">
+                No templates yet. Upload an image to get started.
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = '';
+    templates.forEach(template => {
+        const templateEl = document.createElement('div');
+        templateEl.className = 'template-item';
+        templateEl.innerHTML = `
+            <img src="${template.imageUrl}" alt="Template">
+            <div class="overlay">
+                <button class="btn btn-primary btn-sm use-template">
+                    <i class="fas fa-edit"></i> Use
+                </button>
+            </div>
+        `;
+        templateEl.querySelector('.use-template').addEventListener('click', (e) => {
+            e.stopPropagation();
+            loadImageToCanvas(template.imageUrl);
+        });
+        
+        // Make the entire item clickable as well
+        templateEl.addEventListener('click', () => {
+            loadImageToCanvas(template.imageUrl);
+        });
+        
+        container.appendChild(templateEl);
+    });
+}
+
+// Image Text Editor Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Get DOM elements
     const imageUpload = document.getElementById('imageUpload');
     const imageCanvas = document.getElementById('imageCanvas');
     const editorArea = document.getElementById('editorArea');
-    const addTextBtn = document.getElementById('addTextBtn');
     const fontFamily = document.getElementById('fontFamily');
     const fontSize = document.getElementById('fontSize');
     const fontColor = document.getElementById('fontColor');
     const fontBold = document.getElementById('fontBold');
     const fontItalic = document.getElementById('fontItalic');
-    const backgroundColor = document.getElementById('backgroundColor');
-    const backgroundOpacity = document.getElementById('backgroundOpacity');
     const downloadBtn = document.getElementById('downloadBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const shapeColor = document.getElementById('shapeColor');
+    const shapeOpacity = document.getElementById('shapeOpacity');
     
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tabContents = document.querySelectorAll('.tab-content');
-    const templateItems = document.querySelectorAll('.template-item');
-    const stickerItems = document.querySelectorAll('.sticker-item');
-    
-    let activeElement = null;
-    let currentImage = null;
+    // Initialize canvas and state
+    const ctx = imageCanvas.getContext('2d');
+    let selectedElement = null;
+    let isDragging = false;
     let dragOffsetX = 0;
     let dragOffsetY = 0;
+    let canvasImage = null;
     
-    // Tab functionality
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons and contents
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            // Add active class to clicked button and corresponding content
-            button.classList.add('active');
-            const tabId = button.getAttribute('data-tab');
-            document.getElementById(`${tabId}-tab`).classList.add('active');
-        });
-    });
+    // Initialize
+    initializeTheme();
+    setupThemeListeners();
+    renderTemplates();
     
-    // Image upload handler
+    // Expose functions to global scope so they can be called from HTML
+    window.addTextBox = addTextBox;
+    window.addShape = addShape;
+    window.addImage = addImage;
+    window.addSticker = addSticker;
+    window.saveMoodboard = saveMoodboard;
+    window.shareToFeed = shareToFeed;
+    window.goToCreate = goToCreate;
+    window.navigateToProfile = navigateToProfile;
+    window.logout = logout;
+    window.loadImageToCanvas = loadImageToCanvas;
+    
+    // Image Upload Handler
     imageUpload.addEventListener('change', function(e) {
-        if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
             const reader = new FileReader();
-            
-            reader.onload = function(event) {
-                loadImageToCanvas(event.target.result);
-            }
-            
-            reader.readAsDataURL(e.target.files[0]);
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                loadImageToCanvas(imageUrl);
+                saveImageToTemplates(imageUrl);
+            };
+            reader.readAsDataURL(file);
         }
     });
     
-    // Template selection handler
-    templateItems.forEach(item => {
-        item.addEventListener('click', () => {
-            // In a real app, these would be actual image paths
-            // For this example, we'll use placeholder
-            const templateName = item.getAttribute('data-template');
-            // This would load the actual template image
-            loadImageToCanvas(`/api/placeholder/800/600?text=${templateName}`);
-            
-            // Switch to customize tab after selecting a template
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            document.querySelector('[data-tab="customize"]').classList.add('active');
-            document.getElementById('customize-tab').classList.add('active');
-        });
-    });
-    
-    // Load image to canvas
-    function loadImageToCanvas(src) {
+    // Load Image to Canvas
+    function loadImageToCanvas(imageUrl) {
         const img = new Image();
         img.onload = function() {
-            // Set canvas dimensions to match image
-            const maxWidth = editorArea.clientWidth;
+            // Calculate dimensions while maintaining aspect ratio
+            const maxWidth = editorArea.clientWidth - 40;
+            const maxHeight = editorArea.clientHeight - 40;
             let width = img.width;
             let height = img.height;
             
-            // Scale image if it's too large
             if (width > maxWidth) {
                 const ratio = maxWidth / width;
                 width = maxWidth;
                 height = height * ratio;
             }
             
+            if (height > maxHeight) {
+                const ratio = maxHeight / height;
+                height = maxHeight;
+                width = width * ratio;
+            }
+            
             imageCanvas.width = width;
             imageCanvas.height = height;
-            
-            const ctx = imageCanvas.getContext('2d');
             ctx.clearRect(0, 0, width, height);
             ctx.drawImage(img, 0, 0, width, height);
-            
-            currentImage = img;
+            canvasImage = imageUrl;
         };
-        img.src = src;
+        img.src = imageUrl;
     }
     
-    // Add text box functionality
-    addTextBtn.addEventListener('click', () => {
+    // Add Text Box
+    function addTextBox() {
         const textBox = document.createElement('div');
         textBox.className = 'text-box';
         textBox.contentEditable = true;
-        textBox.innerHTML = 'Add your text here';
+        textBox.textContent = 'Edit me';
+        textBox.style.left = '50%';
+        textBox.style.top = '50%';
+        textBox.style.transform = 'translate(-50%, -50%)';
         
-        // Apply current text styles
-        applyCurrentTextStyles(textBox);
-        
-        // Add delete button
-        const deleteBtn = document.createElement('div');
-        deleteBtn.className = 'delete-button';
-        deleteBtn.innerHTML = 'x';
-        deleteBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            textBox.remove();
-        });
-        textBox.appendChild(deleteBtn);
-        
-        // Position in the center of the editor area
-        textBox.style.left = (editorArea.clientWidth / 2 - 100) + 'px';
-        textBox.style.top = (editorArea.clientHeight / 2 - 20) + 'px';
+        // Apply current text formatting
+        updateTextFormatting(textBox);
         
         editorArea.appendChild(textBox);
         makeElementDraggable(textBox);
-        textBox.focus();
+        
+        // Focus on the new text box
+        setTimeout(() => {
+            textBox.focus();
+            document.execCommand('selectAll', false, null);
+        }, 10);
+    }
+    
+    // Add Shape
+    function addShape(type) {
+        const shape = document.createElement('div');
+        shape.className = `shape ${type}`;
+        shape.dataset.type = type;
+        
+        // Apply current shape formatting
+        const color = shapeColor.value;
+        const opacity = shapeOpacity.value / 100;
+        shape.style.backgroundColor = color;
+        shape.style.opacity = opacity;
+        
+        shape.style.left = '50%';
+        shape.style.top = '50%';
+        shape.style.transform = 'translate(-50%, -50%)';
+        
+        editorArea.appendChild(shape);
+        makeElementDraggable(shape);
+    }
+    
+    // Add Image
+    function addImage() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.className = 'shape';
+                    imgElement.style.width = '150px';
+                    imgElement.style.height = 'auto';
+                    imgElement.style.position = 'absolute';
+                    imgElement.style.left = '50%';
+                    imgElement.style.top = '50%';
+                    imgElement.style.transform = 'translate(-50%, -50%)';
+                    
+                    editorArea.appendChild(imgElement);
+                    makeElementDraggable(imgElement);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+        input.click();
+    }
+    
+    // Add Sticker
+    function addSticker() {
+        const stickers = [
+            '😀', '😍', '🥰', '😎', '🤩', '🔥', '💯', '❤️', '✨', '⭐',
+            '🌟', '🎉', '🎊', '🎈', '🎁', '🎯', '🏆', '🥇', '👍', '👑'
+        ];
+        
+        const stickerContainer = document.createElement('div');
+        stickerContainer.className = 'shape sticker';
+        stickerContainer.textContent = stickers[Math.floor(Math.random() * stickers.length)];
+        stickerContainer.style.fontSize = '40px';
+        stickerContainer.style.left = '50%';
+        stickerContainer.style.top = '50%';
+        stickerContainer.style.transform = 'translate(-50%, -50%)';
+        
+        editorArea.appendChild(stickerContainer);
+        makeElementDraggable(stickerContainer);
+    }
+    
+    // Element dragging functionality
+    function makeElementDraggable(element) {
+        element.addEventListener('mousedown', function(e) {
+            // Don't start dragging if we're editing text
+            if (e.target.isContentEditable && e.target === document.activeElement) {
+                return;
+            }
+            
+            // Select the element
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+            }
+            selectedElement = element;
+            selectedElement.classList.add('selected');
+            
+            // Update controls to match selected element
+            if (element.classList.contains('text-box')) {
+                updateControlsFromElement(element);
+            } else if (element.classList.contains('shape')) {
+                // Update shape controls
+                if (element.style.backgroundColor) {
+                    shapeColor.value = rgbToHex(element.style.backgroundColor);
+                }
+                if (element.style.opacity) {
+                    shapeOpacity.value = parseFloat(element.style.opacity) * 100;
+                }
+            }
+            
+            // Start drag
+            isDragging = true;
+            const rect = element.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            
+            e.preventDefault();
+        });
+    }
+    
+    document.addEventListener('mousemove', function(e) {
+        if (isDragging && selectedElement) {
+            const editorRect = editorArea.getBoundingClientRect();
+            let newLeft = e.clientX - editorRect.left - dragOffsetX;
+            let newTop = e.clientY - editorRect.top - dragOffsetY;
+            
+            // Constrain to editor area
+            newLeft = Math.max(0, Math.min(newLeft, editorRect.width - selectedElement.offsetWidth));
+            newTop = Math.max(0, Math.min(newTop, editorRect.height - selectedElement.offsetHeight));
+            
+            selectedElement.style.left = newLeft + 'px';
+            selectedElement.style.top = newTop + 'px';
+            
+            // Remove transform if it exists (from initial centering)
+            selectedElement.style.transform = 'none';
+        }
     });
     
-    // Apply text styles to a text box
-    function applyCurrentTextStyles(element) {
+    document.addEventListener('mouseup', function() {
+        isDragging = false;
+    });
+    
+    // Add keyboard shortcuts for deleting selected element
+    document.addEventListener('keydown', function(e) {
+        if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElement) {
+            // Only delete if not editing text
+            if (!(selectedElement.isContentEditable && selectedElement === document.activeElement)) {
+                selectedElement.remove();
+                selectedElement = null;
+            }
+        }
+    });
+    
+    // Update Text Formatting
+    function updateTextFormatting(element) {
+        if (!element) {
+            if (selectedElement && selectedElement.classList.contains('text-box')) {
+                element = selectedElement;
+            } else {
+                return;
+            }
+        }
+        
         element.style.fontFamily = fontFamily.value;
         element.style.fontSize = fontSize.value + 'px';
         element.style.color = fontColor.value;
         element.style.fontWeight = fontBold.checked ? 'bold' : 'normal';
         element.style.fontStyle = fontItalic.checked ? 'italic' : 'normal';
-        
-        // Convert hex to rgba for background
-        const hex = backgroundColor.value;
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-        const a = backgroundOpacity.value;
-        
-        element.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
     }
     
-    // Update text styles on change
-    [fontFamily, fontSize, fontColor, fontBold, fontItalic, backgroundColor, backgroundOpacity].forEach(control => {
-        control.addEventListener('input', () => {
-            if (activeElement && activeElement.classList.contains('text-box')) {
-                applyCurrentTextStyles(activeElement);
-            }
+    // Update Controls From Element
+    function updateControlsFromElement(element) {
+        if (element.classList.contains('text-box')) {
+            const style = window.getComputedStyle(element);
+            fontFamily.value = style.fontFamily.split(',')[0].replace(/['"]/g, '');
+            fontSize.value = parseInt(style.fontSize);
+            fontColor.value = rgbToHex(style.color);
+            fontBold.checked = style.fontWeight === 'bold' || parseInt(style.fontWeight) >= 600;
+            fontItalic.checked = style.fontStyle === 'italic';
+        }
+    }
+    
+    // RGB to Hex conversion helper
+    function rgbToHex(rgb) {
+        if (rgb.startsWith('rgb')) {
+            const [r, g, b] = rgb.match(/\d+/g).map(Number);
+            return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+        }
+        return rgb;
+    }
+    
+    // Text Formatting Controls Listeners
+    fontFamily.addEventListener('change', updateTextFormatting);
+    fontSize.addEventListener('input', updateTextFormatting);
+    fontColor.addEventListener('input', updateTextFormatting);
+    fontBold.addEventListener('change', updateTextFormatting);
+    fontItalic.addEventListener('change', updateTextFormatting);
+    
+    // Shape Formatting Controls Listeners
+    shapeColor.addEventListener('input', function() {
+        if (selectedElement && selectedElement.classList.contains('shape')) {
+            selectedElement.style.backgroundColor = shapeColor.value;
+        }
+    });
+    
+    shapeOpacity.addEventListener('input', function() {
+        if (selectedElement && selectedElement.classList.contains('shape')) {
+            selectedElement.style.opacity = shapeOpacity.value / 100;
+        }
+    });
+    
+    // Clear Button
+    clearBtn.addEventListener('click', function() {
+        if (confirm('Are you sure you want to clear the canvas? All unsaved work will be lost.')) {
+            const layersContainer = document.getElementById('layersContainer');
+            layersContainer.innerHTML = '';
+            ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+            canvasImage = null;
+            
+            // Remove all text boxes and shapes
+            const elements = editorArea.querySelectorAll('.text-box, .shape');
+            elements.forEach(el => el.remove());
+        }
+    });
+    
+    // Download Button
+    downloadBtn.addEventListener('click', function() {
+        html2canvas(editorArea, {
+            backgroundColor: null,
+            useCORS: true,
+            scale: 2
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'moodboard-' + new Date().getTime() + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
         });
     });
     
-    // Handle sticker clicks
-    stickerItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const stickerName = item.getAttribute('data-sticker');
-            addSticker(stickerName);
+    // Save Moodboard
+    function saveMoodboard() {
+        html2canvas(editorArea, {
+            backgroundColor: null,
+            useCORS: true,
+            scale: 2
+        }).then(canvas => {
+            const moodboardImage = canvas.toDataURL('image/png');
+            saveImageToTemplates(moodboardImage);
+            alert('Moodboard saved to templates!');
         });
-    });
+    }
     
-    // Add a sticker to the editor
-    function addSticker(stickerName) {
-        const sticker = document.createElement('div');
-        sticker.className = 'sticker';
+    // Share to Feed
+    function shareToFeed() {
+        html2canvas(editorArea, {
+            backgroundColor: null,
+            useCORS: true,
+            scale: 2
+        }).then(canvas => {
+            const moodboardImage = canvas.toDataURL('image/png');
+            localStorage.setItem('sharedMoodboard', moodboardImage);
+            alert('Your moodboard is ready to share! Redirecting to feed...');
+            setTimeout(() => {
+                window.location.href = '/feed?share=true';
+            }, 1000);
+        });
+    }
+    
+    // Go to AI Creation
+    function goToCreate() {
+        window.location.href = '/create';
+    }
+    
+    // Navigate to Profile 
+    function navigateToProfile(event) {
+        event.preventDefault();
+        window.location.href = '/profile';
+    }
+    
+    // Logout Function
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '/logout';
+        }
+    }
+    
+    // Add Resizing Functionality for Elements
+    function makeElementResizable(element) {
+        const resizer = document.createElement('div');
+        resizer.className = 'resizer';
+        resizer.style.width = '10px';
+        resizer.style.height = '10px';
+        resizer.style.background = 'var(--primary-color)';
+        resizer.style.position = 'absolute';
+        resizer.style.right = '0';
+        resizer.style.bottom = '0';
+        resizer.style.cursor = 'nwse-resize';
         
-        // Create image element
-        const img = document.createElement('img');
-        img.src = `/api/placeholder/80/80?text=${stickerName}`;
-        img.alt = stickerName;
+        element.appendChild(resizer);
         
-        // Add delete button
-        const deleteBtn = document.createElement('div');
-        deleteBtn.className = 'delete-button';
-        deleteBtn.innerHTML = 'x';
-        deleteBtn.addEventListener('click', (e) => {
+        let original_width = 0;
+        let original_height = 0;
+        let original_x = 0;
+        let original_y = 0;
+        let original_mouse_x = 0;
+        let original_mouse_y = 0;
+        
+        resizer.addEventListener('mousedown', function(e) {
+            e.preventDefault();
             e.stopPropagation();
-            sticker.remove();
+            
+            original_width = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
+            original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+            original_x = element.getBoundingClientRect().left;
+            original_y = element.getBoundingClientRect().top;
+            original_mouse_x = e.pageX;
+            original_mouse_y = e.pageY;
+            
+            window.addEventListener('mousemove', resize);
+            window.addEventListener('mouseup', stopResize);
         });
         
-        sticker.appendChild(img);
-        sticker.appendChild(deleteBtn);
-        
-        // Position in the center of the editor area
-        sticker.style.left = (editorArea.clientWidth / 2 - 40) + 'px';
-        sticker.style.top = (editorArea.clientHeight / 2 - 40) + 'px';
-        
-        editorArea.appendChild(sticker);
-        makeElementDraggable(sticker);
-    }
-    
-    // Make an element draggable
-    function makeElementDraggable(element) {
-        element.addEventListener('mousedown', startDrag);
-        element.addEventListener('touchstart', startDrag, { passive: false });
-        
-        // Mark this element as active when clicked
-        element.addEventListener('click', () => {
-            if (activeElement) {
-                activeElement.classList.remove('active-element');
+        function resize(e) {
+            const width = original_width + (e.pageX - original_mouse_x);
+            const height = original_height + (e.pageY - original_mouse_y);
+            
+            if (width > 20) {
+                element.style.width = width + 'px';
             }
-            activeElement = element;
-            element.classList.add('active-element');
-        });
-    }
-    
-    function startDrag(e) {
-        e.preventDefault();
-        
-        // Set the current element as active
-        if (activeElement) {
-            activeElement.classList.remove('active-element');
-        }
-        activeElement = this;
-        this.classList.add('active-element');
-        
-        // Get initial position
-        const rect = this.getBoundingClientRect();
-        
-        // Calculate offset for drag
-        if (e.type === 'touchstart') {
-            dragOffsetX = e.touches[0].clientX - rect.left;
-            dragOffsetY = e.touches[0].clientY - rect.top;
-        } else {
-            dragOffsetX = e.clientX - rect.left;
-            dragOffsetY = e.clientY - rect.top;
+            
+            if (height > 20) {
+                element.style.height = height + 'px';
+            }
         }
         
-        // Add move and end event listeners
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('touchmove', drag, { passive: false });
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
-    }
-    
-    function drag(e) {
-        e.preventDefault();
-        if (!activeElement) return;
-        
-        let clientX, clientY;
-        
-        if (e.type === 'touchmove') {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
+        function stopResize() {
+            window.removeEventListener('mousemove', resize);
         }
-        
-        // Calculate new position
-        const editorRect = editorArea.getBoundingClientRect();
-        let left = clientX - editorRect.left - dragOffsetX;
-        let top = clientY - editorRect.top - dragOffsetY;
-        
-        // Constrain to editor area
-        const elementWidth = activeElement.offsetWidth;
-        const elementHeight = activeElement.offsetHeight;
-        
-        if (left < 0) left = 0;
-        if (top < 0) top = 0;
-        if (left + elementWidth > editorRect.width) left = editorRect.width - elementWidth;
-        if (top + elementHeight > editorRect.height) top = editorRect.height - elementHeight;
-        
-        // Set new position
-        activeElement.style.left = left + 'px';
-        activeElement.style.top = top + 'px';
     }
     
-    function endDrag() {
-        document.removeEventListener('mousemove', drag);
-        document.removeEventListener('touchmove', drag);
-        document.removeEventListener('mouseup', endDrag);
-        document.removeEventListener('touchend', endDrag);
-    }
-    
-    // Download functionality
-    downloadBtn.addEventListener('click', () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Set canvas dimensions to match editor
-        canvas.width = imageCanvas.width;
-        canvas.height = imageCanvas.height;
-        
-        // Draw background image
-        if (currentImage) {
-            ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
-        } else {
-            // Fill with white if no image
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-        
-        // Draw text boxes and stickers
-        const elements = Array.from(editorArea.querySelectorAll('.text-box, .sticker'));
-        
-        elements.forEach(el => {
-            if (el.classList.contains('text-box')) {
-                // Draw text
-                const styles = window.getComputedStyle(el);
-                
-                ctx.font = `${styles.fontStyle} ${styles.fontWeight} ${styles.fontSize} ${styles.fontFamily}`;
-                ctx.fillStyle = styles.backgroundColor;
-                
-                const x = parseFloat(el.style.left);
-                const y = parseFloat(el.style.top);
-                const width = el.offsetWidth;
-                const height = el.offsetHeight;
-                
-                // Draw background
-                ctx.fillRect(x, y, width, height);
-                
-                // Draw text
-                ctx.fillStyle = styles.color;
-                ctx.textBaseline = 'top';
-                const padding = 5; // Same as CSS padding
-                const lines = el.innerText.split('\n');
-                
-                let lineHeight = parseInt(styles.fontSize) * 1.2;
-                lines.forEach((line, i) => {
-                    ctx.fillText(line, x + padding, y + padding + i * lineHeight);
+    // Apply resizing to shapes added to the editor
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1 && node.classList.contains('shape') && !node.classList.contains('sticker')) {
+                        makeElementResizable(node);
+                    }
                 });
-            } else if (el.classList.contains('sticker')) {
-                // Draw sticker
-                const img = el.querySelector('img');
-                const x = parseFloat(el.style.left);
-                const y = parseFloat(el.style.top);
-                const width = el.offsetWidth;
-                const height = el.offsetHeight;
-                
-                ctx.drawImage(img, x, y, width, height);
             }
         });
-        
-        // Create download link
-        const link = document.createElement('a');
-        link.download = 'moodboard.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
     });
     
-    // Initialize with a default template
-    loadImageToCanvas('/api/placeholder/800/600?text=Choose-a-template-or-upload-image');
-}
-</script>
-</body>
+    observer.observe(editorArea, { childList: true });
+    
+    // Load html2canvas library
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            if (document.querySelector(`script[src="${src}"]`)) {
+                resolve();
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+    
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+        .then(() => console.log('html2canvas loaded'))
+        .catch(error => console.error('Failed to load html2canvas:', error));
+    
+    // Add right-click context menu for elements
+    editorArea.addEventListener('contextmenu', function(e) {
+        if (e.target.classList.contains('text-box') || e.target.classList.contains('shape')) {
+            e.preventDefault();
+            
+            // Remove any existing context menus
+            const existingMenu = document.querySelector('.context-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+            
+            selectedElement = e.target;
+            
+            // Create context menu
+            const contextMenu = document.createElement('div');
+            contextMenu.className = 'context-menu';
+            contextMenu.style.position = 'absolute';
+            contextMenu.style.left = e.pageX + 'px';
+            contextMenu.style.top = e.pageY + 'px';
+            contextMenu.style.backgroundColor = 'var(--navbar-color)';
+            contextMenu.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+            contextMenu.style.borderRadius = '4px';
+            contextMenu.style.padding = '5px 0';
+            contextMenu.style.zIndex = '1000';
+            
+            // Menu options
+            const options = [
+                { text: 'Bring to Front', icon: 'fas fa-layer-group', action: bringToFront },
+                { text: 'Send to Back', icon: 'fas fa-layer-group', action: sendToBack },
+                { text: 'Duplicate', icon: 'fas fa-copy', action: duplicateElement },
+                { text: 'Delete', icon: 'fas fa-trash', action: deleteElement }
+            ];
+            
+            options.forEach(option => {
+                const item = document.createElement('div');
+                item.style.padding = '8px 12px';
+                item.style.cursor = 'pointer';
+                item.style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.gap = '8px';
+                item.style.color = 'var(--secondary-color)';
+                
+                item.innerHTML = `<i class="${option.icon}"></i> ${option.text}`;
+                
+                item.addEventListener('mouseenter', function() {
+                    item.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    item.style.backgroundColor = 'transparent';
+                });
+                
+                item.addEventListener('click', function() {
+                    option.action(selectedElement);
+                    contextMenu.remove();
+                });
+                
+                contextMenu.appendChild(item);
+            });
+            
+            document.body.appendChild(contextMenu);
+            
+            // Close menu when clicking elsewhere
+            function closeContextMenu(e) {
+                if (!contextMenu.contains(e.target)) {
+                    contextMenu.remove();
+                    document.removeEventListener('click', closeContextMenu);
+                }
+            }
+            
+            setTimeout(() => {
+                document.addEventListener('click', closeContextMenu);
+            }, 10);
+        }
+    });
+    
+    // Element manipulations for context menu
+    function bringToFront(element) {
+        element.style.zIndex = '100';
+    }
+    
+    function sendToBack(element) {
+        element.style.zIndex = '1';
+    }
+    
+    function duplicateElement(element) {
+        const clone = element.cloneNode(true);
+        
+        // Offset the position slightly
+        const offsetX = 20;
+        const offsetY = 20;
+        
+        if (element.style.left && element.style.top) {
+            const left = parseInt(element.style.left) + offsetX;
+            const top = parseInt(element.style.top) + offsetY;
+            clone.style.left = left + 'px';
+            clone.style.top = top + 'px';
+        }
+        
+        editorArea.appendChild(clone);
+        makeElementDraggable(clone);
+        
+        if (clone.classList.contains('shape') && !clone.classList.contains('sticker')) {
+            makeElementResizable(clone);
+        }
+    }
+    
+    function deleteElement(element) {
+        element.remove();
+        selectedElement = null;
+    }
+    
+    // Add a CSS rule for selected elements
+    const style = document.createElement('style');
+    style.textContent = `
+        .text-box.selected, .shape.selected {
+            outline: 2px dashed var(--primary-color);
+            outline-offset: 2px;
+        }
+    `;
+    document.head.appendChild(style);
+});
+        </script>
+    </body>
 </html>
