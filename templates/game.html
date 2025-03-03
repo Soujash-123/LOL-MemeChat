@@ -186,6 +186,7 @@
         }
 
         .Interface-container {
+            display: none;
             flex: 3;
             height: 70vh;
             background: rgba(15, 23, 42, 0.6);
@@ -275,6 +276,53 @@
             opacity: 0.7;
         }
 
+        .back-button {
+            display: none;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(96, 165, 250, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            align-items: center;
+            gap: 0.5rem;
+            width: fit-content;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(96, 165, 250, 0.3);
+        }
+
+        .orientation-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .orientation-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: rotate 2s infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            50% { transform: rotate(90deg); }
+            75% { transform: rotate(0deg); }
+            100% { transform: rotate(0deg); }
+        }
+
         @media (min-width: 768px) {
             .vertical-nav {
                 left: 0;
@@ -294,10 +342,16 @@
 
             .gameList-container {
                 width: 30%;
+                display: block !important;
             }
 
             .Interface-container {
                 width: 70%;
+                display: block !important;
+            }
+
+            .back-button {
+                display: none !important;
             }
         }
 
@@ -307,7 +361,13 @@
             }
 
             .Interface-container {
-                height: 50vh;
+                height: 70vh;
+            }
+        }
+
+        @media (max-width: 640px) and (orientation: portrait) {
+            .orientation-check .orientation-message {
+                display: flex;
             }
         }
     </style>
@@ -346,7 +406,7 @@
                 <span>Create</span>
             </a>
             <a href="/moodboard" class="nav-link">
-                <i class="fas fa-pallete"></i>
+                <i class="fas fa-palette"></i>
                 <span>Moodboard</span>
             </a>
             <a href="/list_connect" class="nav-link">
@@ -374,7 +434,21 @@
     <main class="main-content">
         <h1 class="text-3xl font-bold mb-6 text-center">Game Center</h1>
         
+        <div class="orientation-message">
+            <div class="orientation-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-2">Please Rotate Your Device</h2>
+            <p>For the best gaming experience, please rotate your device to landscape mode.</p>
+        </div>
+        
         <div class="game-container">
+            <!-- Back button for mobile -->
+            <div class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back to Games</span>
+            </div>
+            
             <!-- Game List Container -->
             <div class="gameList-container">
                 <h2 class="section-title">Available Games</h2>
@@ -506,9 +580,19 @@
         const burgerMenu = document.querySelector('.burger-menu');
         const nav = document.querySelector('.vertical-nav');
         const overlay = document.querySelector('.nav-overlay');
+        const backButton = document.querySelector('.back-button');
+        const gameListContainer = document.querySelector('.gameList-container');
+        const interfaceContainer = document.querySelector('.Interface-container');
 
         burgerMenu.addEventListener('click', toggleNav);
         overlay.addEventListener('click', closeNav);
+        
+        // Back button functionality for mobile
+        backButton.addEventListener('click', () => {
+            gameListContainer.style.display = 'block';
+            interfaceContainer.style.display = 'none';
+            backButton.style.display = 'none';
+        });
 
         function toggleNav() {
             burgerMenu.classList.toggle('open');
@@ -526,7 +610,12 @@
         window.addEventListener('resize', () => {
             if (window.innerWidth >= 768) {
                 closeNav();
+                // Reset display for desktop view
+                gameListContainer.style.display = 'block';
+                interfaceContainer.style.display = 'block';
+                backButton.style.display = 'none';
             }
+            checkOrientation();
         });
 
         // Game selection functionality
@@ -539,6 +628,13 @@
                 // Load the selected game
                 const gameName = this.getAttribute('data-game');
                 loadGame(gameName);
+                
+                // On mobile, show the game interface and hide the game list
+                if (window.innerWidth < 768) {
+                    gameListContainer.style.display = 'none';
+                    interfaceContainer.style.display = 'block';
+                    backButton.style.display = 'flex';
+                }
             });
         });
 
@@ -641,15 +737,46 @@
             });
         }
 
+        // Check device orientation
+        function checkOrientation() {
+            if (window.innerWidth <= 640 && window.innerHeight > window.innerWidth) {
+                // Portrait mode on small devices
+                document.body.classList.add('orientation-check');
+            } else {
+                document.body.classList.remove('orientation-check');
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             initializeTheme();
             setupThemeListeners();
+            
+            // Initial setup for mobile
+            if (window.innerWidth < 768) {
+                interfaceContainer.style.display = 'none';
+                gameListContainer.style.display = 'block';
+            } else {
+                // Desktop view
+                interfaceContainer.style.display = 'block';
+                gameListContainer.style.display = 'block';
+            }
+            
+            // Check orientation
+            checkOrientation();
+            
+            // Listen for orientation changes
+            window.addEventListener('orientationchange', checkOrientation);
         });
 
         // Logout function
         function logout() {
             window.location.href = '/logout';
+        }
+        
+        function navigateToProfile(event) {
+            event.preventDefault();
+            window.location.href = '/profile';
         }
     </script>
 </body>
