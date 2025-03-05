@@ -78,21 +78,74 @@
         /* Grid Layout Styles */
         .post-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            padding: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
         }
 
         .post-card {
             position: relative;
-            border-radius: 1rem;
-            overflow: hidden;
+            height: 360px;
+            perspective: 1000px;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
 
-        .post-card:hover {
-            transform: translateY(-5px);
+        .post-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .post-card:hover .post-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .post-card-front,
+        .post-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .post-card-front {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-card-back {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            transform: rotateY(180deg);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+            color: white;
         }
 
         /* Modal Styles */
@@ -113,9 +166,12 @@
             position: relative;
             width: 90%;
             max-width: 600px;
-            background: var(--background-color);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
             border-radius: 1rem;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
         }
 
         .modal.active {
@@ -482,6 +538,244 @@
     border-radius: 0.5rem; /* Optional: Add some rounded corners */
     margin: 0 auto; /* Center the image horizontally */
 }
+        /* New Stories Styling */
+        .stories-container {
+            position: relative;
+            margin-left: 240px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            margin-right: 1rem;
+        }
+
+        .stories-scroll-container {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 0.5rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .stories-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .story-item {
+            position: relative;
+            width: 120px;
+            height: 180px;
+            flex-shrink: 0;
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .story-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .story-preview {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-preview::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+        }
+
+        .story-username {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        /* New Post Grid Styling */
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .post-card {
+            position: relative;
+            height: 360px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .post-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .post-card:hover .post-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .post-card-front,
+        .post-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .post-card-front {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-card-back {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.8));
+            transform: rotateY(180deg);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .stories-container {
+                margin-left: 0;
+            }
+            .post-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        /* ...rest of existing styles... */
+
+    /* Enhanced Story Upload Button */
+    .add-story-button {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        width: 120px;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .add-story-button:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-5px);
+    }
+
+    .add-story-button i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+    }
+
+    /* Enhanced Glass Effect for Post Card Back */
+    .post-card-back {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+
+    /* Enhanced Modal */
+    .modal-content {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+
+    /* Fireflies Animation */
+    .firefly {
+        position: fixed;
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        filter: blur(1px);
+        animation: firefly-float 15s infinite;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    @keyframes firefly-float {
+        0%, 100% {
+            transform: translate(0, 0) scale(0.3);
+            opacity: 0;
+        }
+        25% {
+            transform: translate(100px, -100px) scale(1);
+            opacity: 0.8;
+        }
+        50% {
+            transform: translate(200px, 100px) scale(0.6);
+            opacity: 0.4;
+        }
+        75% {
+            transform: translate(-100px, 200px) scale(0.8);
+            opacity: 0.6;
+        }
+    }
+
+    /* Story Container Enhancement */
+    .stories-container {
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
     </style>
 </head>
 <body>
@@ -604,15 +898,11 @@
     <div class="stories-container glass-effect mx-4 mt-4 p-4 rounded-lg">
         <div class="stories-scroll-container flex space-x-4 overflow-x-auto pb-2">
             <!-- Add Story Button -->
-            <div class="story-item flex-shrink-0 cursor-pointer" onclick="openStoryUpload()">
-                <div class="story-ring bg-gradient-to-r from-blue-500 to-pink-500 p-0.5 rounded-full">
-                    <div class="story-preview bg-gray-800 rounded-full p-1">
-                        <div class="w-14 h-14 rounded-full flex items-center justify-center bg-gray-700">
-                            <i class="fas fa-plus text-white text-xl"></i>
-                        </div>
-                    </div>
+            <div class="story-item flex-shrink-0">
+                <div class="add-story-button" onclick="openStoryUpload()">
+                    <i class="fas fa-plus"></i>
+                    <span class="text-sm text-gray-400">Add Story</span>
                 </div>
-                <p class="text-center text-sm mt-1 text-gray-300">Add Story</p>
             </div>
             
             <!-- Stories will be dynamically inserted here -->
@@ -867,21 +1157,21 @@ function renderStories() {
     
     stories.forEach((story, index) => {
         const storyElement = document.createElement('div');
-        storyElement.className = 'story-item flex-shrink-0 cursor-pointer';
+        storyElement.className = 'story-item';
         storyElement.onclick = () => openStoryViewer(index);
         
         storyElement.innerHTML = `
-            <div class="story-ring p-0.5 rounded-full">
-                <div class="story-preview bg-gray-800 rounded-full p-1">
-                    <div class="w-14 h-14 rounded-full overflow-hidden">
-                        <video src="${story.file_url}" class="w-full h-full object-cover"></video>
-                    </div>
-                </div>
+            <div class="story-preview">
+                <video src="${story.file_url}" muted loop></video>
+                <div class="story-username">${story.username}</div>
             </div>
-            <p class="text-center text-sm mt-1 text-gray-300">${story.username}</p>
         `;
         
         storiesContainer.appendChild(storyElement);
+        
+        // Auto-play preview videos
+        const video = storyElement.querySelector('video');
+        video.play().catch(() => {});
     });
 }
 
@@ -1453,17 +1743,23 @@ document.addEventListener('keydown', (e) => {
         function renderPosts() {
             const grid = document.getElementById('post-grid');
             grid.innerHTML = posts.map((post, index) => `
-                <div class="post-card bg-gray-800 shadow-xl" onclick="openModal(${index})">
-                    <img src="${post.file_url}" alt="Post image" class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <div class="flex items-center justify-between">
-                            <div>
+                <div class="post-card" onclick="openModal(${index})">
+                    <div class="post-card-inner">
+                        <div class="post-card-front">
+                            <img src="${post.file_url}" alt="Post image" class="post-image">
+                            <div class="post-info">
                                 <h3 class="text-lg font-bold">${post.username}</h3>
-                                <p class="text-sm text-gray-400">${post.content || 'Content Creator'}</p>
                             </div>
-                            <div class="text-right">
-                                <div class="text-sm text-gray-400">
+                        </div>
+                        <div class="post-card-back">
+                            <h3 class="text-2xl font-bold mb-4">${post.username}</h3>
+                            <p class="text-gray-300 mb-4">${post.content || 'Content Creator'}</p>
+                            <div class="flex items-center gap-4">
+                                <div class="text-sm">
                                     <i class="fas fa-heart mr-1"></i>${post.likes || Math.floor(Math.random() * 500)}
+                                </div>
+                                <div class="text-sm">
+                                    <i class="fas fa-comment mr-1"></i>${post.comments || Math.floor(Math.random() * 50)}
                                 </div>
                             </div>
                         </div>
@@ -1655,6 +1951,20 @@ document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowRight') swipeRight();
                 if (e.key === 'Escape') closeModal();
             });
+
+            // Add Fireflies
+            function createFireflies(count) {
+                for (let i = 0; i < count; i++) {
+                    const firefly = document.createElement('div');
+                    firefly.className = 'firefly';
+                    firefly.style.left = `${Math.random() * 100}vw`;
+                    firefly.style.top = `${Math.random() * 100}vh`;
+                    firefly.style.animationDelay = `${Math.random() * 15}s`;
+                    document.body.appendChild(firefly);
+                }
+            }
+
+            createFireflies(15); // Add 15 fireflies
         });
     </script>
 </body>

@@ -421,6 +421,116 @@
                 margin-left: 240px;
             }
         }
+
+        /* Add these new responsive styles */
+        .action-buttons .btn {
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons .btn i {
+            margin-right: 8px;
+        }
+
+        /* Mobile bottom toolbar */
+        .mobile-editor-toolbar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--navbar-color);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+        }
+
+        .mobile-editor-toolbar .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+            justify-items: center;
+        }
+
+        .tool-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tool-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tool-button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .action-buttons .btn span {
+                display: none;
+            }
+
+            .action-buttons .btn {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .action-buttons .btn i {
+                margin: 0;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .editor-panel {
+                display: none;
+            }
+
+            .mobile-editor-toolbar {
+                display: block;
+            }
+
+            .playground {
+                padding-bottom: 80px;
+            }
+
+            .action-buttons {
+                position: fixed;
+                top: auto;
+                bottom: 80px;
+                right: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                z-index: 99;
+            }
+
+            .action-buttons .btn {
+                width: 45px;
+                height: 45px;
+                margin: 0;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            }
+
+            .action-buttons .btn i {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -602,25 +712,26 @@
             
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <div>
-                    <button id="clearBtn" class="btn btn-secondary">
-                        <i class="fas fa-trash"></i> Clear
-                    </button>
-                </div>
-                <div class="flex gap-3">
-                    <button id="saveBtn" class="btn btn-primary" onclick="saveMoodboard()">
-                        <i class="fas fa-save"></i> Save
-                    </button>
-                    <button id="downloadBtn" class="btn btn-primary">
-                        <i class="fas fa-download"></i> Download
-                    </button>
-                    <button id="shareBtn" class="btn btn-primary" onclick="shareToFeed()">
-                        <i class="fas fa-share-alt"></i> Share to Feed
-                    </button>
-                    <button id="aiGenBtn" class="btn btn-primary" onclick="goToCreate()">
-                        <i class="fas fa-magic"></i> Generate with AI
-                    </button>
-                </div>
+                <button id="clearBtn" class="btn btn-secondary">
+                    <i class="fas fa-trash"></i>
+                    <span>Clear</span>
+                </button>
+                <button id="saveBtn" class="btn btn-primary" onclick="saveMoodboard()">
+                    <i class="fas fa-save"></i>
+                    <span>Save</span>
+                </button>
+                <button id="downloadBtn" class="btn btn-primary">
+                    <i class="fas fa-download"></i>
+                    <span>Download</span>
+                </button>
+                <button id="shareBtn" class="btn btn-primary" onclick="shareToFeed()">
+                    <i class="fas fa-share-alt"></i>
+                    <span>Share to Feed</span>
+                </button>
+                <button id="aiGenBtn" class="btn btn-primary" onclick="goToCreate()">
+                    <i class="fas fa-magic"></i>
+                    <span>Generate with AI</span>
+                </button>
             </div>
             
             <!-- Editor Area -->
@@ -636,6 +747,30 @@
             </div>
         </div>
     </main>
+
+    <!-- Add this new mobile editor toolbar -->
+    <div class="mobile-editor-toolbar">
+        <div class="tools-grid">
+            <div class="tool-button" onclick="addTextBox()">
+                <i class="fas fa-font"></i>
+            </div>
+            <div class="tool-button" onclick="addShape('rectangle')">
+                <i class="fas fa-square"></i>
+            </div>
+            <div class="tool-button" onclick="addShape('circle')">
+                <i class="fas fa-circle"></i>
+            </div>
+            <div class="tool-button" onclick="addShape('triangle')">
+                <i class="fas fa-play"></i>
+            </div>
+            <div class="tool-button" onclick="addSticker()">
+                <i class="fas fa-smile"></i>
+            </div>
+            <div class="tool-button" onclick="addImage()">
+                <i class="fas fa-image"></i>
+            </div>
+        </div>
+    </div>
 
     <button class="theme-button">
         <i class="fas fa-paint-brush"></i>
@@ -1449,6 +1584,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+
+    // Add mobile toolbar button active state handling
+    const toolButtons = document.querySelectorAll('.tool-button');
+    toolButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            toolButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
 });
         </script>
     </body>
