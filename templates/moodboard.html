@@ -1362,17 +1362,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Navigate to Profile 
-    function navigateToProfile(event) {
-        event.preventDefault();
-        window.location.href = '/profile';
-    }
+    async function navigateToProfile(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch('/user/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const data = await response.json();
+                window.location.href = `/${data.username}`;
+            } catch (error) {
+                console.error('Error navigating to profile:', error);
+            }
+        }
     
     // Logout Function
-    function logout() {
-        if (confirm('Are you sure you want to logout?')) {
-            window.location.href = '/logout';
+    async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to logout');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                alert('Failed to logout');
+            }
         }
-    }
     
     // Add Resizing Functionality for Elements
     function makeElementResizable(element) {

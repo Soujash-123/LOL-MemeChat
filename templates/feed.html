@@ -171,42 +171,21 @@
             max-width: 420px;
             height: 85vh;
             position: relative;
-            overflow: visible;
-            perspective: 1000px;
-            transform-style: preserve-3d;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .short-item {
             position: absolute;
             width: 100%;
             height: 100%;
-            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-            transform: translateZ(0) rotateX(0) rotateY(0);
-            backface-visibility: hidden;
-        }
-
-        .short-item.slide-left {
-            transform: translateX(-100%) rotateY(-30deg);
-            opacity: 0;
-        }
-
-        .short-item.slide-right {
-            transform: translateX(100%) rotateY(30deg);
-            opacity: 0;
-        }
-
-        .short-item.slide-up {
-            transform: translateY(-100%) rotateX(30deg);
-            opacity: 0;
-        }
-
-        .short-item.slide-down {
-            transform: translateY(100%) rotateX(-30deg);
-            opacity: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
         }
 
         .short-video {
@@ -214,7 +193,6 @@
             height: 100%;
             object-fit: cover;
             border-radius: 24px;
-            transform: scale(1.02); /* Slight scale to prevent white edges during transform */
         }
 
         .short-info {
@@ -227,20 +205,19 @@
             color: white;
             border-bottom-left-radius: 24px;
             border-bottom-right-radius: 24px;
-            transform: translateY(100%) translateZ(20px);
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            backdrop-filter: blur(8px);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
         }
 
         .short-item:hover .short-info {
-            transform: translateY(0) translateZ(20px);
+            transform: translateY(0);
         }
 
         .action-buttons {
             position: absolute;
             right: 20px;
             top: 50%;
-            transform: translateY(-50%) translateZ(30px);
+            transform: translateY(-50%);
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
@@ -252,23 +229,22 @@
             height: 50px;
             border-radius: 50%;
             background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.3s;
             border: 2px solid rgba(255,255,255,0.1);
             font-size: 1.2rem;
-            transform: scale(1) translateZ(0);
         }
 
         .action-button:hover {
             background: var(--primary-color);
-            transform: scale(1.2) translateZ(30px);
+            transform: scale(1.1);
             border-color: var(--primary-color);
-            box-shadow: 0 0 30px rgba(96, 165, 250, 0.4);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
         }
 
         .play-indicator {
@@ -340,7 +316,6 @@
             border-radius: 2px;
             overflow: hidden;
             z-index: 20;
-            transform: translateZ(25px);
         }
 
         .progress-bar {
@@ -348,7 +323,6 @@
             background: var(--primary-color);
             width: 0;
             transition: width 0.3s linear;
-            box-shadow: 0 0 20px var(--primary-color);
         }
 
         .user-badge {
@@ -356,7 +330,7 @@
             top: 40px;
             left: 20px;
             background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(5px);
             padding: 8px 16px;
             border-radius: 20px;
             display: flex;
@@ -364,14 +338,12 @@
             gap: 8px;
             z-index: 20;
             border: 1px solid rgba(255,255,255,0.1);
-            transform: translateZ(25px);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .user-badge:hover {
-            transform: translateZ(40px) scale(1.1);
-            background: var(--primary-color);
-            border-color: var(--primary-color);
+        .user-badge img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
         }
 
         @media (min-width: 768px) {

@@ -769,14 +769,30 @@
             window.addEventListener('orientationchange', checkOrientation);
         });
 
-        // Logout function
-        function logout() {
-            window.location.href = '/logout';
+        async function logout() {
+            try {
+                const response = await fetch('/logout');
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to logout');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+                alert('Failed to logout');
+            }
         }
         
-        function navigateToProfile(event) {
+        async function navigateToProfile(event) {
             event.preventDefault();
-            window.location.href = '/profile';
+            try {
+                const response = await fetch('/user/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const data = await response.json();
+                window.location.href = `/${data.username}`;
+            } catch (error) {
+                console.error('Error navigating to profile:', error);
+            }
         }
     </script>
 </body>
