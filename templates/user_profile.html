@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L❤L - User Profile</title>
+    <title>{{ user.username }}'s Profile</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -229,9 +229,52 @@
         .h-75 { height: 75%; }
         .h-80 { height: 80%; }
         .h-90 { height: 90%; }
+
+        .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .profile-header {
+            background: linear-gradient(to right, #4f46e5, #60a5fa);
+            height: 200px;
+            position: relative;
+        }
+
+        .profile-picture {
+            position: relative;
+            margin-top: -75px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-picture-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .profile-picture:hover .profile-picture-overlay {
+            opacity: 1;
+        }
+
+        .edit-button {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white min-h-screen">
     <div class="burger-menu">
         <span></span>
         <span></span>
@@ -344,120 +387,122 @@
     </div>
 
     <main class="main-content">
-        <!-- Enhanced Profile Section with Statistics -->
-        <div class="glass-card p-6 mb-8">
-            <div class="flex flex-col md:flex-row md:items-center space-y-6 md:space-y-0 md:space-x-6">
-                <!-- User Avatar and Basic Info -->
-                <div class="flex items-center space-x-6">
-                    <div class="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-4xl text-white"></i>
-                    </div>
-                    <div class="flex-grow">
-                        <h2 id="viewed-username" class="text-3xl font-bold mb-2">{{ user.username }}</h2>
-                        <div id="viewed-profile-details" class="text-gray-300">
-                            <p><i class="fas fa-user-tag mr-2"></i>{{ user.role }}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- User Statistics -->
-                <div class="flex-grow">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Posts Stat Card -->
-                        <div class="stats-card bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl p-4 transform transition-transform hover:scale-105 hover:rotate-1">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-sm uppercase tracking-wider text-blue-100">Posts</h3>
-                                    <p class="text-3xl font-bold text-white">{{ stats.total_posts }}</p>
-                                </div>
-                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-image text-xl text-white"></i>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Likes Stat Card -->
-                        <div class="stats-card bg-gradient-to-br from-pink-600 to-pink-400 rounded-xl p-4 transform transition-transform hover:scale-105 hover:rotate-1">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-sm uppercase tracking-wider text-pink-100">Likes</h3>
-                                    <p class="text-3xl font-bold text-white">{{ stats.total_likes }}</p>
-                                </div>
-                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-heart text-xl text-white"></i>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Comments Stat Card -->
-                        <div class="stats-card bg-gradient-to-br from-purple-600 to-purple-400 rounded-xl p-4 transform transition-transform hover:scale-105 hover:rotate-1">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-sm uppercase tracking-wider text-purple-100">Comments</h3>
-                                    <p class="text-3xl font-bold text-white">{{ stats.total_comments }}</p>
-                                </div>
-                                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-comment text-xl text-white"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Activity Chart -->
-                    <div class="mt-4 h-16 bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden">
-                        <div class="flex items-end h-full w-full px-2">
-                            <!-- Activity bars - would be dynamically generated based on user activity -->
-                            <div class="activity-bar h-30 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-50 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-70 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-40 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-80 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-60 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-90 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-30 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-50 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-40 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-60 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                            <div class="activity-bar h-75 w-6 bg-blue-500 mx-1 rounded-t-sm"></div>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-1 text-center">Activity (last 12 days)</p>
-                </div>
-            </div>
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <button onclick="window.history.back()" class="absolute top-4 left-4 text-white p-2 rounded-full bg-black/30 hover:bg-black/50">
+                <i class="fas fa-arrow-left"></i>
+            </button>
         </div>
 
-        <!-- Media Grid -->
-        <div class="media-grid">
-            {% for post in posts %}
-            <div class="media-card">
-                <div class="media-content">
-                    {% if post.type == 'image' %}
-                    <img src="{{ post.file_url }}" alt="Post image" loading="lazy">
-                    {% elif post.type == 'video' %}
-                    <video controls preload="none" poster="{{ post.thumbnail_url }}">
-                        <source src="{{ post.file_url }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+        <!-- Profile Content -->
+        <div class="container mx-auto px-4 pb-8">
+            <div class="relative">
+                <!-- Profile Picture -->
+                <div class="profile-picture w-40 h-40 mx-auto rounded-full overflow-hidden bg-gray-800">
+                    <img id="profileImage" src="{{ user.profile_picture if user.profile_picture else '/static/default-avatar.png' }}" 
+                         alt="Profile Picture" class="w-full h-full object-cover">
+                    {% if session.username == user.username %}
+                    <div class="profile-picture-overlay rounded-full" onclick="document.getElementById('profilePicInput').click()">
+                        <i class="fas fa-camera text-2xl"></i>
+                    </div>
+                    <input type="file" id="profilePicInput" class="hidden" accept="image/*" onchange="handleProfilePicChange(event)">
                     {% endif %}
                 </div>
-                <div class="p-4">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-400">{{ post.created_at|datetime }}</span>
-                        <div class="flex space-x-4">
-                            <button class="text-gray-300 hover:text-pink-500">
-                                <i class="fas fa-heart"></i> {{ post.likes }}
-                            </button>
-                            <button class="text-gray-300 hover:text-pink-500">
-                                <i class="fas fa-comment"></i> {{ post.comments }}
-                            </button>
-                        </div>
+
+                <!-- Edit Profile Button -->
+                {% if session.username == user.username %}
+                <button onclick="toggleEditMode()" class="edit-button px-4 py-2 rounded-full text-white hover:bg-white/20">
+                    <i class="fas fa-edit mr-2"></i>Edit Profile
+                </button>
+                {% endif %}
+
+                <!-- Profile Info -->
+                <div class="mt-6 text-center">
+                    <div id="profileView">
+                        <h1 class="text-3xl font-bold mb-2">{{ user.username }}</h1>
+                        <p class="text-gray-400 mb-4">{{ user.role }}</p>
+                        {% if user.instrument %}
+                        <p class="text-blue-400"><i class="fas fa-music mr-2"></i>{{ user.instrument }}</p>
+                        {% endif %}
                     </div>
-                    {% if post.content %}
-                    <p class="mt-2 text-gray-200">{{ post.content }}</p>
-                    {% endif %}
+
+                    <!-- Edit Form (Initially Hidden) -->
+                    <div id="profileEdit" class="hidden max-w-md mx-auto">
+                        <form id="profileForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Username</label>
+                                <input type="text" id="username" name="username" 
+                                       value="{{ user.username }}" 
+                                       class="w-full bg-gray-800 rounded px-4 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Email</label>
+                                <input type="email" id="email" name="email" 
+                                       value="{{ user.email }}" 
+                                       class="w-full bg-gray-800 rounded px-4 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Profile Picture</label>
+                                <div class="mt-1 flex items-center">
+                                    <img id="profile-preview" src="{{ user.profile_picture or '/static/default-avatar.png' }}" 
+                                         class="w-20 h-20 rounded-full object-cover">
+                                    <input type="file" id="profile-picture" name="profile_picture" 
+                                           class="hidden" accept="image/*">
+                                    <button type="button" onclick="document.getElementById('profile-picture').click()" 
+                                            class="ml-4 bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-600">
+                                        Change Picture
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex space-x-4">
+                                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700">
+                                    Save Changes
+                                </button>
+                                <button type="button" onclick="toggleEditMode()" 
+                                        class="bg-gray-700 text-white px-6 py-2 rounded-full hover:bg-gray-600">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            {% endfor %}
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-4 mt-8 max-w-2xl mx-auto">
+                <div class="glass-effect rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold">{{ stats.total_posts }}</div>
+                    <div class="text-gray-400">Posts</div>
+                </div>
+                <div class="glass-effect rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold">{{ stats.total_likes }}</div>
+                    <div class="text-gray-400">Likes</div>
+                </div>
+                <div class="glass-effect rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold">{{ stats.total_comments }}</div>
+                    <div class="text-gray-400">Comments</div>
+                </div>
+            </div>
+
+            <!-- Posts Grid -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for post in posts %}
+                <div class="glass-effect rounded-lg overflow-hidden">
+                    {% if post.type == 'image' %}
+                    <img src="{{ post.file_url }}" alt="Post" class="w-full h-48 object-cover">
+                    {% elif post.type == 'video' %}
+                    <video src="{{ post.file_url }}" class="w-full h-48 object-cover" controls></video>
+                    {% endif %}
+                    <div class="p-4">
+                        <p class="text-gray-300">{{ post.content }}</p>
+                        <div class="mt-2 flex justify-between text-sm text-gray-400">
+                            <span><i class="fas fa-heart mr-1"></i>{{ post.likes }}</span>
+                            <span><i class="fas fa-comment mr-1"></i>{{ post.comment_count }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
     </main>
 
@@ -778,6 +823,93 @@
             setupThemeListeners();
             window.addEventListener('scroll', loadMoreMedia);
             initializeActivityBars();
+        });
+
+        function toggleEditMode() {
+            const viewMode = document.getElementById('profileView');
+            const editMode = document.getElementById('profileEdit');
+            viewMode.classList.toggle('hidden');
+            editMode.classList.toggle('hidden');
+        }
+
+        // Show/hide instrument field based on role selection
+        document.getElementById('role')?.addEventListener('change', function(e) {
+            const instrumentField = document.getElementById('instrumentField');
+            instrumentField.classList.toggle('hidden', e.target.value !== 'musician');
+        });
+
+        async function handleProfilePicChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('profile_picture', file);
+
+            try {
+                const response = await fetch('/profile/update', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    // Update the profile picture immediately
+                    document.getElementById('profileImage').src = data.updates.profile_picture;
+                } else {
+                    alert(data.error || 'Failed to update profile picture');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to update profile picture');
+            }
+        }
+
+        document.getElementById('profile-picture')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('profileForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('username', document.getElementById('username').value);
+            formData.append('email', document.getElementById('email').value);
+            
+            const profilePicture = document.getElementById('profile-picture').files[0];
+            if (profilePicture) {
+                formData.append('profile_picture', profilePicture);
+            }
+
+            try {
+                const response = await fetch('/profile/update', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    // Update the UI immediately
+                    if (data.updates.username) {
+                        document.querySelector('#profileView h1').textContent = data.updates.username;
+                    }
+                    if (data.updates.profile_picture) {
+                        document.getElementById('profileImage').src = data.updates.profile_picture;
+                    }
+                    toggleEditMode();
+                } else {
+                    alert(data.error || 'Failed to update profile');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to update profile');
+            }
         });
     </script>
 </body>

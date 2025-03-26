@@ -531,6 +531,59 @@
                 font-size: 1rem;
             }
         }
+
+        .tool-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .tool-modal.active {
+            display: block;
+        }
+
+        .tool-modal-content {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--navbar-color);
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            padding-bottom: 80px;
+        }
     </style>
 </head>
 <body>
@@ -748,26 +801,163 @@
         </div>
     </main>
 
-    <!-- Add this new mobile editor toolbar -->
+    <!-- Replace the mobile-editor-toolbar div with this new version -->
     <div class="mobile-editor-toolbar">
         <div class="tools-grid">
-            <div class="tool-button" onclick="addTextBox()">
+            <div class="tool-button" onclick="openToolModal('upload')">
+                <i class="fas fa-upload"></i>
+            </div>
+            <div class="tool-button" onclick="openToolModal('templates')">
+                <i class="fas fa-images"></i>
+            </div>
+            <div class="tool-button" onclick="openToolModal('components')">
+                <i class="fas fa-shapes"></i>
+            </div>
+            <div class="tool-button" onclick="openToolModal('text')">
                 <i class="fas fa-font"></i>
             </div>
-            <div class="tool-button" onclick="addShape('rectangle')">
-                <i class="fas fa-square"></i>
+            <div class="tool-button" onclick="openToolModal('shape')">
+                <i class="fas fa-paint-brush"></i>
             </div>
-            <div class="tool-button" onclick="addShape('circle')">
-                <i class="fas fa-circle"></i>
+        </div>
+    </div>
+
+    <!-- Add tool modals -->
+    <div class="tool-modal" id="uploadModal">
+        <div class="tool-modal-content">
+            <div class="modal-header">
+                <h3>Upload</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
             </div>
-            <div class="tool-button" onclick="addShape('triangle')">
-                <i class="fas fa-play"></i>
+            <div class="modal-body">
+                <div class="component-section">
+                    <div class="control-group">
+                        <label for="mobileImageUpload">Upload Image:</label>
+                        <input type="file" id="mobileImageUpload" accept="image/*" class="btn btn-secondary w-full">
+                    </div>
+                </div>
             </div>
-            <div class="tool-button" onclick="addSticker()">
-                <i class="fas fa-smile"></i>
+        </div>
+    </div>
+
+    <div class="tool-modal" id="templatesModal">
+        <div class="tool-modal-content">
+            <div class="modal-header">
+                <h3>Templates</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
             </div>
-            <div class="tool-button" onclick="addImage()">
-                <i class="fas fa-image"></i>
+            <div class="modal-body">
+                <div id="mobileTemplatesContainer" class="templates-grid">
+                    <!-- Templates will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tool-modal" id="componentsModal">
+        <div class="tool-modal-content">
+            <div class="modal-header">
+                <h3>Components</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="components-grid">
+                    <div class="component-item" onclick="addShape('rectangle')">
+                        <i class="fas fa-square"></i>
+                        <span>Rectangle</span>
+                    </div>
+                    <div class="component-item" onclick="addShape('circle')">
+                        <i class="fas fa-circle"></i>
+                        <span>Circle</span>
+                    </div>
+                    <div class="component-item" onclick="addShape('triangle')">
+                        <i class="fas fa-play"></i>
+                        <span>Triangle</span>
+                    </div>
+                    <div class="component-item" onclick="addTextBox()">
+                        <i class="fas fa-font"></i>
+                        <span>Text</span>
+                    </div>
+                    <div class="component-item" onclick="addImage()">
+                        <i class="fas fa-image"></i>
+                        <span>Image</span>
+                    </div>
+                    <div class="component-item" onclick="addSticker()">
+                        <i class="fas fa-smile"></i>
+                        <span>Sticker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tool-modal" id="textModal">
+        <div class="tool-modal-content">
+            <div class="modal-header">
+                <h3>Text Formatting</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Copy the text formatting controls here -->
+                <div class="editor-controls">
+                    <div class="control-group">
+                        <label for="fontFamily">Font Family:</label>
+                        <select id="fontFamily">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="'Courier New', monospace">Courier New</option>
+                            <option value="Impact, fantasy">Impact</option>
+                            <option value="'Dancing Script', cursive">Dancing Script</option>
+                            <option value="'Pacifico', cursive">Pacifico</option>
+                            <option value="'Playfair Display', serif">Playfair Display</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="fontSize">Font Size:</label>
+                        <input type="number" id="fontSize" min="8" max="72" value="16">
+                    </div>
+                    <div class="control-group">
+                        <label for="fontColor">Font Color:</label>
+                        <input type="color" id="fontColor" value="#000000">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-options">
+                            <label>
+                                <input type="checkbox" id="fontBold">
+                                <span class="ml-2">Bold</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="fontItalic">
+                                <span class="ml-2">Italic</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tool-modal" id="shapeModal">
+        <div class="tool-modal-content">
+            <div class="modal-header">
+                <h3>Shape Formatting</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Copy the shape formatting controls here -->
+                <div class="editor-controls">
+                    <div class="control-group">
+                        <label for="shapeColor">Color:</label>
+                        <input type="color" id="shapeColor" value="#ffffff">
+                    </div>
+                    <div class="control-group">
+                        <label for="shapeOpacity">Opacity:</label>
+                        <input type="range" id="shapeOpacity" min="0" max="100" value="70">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1607,6 +1797,86 @@ document.addEventListener('DOMContentLoaded', function() {
             toolButtons.forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
         });
+    });
+
+    function openToolModal(modalType) {
+        const modal = document.getElementById(`${modalType}Modal`);
+        modal.classList.add('active');
+
+        // If it's the templates modal, refresh the templates
+        if (modalType === 'templates') {
+            renderMobileTemplates();
+        }
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeToolModals();
+            }
+        });
+    }
+
+    function closeToolModals() {
+        document.querySelectorAll('.tool-modal').forEach(modal => {
+            modal.classList.remove('active');
+        });
+    }
+
+    // Add click handlers for close buttons
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', closeToolModals);
+    });
+
+    // Function to render templates in mobile view
+    function renderMobileTemplates() {
+        const templates = getTemplates();
+        const container = document.getElementById('mobileTemplatesContainer');
+        
+        if (templates.length === 0) {
+            container.innerHTML = `
+                <div class="empty-templates text-center py-4 text-gray-400 italic">
+                    No templates yet. Upload an image to get started.
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = '';
+        templates.forEach(template => {
+            const templateEl = document.createElement('div');
+            templateEl.className = 'template-item';
+            templateEl.innerHTML = `
+                <img src="${template.imageUrl}" alt="Template">
+                <div class="overlay">
+                    <button class="btn btn-primary btn-sm use-template">
+                        <i class="fas fa-edit"></i> Use
+                    </button>
+                </div>
+            `;
+            
+            templateEl.querySelector('.use-template').addEventListener('click', (e) => {
+                e.stopPropagation();
+                loadImageToCanvas(template.imageUrl);
+                closeToolModals();
+            });
+            
+            container.appendChild(templateEl);
+        });
+    }
+
+    // Handle mobile image upload
+    document.getElementById('mobileImageUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.type.match('image.*')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                loadImageToCanvas(imageUrl);
+                saveImageToTemplates(imageUrl);
+                closeToolModals();
+            };
+            reader.readAsDataURL(file);
+        }
     });
 });
         </script>

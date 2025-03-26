@@ -147,6 +147,7 @@ def dashboard():
         ))
 
         user_list = []
+        current_username = session.get('username')  # Get current user's username
         for user in all_users:
             key_doc = keys_collection.find_one({"user_id": user['user_id']})
             if key_doc:
@@ -159,7 +160,7 @@ def dashboard():
                     user_info['instrument'] = decrypt_data(user['instrument'], fernet)
                 user_list.append(user_info)
 
-        return render_template('dashboard.html', users=user_list)
+        return render_template('dashboard.html', users=user_list, current_username=current_username)
     except Exception as e:
         logger.error(f"Error fetching user list: {str(e)}")
         return render_template('dashboard.html', users=[])
@@ -1511,6 +1512,78 @@ def manage_profile():
         except Exception as e:
             logger.error(f"Error updating user profile: {str(e)}")
             return jsonify({"error": "An error occurred updating user profile"}), 500
+
+@app.route('/profile/update', methods=['POST'])
+@login_required
+def update_profile():
+    try:
+        user_id = session.get('user_id')
+        user = users_collection.find_one({"user_id": user_id})
+        key_doc = keys_collection.find_one({"user_id": user_id})
+        
+        if not user or not key_doc:
+            return jsonify({"error": "User not found"}), 404
+
+        fernet = get_fernet(key_doc['key'])
+        updates = {}
+
+        # Handle file upload
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename:
+                # Delete old profile picture from Cloudinary if it exists
+                if 'profile_picture_id' in user:
+                    try:
+                        cloudinary.uploader.destroy(user['profile_picture_id'])
+                    except Exception as e:
+                        logger.error(f"Error deleting old profile picture: {e}")
+
+                # Upload new picture to Cloudinary
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    folder="profile_pictures",
+                    resource_type="auto"
+                )
+                updates['profile_picture'] = upload_result['secure_url']
+                updates['profile_picture_id'] = upload_result['public_id']
+
+        # Handle other profile updates
+        form_data = request.form
+        if form_data.get('username') and form_data['username'] != user['username']:
+            # Check if username is taken
+            existing = users_collection.find_one({"username": form_data['username']})
+            if existing and existing['user_id'] != user_id:
+                return jsonify({"error": "Username already taken"}), 400
+            updates['username'] = form_data['username']
+            session['username'] = form_data['username']
+
+        if form_data.get('email'):
+            # Only update if email is different from current
+            current_email = decrypt_data(user['email'], fernet) if 'email' in user else None
+            if current_email != form_data['email']:
+                updates['email'] = encrypt_data(form_data['email'], fernet)
+
+        if updates:
+            result = users_collection.update_one(
+                {"user_id": user_id},
+                {"$set": updates}
+            )
+            
+            if result.modified_count == 0 and len(updates) > 0:
+                return jsonify({"error": "Failed to update profile"}), 500
+
+        return jsonify({
+            "message": "Profile updated successfully",
+            "updates": {
+                'username': updates.get('username'),
+                'profile_picture': updates.get('profile_picture')
+            }
+        }), 200
+
+    except Exception as e:
+        logger.error(f"Error updating profile: {str(e)}")
+        return jsonify({"error": "An error occurred updating profile"}), 500
+
 @app.template_filter('datetime')
 def format_datetime(value, format='%Y-%m-%d %H:%M:%S'):
     if isinstance(value, str):
@@ -1574,11 +1647,12 @@ def user_profile(username):
         
         fernet = Fernet(key_doc["key"])
         
-        # Decrypt sensitive fields
+        # Decrypt sensitive fields and include profile_picture
         decrypted_data = {
             "username": user_data["username"],
             "role": fernet.decrypt(user_data["role"].encode()).decode(),
             "instrument": fernet.decrypt(user_data["instrument"].encode()).decode() if "instrument" in user_data else None,
+            "profile_picture": user_data.get("profile_picture", None)  # Add this line to get profile picture URL
         }
         
         # Fetch user's posts and format them properly
@@ -1610,7 +1684,8 @@ def user_profile(username):
             user=decrypted_data,
             stats=stats,
             posts=formatted_posts,
-            recent_activities=[]  # Fetch recent activities if implemented
+            recent_activities=[],
+            session=session  # Make sure you're passing the session to the template
         )
 
     except Exception as e:
