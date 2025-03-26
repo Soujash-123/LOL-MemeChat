@@ -12,7 +12,7 @@
             --card-bg: #1a1a1a;
             --text-primary: #ffffff;
             --text-secondary: #b3b3b3;
-            --accent: #FF1493;
+            --accent: #1E90FF;  /* Changed to blue */
             --hover-bg: #282828;
             --nav-bg: #1a202c;
             --nav-border: #2d3748;
@@ -29,37 +29,29 @@
             background-color: var(--background);
             color: var(--text-primary);
             display: flex;
-            flex-direction: column;
             min-height: 100vh;
         }
         
-        /* Top Navigation Bar Styles */
-        .top-nav {
+        /* Vertical Navigation Bar Styles */
+        .side-nav {
             background-color: var(--nav-bg);
+            width: 240px;
+            height: 100vh;
             position: fixed;
-            width: 100%;
-            top: 0;
             left: 0;
+            top: 0;
             z-index: 50;
-            border-bottom: 1px solid var(--nav-border);
-        }
-        
-        .nav-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .nav-content {
+            border-right: 1px solid var(--nav-border);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 4rem;
+            flex-direction: column;
+            overflow-y: auto;
         }
         
         .logo-container {
             display: flex;
             align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--nav-border);
         }
         
         .top-logo {
@@ -70,7 +62,7 @@
         .heart-logo {
             animation: heartbeat 1.5s infinite;
             display: inline-block;
-            color: #FF1493;
+            color: #1E90FF;  /* Changed to blue */
         }
         
         @keyframes heartbeat {
@@ -78,54 +70,81 @@
             50% { transform: scale(1.3); }
         }
         
-        .mobile-buttons {
-            display: none;
-        }
-        
-        .desktop-nav {
+        .nav-links {
             display: flex;
-            align-items: center;
-            gap: 1.5rem;
+            flex-direction: column;
+            padding: 1rem 0;
         }
         
         .nav-link {
-            color: #CBD5E0;
+            color: var(--text-secondary);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: color 0.2s;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link i {
+            width: 1.5rem;
+            text-align: center;
+            margin-right: 0.75rem;
         }
         
         .nav-link:hover {
-            color: #FF1493;
+            color: var(--text-primary);
+            background-color: rgba(30, 144, 255, 0.1);  /* Light blue background */
+            border-left: 4px solid var(--accent);
+        }
+
+        .nav-link.active {
+            color: var(--text-primary);
+            background-color: rgba(30, 144, 255, 0.1);
+            border-left: 4px solid var(--accent);
         }
         
-        .mobile-nav {
+        .nav-category {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1rem 1.5rem 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .nav-footer {
+            margin-top: auto;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--nav-border);
+        }
+        
+        /* Mobile menu button - visible on small screens */
+        .mobile-toggle {
             display: none;
             position: fixed;
-            top: 4rem;
-            left: 0;
-            right: 0;
-            background-color: var(--nav-bg);
-            padding: 1rem;
-            z-index: 40;
-            flex-direction: column;
-            gap: 1rem;
+            top: 1rem;
+            left: 1rem;
+            z-index: 100;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
         
         /* Main Content Layout */
         .content-wrapper {
-            display: flex;
             flex: 1;
-            margin-top: 4rem;
+            margin-left: 240px;  /* Same as nav width */
         }
         
         .main-content {
-            flex: 1;
             padding: 24px 32px;
             overflow-y: auto;
-            margin-left: 0; /* Remove sidebar margin */
         }
         
         .search-container {
@@ -156,7 +175,7 @@
         .search-btn {
             background-color: var(--accent);
             border: none;
-            color: black;
+            color: white;
             padding: 0 20px;
             cursor: pointer;
             font-weight: 600;
@@ -208,7 +227,7 @@
             bottom: 8px;
             right: 8px;
             background-color: var(--accent);
-            color: black;
+            color: white;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -279,6 +298,7 @@
             display: flex;
             align-items: center;
             z-index: 100;
+            margin-left: 240px;  /* Match sidebar width */
         }
         
         .now-playing {
@@ -417,20 +437,24 @@
         
         /* Responsive Styles */
         @media (max-width: 768px) {
-            .desktop-nav {
-                display: none;
+            .side-nav {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
             }
             
-            .mobile-buttons {
+            .side-nav.show {
+                transform: translateX(0);
+            }
+            
+            .mobile-toggle {
                 display: flex;
-                gap: 1rem;
             }
             
-            .mobile-nav.show {
-                display: flex;
+            .content-wrapper {
+                margin-left: 0;
             }
             
-            .main-content {
+            .audio-player {
                 margin-left: 0;
             }
             
@@ -447,147 +471,80 @@
                 width: 40%;
             }
         }
-        @keyframes heartbeat {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.3); }
-    }
-    
-    .heart-logo {
-        animation: heartbeat 1.5s infinite;
-        display: inline-block;
-        color: #ec4899;
-    }
 
-    .glass-card {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-link {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        transition: all 0.2s ease;
-        position: relative;
-    }
-    
-    .nav-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .nav-link i {
-        width: 1.5rem;
-        text-align: center;
-    }
-    
-    .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: linear-gradient(135deg, #ec4899, #f43f5e);
-        transition: width 0.3s ease;
-    }
-    
-    .nav-link:hover::after {
-        width: 100%;
-    }
-
-    @media (max-width: 768px) {
-        .nav-link span {
-            display: none;
+        .search-input.error {
+            animation: shake 0.5s;
+            border-color: red;
         }
         
-        .nav-link {
-            padding: 0.5rem;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
-    }
     </style>
 </head>
 <body>
-    <!-- Top Navigation Bar (from chat.html) -->
-    <nav class="top-nav">
-        <div class="nav-container">
-            <div class="nav-content">
-                <div class="logo-container">
-                    <h1 class="top-logo">
-                        L<span class="heart-logo">❤</span>L
-                    </h1>
-                    <!-- Mobile menu buttons -->
-                    <div class="mobile-buttons">
-                        <button id="mobile-menu-button" class="ml-4">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <button id="sidebar-toggle" class="ml-4">
-                            <i class="fas fa-headphones"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Desktop navigation -->
-                <div class="desktop-nav">
-                    <a href="/feed" class="nav-link">
-                        <i class="fas fa-heart"></i>Feed
-                    </a>
-                    <a href="/dashboard" class="nav-link">
-                        <i class="fas fa-home"></i>Dashboard
-                    </a>
-                    <a href="/create" class="nav-link">
-                        <i class="fas fa-plus"></i>Create with AI
-                    </a>
-                    <a href="/chat" class="nav-link">
-                        <i class="fas fa-comments"></i>Chat
-                    </a>
-                    <a href="/list_connect" class="nav-link">
-                        <i class="fas fa-users"></i>Matches
-                    </a>
-                    <a href="/music-feed" class="nav-link">
-                        <i class="fas fa-headphones"></i>Music Feed
-                    </a>
-                    
-                    <a href="#" class="nav-link" onclick="navigateToProfile(event)">
-                        <i class="fas fa-user"></i>Profile
-                    </a>
-                    <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit;">
-                        <i class="fas fa-sign-out-alt"></i>Logout
-                    </button>
-                </div>
-            </div>
+    <!-- Mobile toggle button -->
+    <button class="mobile-toggle" id="mobile-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Vertical Navigation Bar -->
+    <nav class="side-nav" id="side-nav">
+        <div class="logo-container">
+            <h1 class="top-logo">
+                L<span class="heart-logo">❤</span>L
+            </h1>
         </div>
         
-        <!-- Mobile navigation menu -->
-        <div id="mobile-nav" class="mobile-nav">
+        <div class="nav-links">
             <a href="/feed" class="nav-link">
-                <i class="fas fa-heart"></i>Feed
+                <i class="fas fa-heart"></i>
+                <span>Feed</span>
             </a>
             <a href="/dashboard" class="nav-link">
-                <i class="fas fa-home"></i>Dashboard
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
             </a>
             <a href="/create" class="nav-link">
-                <i class="fas fa-plus"></i>Create with AI
+                <i class="fas fa-plus"></i>
+                <span>Create with AI</span>
             </a>
-            <a href="/moodboard" class="nav-link">
-                <i class="fas fa-pallete"></i>
-                <span>Moodboard</span>
-            </a>
+            
+            <div class="nav-category">Connect</div>
             <a href="/chat" class="nav-link">
-                <i class="fas fa-comments"></i>Chat
+                <i class="fas fa-comments"></i>
+                <span>Chat</span>
             </a>
             <a href="/list_connect" class="nav-link">
-                <i class="fas fa-users"></i>Matches
+                <i class="fas fa-users"></i>
+                <span>Matches</span>
             </a>
-            <a href="/game" class="nav-link ">
+            
+            <div class="nav-category">Entertainment</div>
+            <a href="/music-feed" class="nav-link active">
+                <i class="fas fa-headphones"></i>
+                <span>Music Feed</span>
+            </a>
+            <a href="/game" class="nav-link">
                 <i class="fas fa-gamepad"></i>
                 <span>Chill Zone</span>
             </a>
+            <a href="/moodboard" class="nav-link">
+                <i class="fas fa-palette"></i>
+                <span>Moodboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-footer">
+            <a href="#" class="nav-link" onclick="navigateToProfile(event)">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
             <button onclick="logout()" class="nav-link" style="background: none; border: none; cursor: pointer; font-size: inherit; text-align: left; width: 100%;">
-                <i class="fas fa-sign-out-alt"></i>Logout
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
             </button>
         </div>
     </nav>
@@ -596,7 +553,7 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="search-container">
-                <form class="search-form" action="/music-feed" method="GET">
+                <form class="search-form" action="/music-feed" method="GET" onsubmit="return validateSearch(event)">
                     <input type="text" name="query" class="search-input" placeholder="Search for artists, songs, or podcasts" value="{{ query if query != 'trending' else '' }}">
                     <button type="submit" class="search-btn">Search</button>
                 </form>
@@ -688,6 +645,7 @@
                 console.error('Error navigating to profile:', error);
             }
         }
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Audio player functionality
             const audioElement = document.getElementById('audio-player');
@@ -707,27 +665,21 @@
             let currentSongCard = null;
             
             // Mobile navigation functionality
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileNav = document.getElementById('mobile-nav');
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebar = document.getElementById('sidebar');
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const sideNav = document.getElementById('side-nav');
             
             // Toggle mobile navigation
-            mobileMenuButton.addEventListener('click', () => {
-                mobileNav.classList.toggle('show');
+            mobileToggle.addEventListener('click', () => {
+                sideNav.classList.toggle('show');
             });
             
-            // Toggle sidebar on mobile
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', () => {
-                    sidebar.classList.toggle('show');
-                });
-            }
-            
-            // Close mobile nav when clicking outside
+            // Close sidebar when clicking outside on mobile
             document.addEventListener('click', (e) => {
-                if (!mobileNav.contains(e.target) && !mobileMenuButton.contains(e.target)) {
-                    mobileNav.classList.remove('show');
+                if (window.innerWidth <= 768 && 
+                    !sideNav.contains(e.target) && 
+                    !mobileToggle.contains(e.target) && 
+                    sideNav.classList.contains('show')) {
+                    sideNav.classList.remove('show');
                 }
             });
             
@@ -876,10 +828,7 @@
             window.addEventListener('resize', () => {
                 if (window.innerWidth > 768) {
                     // Reset mobile navigation elements when switching to desktop
-                    mobileNav.classList.remove('show');
-                    if (sidebar.classList.contains('show')) {
-                        sidebar.classList.remove('show');
-                    }
+                    sideNav.classList.remove('show');
                 }
             });
         });
@@ -895,6 +844,27 @@
             // Placeholder function
             console.log("Logout clicked");
         }
+
+        // Add form validation
+        function validateSearch(event) {
+            const searchInput = event.target.querySelector('.search-input');
+            if (!searchInput.value.trim()) {
+                searchInput.placeholder = "Please enter some words to search";
+                searchInput.classList.add('error');
+                setTimeout(() => {
+                    searchInput.classList.remove('error');
+                    searchInput.placeholder = "Search for artists, songs, or podcasts";
+                }, 2000);
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        // Add error state styling
+        document.querySelector('.search-input').addEventListener('input', function() {
+            this.classList.remove('error');
+        });
     </script>
 </body>
 </html>

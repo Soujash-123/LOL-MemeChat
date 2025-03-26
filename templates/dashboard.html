@@ -776,6 +776,124 @@
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
+        /* Story Viewer Styles */
+        #story-viewer {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #story-viewer.active {
+            display: flex;
+        }
+
+        .story-container {
+            width: 100%;
+            max-width: 360px;
+            height: calc(100vh - 80px);
+            max-height: 640px;
+            position: relative;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .story-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 3;
+        }
+
+        .story-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .story-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        .story-user-details {
+            flex: 1;
+        }
+
+        .story-username {
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .story-time {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        .story-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .story-close:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .story-progress-container {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .story-progress {
+            height: 2px;
+            flex: 1;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+
+        .story-progress-bar {
+            height: 100%;
+            background: #fff;
+            border-radius: 2px;
+            width: 0;
+            transition: width linear;
+        }
+        .story-preview-username {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            right: 8px;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            z-index: 2;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -951,32 +1069,31 @@
 </div>
 
 <!-- Story Viewer Modal -->
-<div id="story-viewer" class="fixed inset-0 bg-black hidden z-50">
-    <div class="h-full flex items-center justify-center relative">
-        <!-- Story content -->
-        <div class="w-full max-w-sm mx-4">
-            <!-- Story header -->
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 rounded-full bg-gray-600 flex-shrink-0"></div>
-                <div class="ml-3">
-                    <p class="text-white font-semibold story-username">Username</p>
-                    <p class="text-gray-400 text-sm story-time">Just now</p>
+<div id="story-viewer">
+    <div class="story-container">
+        <div class="story-header">
+            <div class="story-progress-container">
+                <div class="story-progress">
+                    <div class="story-progress-bar"></div>
                 </div>
-                <!-- Repositioned close button -->
-                <button onclick="closeStoryViewer()" class="ml-auto text-white text-xl bg-black bg-opacity-50 hover:bg-opacity-75 rounded-full w-8 h-8 flex items-center justify-center transition-all">
+            </div>
+            <div class="story-user-info">
+                <img class="story-user-avatar" src="/static/default-avatar.png" alt="User avatar">
+                <div class="story-user-details">
+                    <div class="story-username">Username</div>
+                    <div class="story-time">Just now</div>
+                </div>
+                <button class="story-close" onclick="closeStoryViewer()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
-            <!-- Progress bar -->
-            <div class="story-progress bg-gray-700 h-1 mb-4 rounded">
-                <div class="story-progress-bar bg-white h-full w-0 rounded transition-all duration-100"></div>
-            </div>
-            
-            <!-- Story media -->
-            <div class="story-media-container relative rounded-lg overflow-hidden">
-                <video id="story-video" class="w-full" playsinline></video>
-            </div>
+        </div>
+        <div class="story-video-container">
+            <video id="story-video" playsinline></video>
+        </div>
+        <div class="story-navigation">
+            <button class="story-nav-button" onclick="previousStory()"></button>
+            <button class="story-nav-button" onclick="nextStory()"></button>
         </div>
     </div>
 </div>
@@ -1163,7 +1280,7 @@ function renderStories() {
         storyElement.innerHTML = `
             <div class="story-preview">
                 <video src="${story.file_url}" muted loop></video>
-                <div class="story-username">${story.username}</div>
+                <div class="story-preview-username">${story.username}</div>
             </div>
         `;
         
@@ -1266,20 +1383,25 @@ function openStoryViewer(index) {
     currentStoryIndex = index;
     const story = stories[currentStoryIndex];
     
-    document.getElementById('story-viewer').classList.remove('hidden');
+    document.getElementById('story-viewer').classList.add('active');
+    
+    // Update user info
     document.querySelector('.story-username').textContent = story.username;
-    document.querySelector('.story-time').textContent = new Date(story.created_at).toLocaleDateString();
+    document.querySelector('.story-time').textContent = new Date(story.created_at).toLocaleString();
+    
+    // Update avatar if available
+    const avatar = document.querySelector('.story-user-avatar');
+    avatar.src = story.avatar_url || '/static/default-avatar.png';
     
     const video = document.getElementById('story-video');
     video.src = story.file_url;
     video.play();
     
-    updateNavigationButtons();
     startStoryProgress();
 }
 
 function closeStoryViewer() {
-    document.getElementById('story-viewer').classList.add('hidden');
+    document.getElementById('story-viewer').classList.remove('active');
     const video = document.getElementById('story-video');
     video.pause();
     video.src = '';
@@ -1327,6 +1449,19 @@ document.addEventListener('keydown', (e) => {
 });
 
 
+function previousStory() {
+    if (currentStoryIndex > 0) {
+        openStoryViewer(currentStoryIndex - 1);
+    }
+}
+
+function nextStory() {
+    if (currentStoryIndex < stories.length - 1) {
+        openStoryViewer(currentStoryIndex + 1);
+    } else {
+        closeStoryViewer();
+    }
+}
     
     
     

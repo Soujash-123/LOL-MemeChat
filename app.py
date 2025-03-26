@@ -525,42 +525,23 @@ def generate_meme(top_text, bottom_text):
     bottom_text = bottom_text.replace(" ", "_")
     return f"https://api.memegen.link/images/{template_id}/{top_text}/{bottom_text}.png"
 
-MEME_INTROS = [
-    "When",
-    "That moment when",
-    "MFW",
-    "TFW",
-    "Nobody:",
-    "Me:",
-    "My brain:",
-    "Plot twist:",
+FUNNY_STATEMENTS = [
+    "That's what she said!",
+    "Oops...",
+    "Well, this is awkward...",
+    "Plot twist!",
+    "Bruh moment",
+    "Let that sink in...",
+    "Mind = Blown",
+    "Wait for it...",
+    
+    "Story of my life!",
+    "No context needed",
+    "Meanwhile...",
+    "And I took that personally",
+    "This is fine",
+    "Hold my beer"
 ]
-
-MEME_ACTIONS = [
-    "trying to adult",
-    "pretending to work",
-    "avoiding responsibilities",
-    "making memes",
-    "procrastinating",
-    "being productive",
-    "staying awake",
-    "explaining memes",
-]
-
-MEME_ENDINGS = [
-    "and failing miserably",
-    "like a boss",
-    "and it shows",
-    "but in HD",
-    "*sweats nervously*",
-    "- circa 2024",
-    "(colorized)",
-    "and that's a fact",
-]
-
-def generate_funny_statement():
-    """Generate a random funny statement by combining components"""
-    return f"{random.choice(MEME_INTROS)} {random.choice(MEME_ACTIONS)} {random.choice(MEME_ENDINGS)}"
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
@@ -572,9 +553,9 @@ def create():
         text = request.form.get('input_text', '').strip()
         words = text.split()
         
-        # If only one word, add a randomly generated funny statement
+        # If only one word, add a random funny statement
         if len(words) == 1:
-            text = f"{text} {generate_funny_statement()}"
+            text = f"{text} {random.choice(FUNNY_STATEMENTS)}"
             words = text.split()
         
         mid = len(words) // 2
